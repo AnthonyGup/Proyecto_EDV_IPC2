@@ -12,7 +12,7 @@ import java.time.LocalDate;
  */
 public class Videogame {
     
-    private int gameId;
+    private int videogameId;
     private LocalDate relasedate;
     private String minimRequirements;
     private double price;
@@ -20,13 +20,22 @@ public class Videogame {
     private String name;
     private int companyId;
     private int ageRestriction;
+    private boolean available;
 
-    public int getGameId() {
-        return gameId;
+    public boolean isAvailable() {
+        return available;
     }
 
-    public void setGameId(int gameId) {
-        this.gameId = gameId;
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
+
+    public int getVideogameId() {
+        return videogameId;
+    }
+
+    public void setVideogameId(int videogameId) {
+        this.videogameId = videogameId;
     }
 
     public LocalDate getRelasedate() {

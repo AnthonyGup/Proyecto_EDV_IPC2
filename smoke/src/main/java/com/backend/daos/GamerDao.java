@@ -6,9 +6,8 @@ package com.backend.daos;
 
 import com.backend.crud.Crud;
 import com.backend.entities.Gamer;
-import com.backend.entities.enums.UserType;
+import com.backend.entities.User;
 import com.backend.exceptions.AlreadyExistException;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,27 +24,22 @@ public class GamerDao extends Crud<Gamer> {
 
     @Override
     public void create(Gamer entidad) throws SQLException, AlreadyExistException {
-        String sqlUser = "INSERT INTO user (nickname, password, mail, birthdate, type) VALUES (?,?,?,?,?)";
         String sqlGamer = "INSERT INTO "+tabla+"(user_id, wallet, country, phone) VALUES (?,?,?,?)";
         
-        PreparedStatement stmtUser = CONNECTION.prepareCall(sqlUser);
-        PreparedStatement stmtGamer = CONNECTION.prepareCall(sqlGamer);
+        PreparedStatement stmtGamer = CONNECTION.prepareStatement(sqlGamer);
         
         if (readByPk(entidad.getMail()) != null) {
             throw new AlreadyExistException();
         }
         
-        stmtUser.setString(1, entidad.getNickname());
-        stmtUser.setString(2, entidad.getPassword());
-        stmtUser.setString(3, entidad.getMail());
-        stmtUser.setDate(4, Date.valueOf(entidad.getBirthdate()));
-        stmtUser.setString(5, entidad.getType().name());
+        UserDao user = new UserDao("user", "mail");
+        user.create(entidad);
+        
         
         stmtGamer.setString(1, entidad.getMail());
         stmtGamer.setDouble(2, entidad.getWallet());
         stmtGamer.setInt(3, entidad.getPhone());
         
-        stmtUser.executeUpdate();
         stmtGamer.executeUpdate();
     }
 
@@ -60,15 +54,13 @@ public class GamerDao extends Crud<Gamer> {
         gamer.setPhone(rs.getInt("phone"));
         //Parte de user
         
-        String sql = "SELECT * FROM user WHERE mail = ?";
-        PreparedStatement stmt = CONNECTION.prepareStatement(sql);
-        stmt.setString(1, gamer.getMail());
-        rs = stmt.executeQuery();
+        UserDao dao = new UserDao("user", "mail");
+        User user = dao.readByPk(gamer.getMail());
         
-        gamer.setNickname(rs.getString("nickname"));
-        gamer.setPassword(rs.getString("password"));
-        gamer.setBirthdate(rs.getDate("birthdate").toLocalDate());
-        gamer.setType(UserType.valueOf(rs.getString("type")));
+        gamer.setNickname(user.getNickname());
+        gamer.setPassword(user.getPassword());
+        gamer.setBirthdate(user.getBirthdate());
+        gamer.setType(user.getType());
         
         return gamer;
     }
