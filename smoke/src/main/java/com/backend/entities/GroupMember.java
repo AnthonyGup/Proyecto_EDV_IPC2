@@ -11,7 +11,6 @@ package com.backend.entities;
 public class GroupMember {
     private int familyGroupId;
     private String userId;
-    private String memberId;
 
     public int getFamilyGroupId() {
         return familyGroupId;
@@ -27,14 +26,6 @@ public class GroupMember {
 
     public void setUserId(String userId) {
         this.userId = userId;
-    }
-
-    public String getMemberId() {
-        return memberId;
-    }
-
-    public void setMemberId(String memberId) {
-        this.memberId = memberId;
     }
     
     

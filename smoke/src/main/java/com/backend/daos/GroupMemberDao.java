@@ -23,19 +23,24 @@ public class GroupMemberDao extends Crud<GroupMember> {
 
     @Override
     public void create(GroupMember entidad) throws SQLException, AlreadyExistException {
-        String sql = "INSERT INTO "+tabla+" (familyGroup_id, user_id, member_id) VALUES (?,?,?)";
+        String sql = "INSERT INTO "+tabla+" (familyGroup_id, user_id) VALUES (?,?)";
         
         PreparedStatement stmt = CONNECTION.prepareStatement(sql);
         
-        String  idCompuesta = entidad.getFamilyGroupId() + entidad.getMemberId();
-        
-        if (readByPk(idCompuesta) != null) {
+        // ver si existe ya un miembr en ese grupo
+        String checkSql = "SELECT * FROM " + tabla + " WHERE familyGroup_id = ? AND user_id = ?";
+        PreparedStatement checkStmt = CONNECTION.prepareStatement(checkSql);
+        checkStmt.setInt(1, entidad.getFamilyGroupId());
+        checkStmt.setString(2, entidad.getUserId());
+        ResultSet rs = checkStmt.executeQuery();
+        if (rs.next()) {
             throw new AlreadyExistException();
         }
         
-        stmt.setString(1, idCompuesta);
-        stmt.setString(2, entidad.getMemberId());
-        stmt.setInt(3, entidad.getFamilyGroupId());
+        stmt.setInt(1, entidad.getFamilyGroupId());
+        stmt.setString(2, entidad.getUserId());
+        
+        stmt.executeUpdate();
     }
 
     @Override
@@ -43,8 +48,7 @@ public class GroupMemberDao extends Crud<GroupMember> {
         GroupMember member = new GroupMember();
         
         member.setFamilyGroupId(rs.getInt("familyGroup_id"));
-        member.setMemberId(rs.getString("user_id"));
-        member.setMemberId(rs.getString("member_id"));
+        member.setUserId(rs.getString("user_id"));
         
         return member;
     }

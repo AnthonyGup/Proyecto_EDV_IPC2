@@ -27,14 +27,19 @@ public class FamilyGroupDao extends Crud<FamilyGroup> {
        
        PreparedStatement stmt = CONNECTION.prepareStatement(sql);
        
+       String checkSql = "SELECT * FROM " + tabla + " WHERE group_name = ? AND owner_id = ?";
+       PreparedStatement checkStmt = CONNECTION.prepareStatement(checkSql);
+       checkStmt.setString(1, entidad.getGroupName());
+       checkStmt.setString(2, entidad.getOwnerId());
+       ResultSet rs = checkStmt.executeQuery();
+       if (rs.next()) {
+           throw new AlreadyExistException();
+       }
+       
        stmt.setString(1, entidad.getGroupName());
        stmt.setString(2, entidad.getOwnerId());
        
-        if (readByColumn(entidad.getGroupName(), "group_name") != null) {
-            throw new AlreadyExistException();
-        }
-        
-        stmt.executeUpdate();
+       stmt.executeUpdate();
     }
 
     @Override
