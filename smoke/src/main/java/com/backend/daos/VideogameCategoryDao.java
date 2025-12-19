@@ -10,6 +10,8 @@ import com.backend.exceptions.AlreadyExistException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -49,5 +51,33 @@ public class VideogameCategoryDao extends Crud<VideogameCategory> {
         return game;
     }
     
+    public List<VideogameCategory> readByGameId(int gameId) throws SQLException {
+        List<VideogameCategory> categories = new ArrayList<>();
+        String sql = "SELECT * FROM " + tabla + " WHERE game_id = ?";
+        
+        PreparedStatement stmt = CONNECTION.prepareStatement(sql);
+        stmt.setInt(1, gameId);
+        ResultSet rs = stmt.executeQuery();
+        
+        while (rs.next()) {
+            categories.add(obtenerEntidad(rs));
+        }
+        
+        return categories;
+    }
     
+    public List<VideogameCategory> readByCategoryId(int categoryId) throws SQLException {
+        List<VideogameCategory> games = new ArrayList<>();
+        String sql = "SELECT * FROM " + tabla + " WHERE category_id = ?";
+        
+        PreparedStatement stmt = CONNECTION.prepareStatement(sql);
+        stmt.setInt(1, categoryId);
+        ResultSet rs = stmt.executeQuery();
+        
+        while (rs.next()) {
+            games.add(obtenerEntidad(rs));
+        }
+        
+        return games;
+    }
 }

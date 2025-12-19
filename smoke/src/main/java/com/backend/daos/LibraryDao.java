@@ -10,6 +10,8 @@ import com.backend.exceptions.AlreadyExistException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -23,19 +25,14 @@ public class LibraryDao extends Crud<Library>  {
 
     @Override
     public void create(Library entidad) throws SQLException, AlreadyExistException {
-        String sql = "INSERT INTO "+tabla+" (library_id, gamer_id, game_id, buyed, installed) VALUES (?,?,?,?,?)";
+        String sql = "INSERT INTO "+tabla+" (user_id, game_id, buyed, installed) VALUES (?,?,?,?)";
         
         PreparedStatement stmt = CONNECTION.prepareStatement(sql);
         
-        stmt.setString(1, entidad.getGamer_id() + entidad.getGameId());
-        stmt.setString(2, entidad.getGamer_id());
-        stmt.setInt(3, entidad.getGameId());
-        stmt.setBoolean(4, entidad.isBuyed());
-        stmt.setBoolean(5, entidad.isInstalled());
-        
-        if (readByPk(entidad.getGamer_id() + entidad.getGameId()) != null) {
-            throw new AlreadyExistException();
-        }
+        stmt.setString(1, entidad.getGamer_id());
+        stmt.setInt(2, entidad.getGameId());
+        stmt.setBoolean(3, entidad.isBuyed());
+        stmt.setBoolean(4, entidad.isInstalled());
         
         stmt.executeUpdate();
     }
@@ -44,8 +41,8 @@ public class LibraryDao extends Crud<Library>  {
     public Library obtenerEntidad(ResultSet rs) throws SQLException {
         Library library = new Library();
         
-        library.setLibraryId(rs.getString("library_id"));
-        library.setGamer_id(rs.getString("gamer_id"));
+        library.setLibraryId(String.valueOf(rs.getInt("library_id")));
+        library.setGamer_id(rs.getString("user_id"));
         library.setGameId(rs.getInt("game_id"));
         library.setBuyed(rs.getBoolean("buyed"));
         library.setInstalled(rs.getBoolean("installed"));
@@ -53,4 +50,18 @@ public class LibraryDao extends Crud<Library>  {
         return library;
     }
     
+    public List<Library> readByGamer(String gamerId) throws SQLException {
+        List<Library> libraries = new ArrayList<>();
+        String sql = "SELECT * FROM " + tabla + " WHERE user_id = ?";
+        
+        PreparedStatement stmt = CONNECTION.prepareStatement(sql);
+        stmt.setString(1, gamerId);
+        ResultSet rs = stmt.executeQuery();
+        
+        while (rs.next()) {
+            libraries.add(obtenerEntidad(rs));
+        }
+        
+        return libraries;
+    }
 }

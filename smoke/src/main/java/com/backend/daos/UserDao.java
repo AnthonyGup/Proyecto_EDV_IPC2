@@ -45,7 +45,7 @@ public class UserDao extends Crud<User> {
     public User obtenerEntidad(ResultSet rs) throws SQLException {
         User user = new User();
         
-        user.setMail(rs.getString("user_id"));
+        user.setMail(rs.getString("mail"));
         user.setNickname(rs.getString("nickname"));
         user.setPassword(rs.getString("password"));
         user.setBirthdate(rs.getDate("birthdate").toLocalDate());

@@ -24,7 +24,7 @@ public class UserCompanyDao extends Crud<UserCompany> {
 
     @Override
     public void create(UserCompany entidad) throws SQLException, AlreadyExistException {
-        String sql = "INSERT INTO "+tabla+"(user_id, company_id) VALUES (?)";
+        String sql = "INSERT INTO "+tabla+" (user_id, company_id) VALUES (?,?)";
         
         PreparedStatement stmt = CONNECTION.prepareStatement(sql);
         

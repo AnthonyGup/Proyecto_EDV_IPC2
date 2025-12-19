@@ -38,7 +38,8 @@ public class GamerDao extends Crud<Gamer> {
         
         stmtGamer.setString(1, entidad.getMail());
         stmtGamer.setDouble(2, entidad.getWallet());
-        stmtGamer.setInt(3, entidad.getPhone());
+        stmtGamer.setString(3, entidad.getCountry());
+        stmtGamer.setInt(4, entidad.getPhone());
         
         stmtGamer.executeUpdate();
     }

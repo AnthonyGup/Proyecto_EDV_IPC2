@@ -12,6 +12,6 @@ public enum UserType {
     
     SYSTEM_ADMIN,
     COMPANY_ADMIN,
-    COMOUN_USER;
+    GAMER;
     
 }

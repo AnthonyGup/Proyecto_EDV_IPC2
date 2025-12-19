@@ -23,12 +23,12 @@ public class CompanyDao extends Crud<Company> {
 
     @Override
     public void create(Company entidad) throws SQLException, AlreadyExistException {
-        String sql = "INSERT INTO"+tabla+" (description, name, commission) VALUES (?,?,?)";
+        String sql = "INSERT INTO "+tabla+" (description, name, commission) VALUES (?,?,?)";
         PreparedStatement stmt = CONNECTION.prepareStatement(sql);
         if (readByColumn(entidad.getName(), "name") == null) {
             stmt.setString(1, entidad.getDescription());
             stmt.setString(2, entidad.getName());
-            stmt.setDouble(3, entidad.getCommision());
+            stmt.setDouble(3, entidad.getCommission());
         }
         
         if(stmt.executeUpdate() == 0) {
@@ -43,7 +43,7 @@ public class CompanyDao extends Crud<Company> {
         
         company.setDescription(rs.getString("commision"));
         company.setName(rs.getString("name"));
-        company.setCommision(rs.getDouble("commision"));
+        company.setCommission(rs.getDouble("commision"));
         
         return company;
     }

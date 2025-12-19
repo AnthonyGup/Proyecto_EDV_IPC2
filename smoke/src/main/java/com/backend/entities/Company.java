@@ -13,7 +13,7 @@ public class Company {
     private String description;
     private String name;
     private int companyId;
-    private double commision;
+    private double commission;
 
     public String getDescription() {
         return description;
@@ -39,12 +39,12 @@ public class Company {
         this.companyId = companyId;
     }
 
-    public double getCommision() {
-        return commision;
+    public double getCommission() {
+        return commission;
     }
 
-    public void setCommision(double commision) {
-        this.commision = commision;
+    public void setCommission(double commission) {
+        this.commission = commission;
     }
     
 }
