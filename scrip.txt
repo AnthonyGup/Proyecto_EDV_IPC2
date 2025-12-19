@@ -1,0 +1,158 @@
+CREATE DATABASE smokedb;
+USE smokedb;
+
+CREATE TABLE user (
+    nickname VARCHAR(100) NOT NULL,
+    password VARCHAR(200) NOT NULL,
+    mail VARCHAR(255) NOT NULL,
+    birthdate DATE NOT NULL,
+    type ENUM('SYSTEM_ADMIN', 'COMPANY_ADMIN', 'GAMER') NOT NULL,
+    CONSTRAINT pk_user PRIMARY KEY (mail)
+);
+
+CREATE TABLE gamer (
+    user_id VARCHAR(255) NOT NULL,
+    wallet DECIMAL(10,2) NOT NULL,
+    country VARCHAR(100),
+    phone VARCHAR(20),
+    CONSTRAINT pk_gamer PRIMARY KEY (user_id),
+    CONSTRAINT fk_gamer_user FOREIGN KEY (user_id) REFERENCES user(mail) ON DELETE CASCADE
+);
+
+CREATE TABLE company (
+    company_id INT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    commission DOUBLE NOT NULL DEFAULT 0.15,
+    description TEXT NOT NULL,
+    CONSTRAINT pk_company PRIMARY KEY (company_id)
+);
+
+CREATE TABLE userCompany (
+    user_id VARCHAR(255) NOT NULL,
+    company_id INT NOT NULL,
+    CONSTRAINT pk_userCompany PRIMARY KEY (user_id, company_id),
+    CONSTRAINT fk_userCompany_user FOREIGN KEY (user_id) REFERENCES user(mail) ON DELETE CASCADE,
+    CONSTRAINT fk_userCompany_company FOREIGN KEY (company_id) REFERENCES company(company_id) ON DELETE CASCADE
+);
+
+CREATE TABLE category (
+    category_id INT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    CONSTRAINT pk_category PRIMARY KEY (category_id)
+);
+
+CREATE TABLE videogame (
+    videogame_id INT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    description TEXT NOT NULL,
+    release_date DATE NOT NULL,
+    min_requirements TEXT NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    available BOOLEAN NOT NULL DEFAULT TRUE,
+    age_restriction INT NOT NULL,
+    company_id INT NOT NULL,
+    CONSTRAINT pk_videogame PRIMARY KEY (videogame_id),
+    CONSTRAINT fk_videogame_company FOREIGN KEY (company_id) REFERENCES company(company_id) ON DELETE CASCADE
+);
+
+CREATE TABLE videogameCategory (
+    game_id INT NOT NULL,
+    category_id INT NOT NULL,
+    CONSTRAINT pk_videogameCategory PRIMARY KEY (game_id, category_id),
+    CONSTRAINT fk_videogameCategory_videogame FOREIGN KEY (game_id) REFERENCES videogame(videogame_id) ON DELETE CASCADE,
+    CONSTRAINT fk_videogameCategory_category FOREIGN KEY (category_id) REFERENCES category(category_id) ON DELETE CASCADE
+);
+
+CREATE TABLE image (
+    image_id INT NOT NULL AUTO_INCREMENT,
+    image LONGBLOB NOT NULL,
+    game_id INT NOT NULL,
+    CONSTRAINT pk_image PRIMARY KEY (image_id),
+    CONSTRAINT fk_image_videogame FOREIGN KEY (game_id) REFERENCES videogame(videogame_id) ON DELETE CASCADE
+);
+
+CREATE TABLE rate (
+    user_id VARCHAR(255) NOT NULL,
+    game_id INT NOT NULL,
+    stars INT NOT NULL CHECK (stars BETWEEN 0 AND 5),
+    CONSTRAINT pk_rate PRIMARY KEY (user_id, game_id),
+    CONSTRAINT fk_rate_user FOREIGN KEY (user_id) REFERENCES user(mail) ON DELETE CASCADE,
+    CONSTRAINT fk_rate_game FOREIGN KEY (game_id) REFERENCES videogame(videogame_id) ON DELETE CASCADE
+);
+
+CREATE TABLE comment (
+    comment_id INT NOT NULL AUTO_INCREMENT,
+    user_id VARCHAR(255) NOT NULL,
+    game_id INT NOT NULL,
+    text TEXT NOT NULL,
+    parent_id INT,
+    visible BOOLEAN NOT NULL DEFAULT TRUE,
+    CONSTRAINT pk_comment PRIMARY KEY (comment_id),
+    CONSTRAINT fk_comment_user FOREIGN KEY (user_id) REFERENCES user(mail) ON DELETE CASCADE,
+    CONSTRAINT fk_comment_game FOREIGN KEY (game_id) REFERENCES videogame(videogame_id) ON DELETE CASCADE,
+    CONSTRAINT fk_comment_parent FOREIGN KEY (parent_id) REFERENCES comment(comment_id) ON DELETE SET NULL
+);
+
+CREATE TABLE purchase (
+    purchase_id INT NOT NULL AUTO_INCREMENT,
+    user_id VARCHAR(255) NOT NULL,
+    game_id INT NOT NULL,
+    date DATE NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    CONSTRAINT pk_purchase PRIMARY KEY (purchase_id),
+    CONSTRAINT fk_purchase_user FOREIGN KEY (user_id) REFERENCES user(mail) ON DELETE CASCADE,
+    CONSTRAINT fk_purchase_game FOREIGN KEY (game_id) REFERENCES videogame(videogame_id) ON DELETE CASCADE
+);
+
+CREATE TABLE library (
+    library_id INT NOT NULL AUTO_INCREMENT,
+    user_id VARCHAR(255) NOT NULL,
+    game_id INT NOT NULL,
+    buyed BOOLEAN NOT NULL DEFAULT FALSE,
+    installed BOOLEAN NOT NULL DEFAULT FALSE,
+    CONSTRAINT pk_library PRIMARY KEY (library_id),
+    CONSTRAINT fk_library_user FOREIGN KEY (user_id) REFERENCES user(mail) ON DELETE CASCADE,
+    CONSTRAINT fk_library_game FOREIGN KEY (game_id) REFERENCES videogame(videogame_id) ON DELETE CASCADE
+);
+
+CREATE TABLE familyGroup (
+    group_id INT NOT NULL AUTO_INCREMENT,
+    group_name VARCHAR(100) NOT NULL,
+    owner_id VARCHAR(255) NOT NULL,
+    CONSTRAINT pk_familyGroup PRIMARY KEY (group_id),
+    CONSTRAINT fk_familyGroup_owner FOREIGN KEY (owner_id) REFERENCES user(mail) ON DELETE CASCADE
+);
+
+CREATE TABLE groupMember (
+    user_id VARCHAR(255) NOT NULL,
+    familyGroup_id INT NOT NULL,
+    CONSTRAINT pk_groupMember PRIMARY KEY (user_id, familyGroup_id),
+    CONSTRAINT fk_groupMember_user FOREIGN KEY (user_id) REFERENCES user(mail) ON DELETE CASCADE,
+    CONSTRAINT fk_groupMember_group FOREIGN KEY (familyGroup_id) REFERENCES familyGroup(group_id) ON DELETE CASCADE
+);
+
+CREATE TABLE globalCommission (
+    id INT NOT NULL AUTO_INCREMENT,
+    commission DOUBLE NOT NULL,
+    CONSTRAINT pk_globalCommission PRIMARY KEY (id)
+);
+
+CREATE TABLE banner (
+    banner_id INT NOT NULL AUTO_INCREMENT,
+    title VARCHAR(100),
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    CONSTRAINT pk_banner PRIMARY KEY (banner_id)
+);
+
+CREATE TABLE bannerImage (
+    image_id INT NOT NULL AUTO_INCREMENT,
+    banner_id INT NOT NULL,
+    image LONGBLOB NOT NULL,
+    game_id INT,
+    CONSTRAINT pk_bannerImage PRIMARY KEY (image_id),
+    CONSTRAINT fk_bannerImage_banner FOREIGN KEY (banner_id) REFERENCES banner(banner_id) ON DELETE CASCADE,
+    CONSTRAINT fk_bannerImage_videogame FOREIGN KEY (game_id) REFERENCES videogame(videogame_id) ON DELETE CASCADE
+);
+
+INSERT INTO user (nickname, password, mail, birthdate, type)
+VALUES ('admin', '123', 'admin@gmail.com', '2005-12-05', 'SYSTEM_ADMIN');
