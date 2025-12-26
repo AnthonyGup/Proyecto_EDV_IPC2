@@ -147,7 +147,7 @@ public abstract class Crud<T> {
             boolean boleano = (boolean) valor;
             stmt.setBoolean(1, boleano);
         }
-       
+
         stmt.setString(2, id);
 
         return stmt.executeUpdate() > 0;
@@ -166,6 +166,16 @@ public abstract class Crud<T> {
         PreparedStatement stmt = CONNECTION.prepareStatement(sql);
         stmt.setString(1, id);
 
+        int filasEliminadas = stmt.executeUpdate();
+        return filasEliminadas > 0;
+    }
+
+    public boolean deleteComposed(String id1, String id2, String columna1, String columna2) throws SQLException {
+        String sql = "DELETE FROM " + tabla + " WHERE " + columna1 + " = ? AND " + columna2 + " = ?";
+        PreparedStatement stmt = CONNECTION.prepareStatement(sql);
+        stmt.setString(1, id1);
+        stmt.setString(2, id2);
+        
         int filasEliminadas = stmt.executeUpdate();
         return filasEliminadas > 0;
     }

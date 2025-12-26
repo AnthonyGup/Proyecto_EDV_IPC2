@@ -1,0 +1,123 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.backend.games.servlets;
+
+import com.backend.images.ImageManagement;
+import com.backend.entities.Image;
+import com.backend.exceptions.AlreadyExistException;
+import com.backend.extras.LocalDateAdapter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.Base64;
+
+/**
+ *
+ * @author antho
+ */
+@WebServlet(name = "GamesCreatorController", urlPatterns = {"/games/creator"})
+public class GamesCreatorController extends HttpServlet {
+
+    private final Gson gson = new GsonBuilder()
+            .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+            .create();
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        StringBuilder sb = new StringBuilder();
+        try (BufferedReader reader = request.getReader()) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+        }
+
+        String json = sb.toString();
+        JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
+
+        //Se extrae el videojuego
+        JsonElement videogameElement = jsonObject.get("videogame");
+        Videogame videogame = gson.fromJson(videogameElement, Videogame.class);
+
+        VideogameDao videogameDao = new VideogameDao("videogame", "videogame_id");
+
+        try {
+            videogameDao.create(videogame);
+        } catch (SQLException | AlreadyExistException ex) {
+            Logger.getLogger(GamesCreatorController.class.getName()).log(Level.SEVERE, null, ex);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return;
+        }
+
+        // se extraen las categorías si existen
+        JsonElement categoriesElement = jsonObject.get("categories");
+        if (categoriesElement != null && categoriesElement.isJsonArray()) {
+            JsonArray categoriesArray = categoriesElement.getAsJsonArray();
+            VideogameCategoryDao categoryDao = new VideogameCategoryDao("videogame_category", "category_id");
+
+            for (JsonElement categoryElement : categoriesArray) {
+                int categoryId = categoryElement.getAsInt();
+                VideogameCategory videogameCategory = new VideogameCategory();
+                videogameCategory.setCategoryId(categoryId);
+                videogameCategory.setGameId(videogame.getVideogameId());
+
+                try {
+                    categoryDao.create(videogameCategory);
+                } catch (SQLException | AlreadyExistException ex) {
+                    Logger.getLogger(GamesCreatorController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+
+        // se extraen las imágenes si existen
+        JsonElement imagesElement = jsonObject.get("images");
+        if (imagesElement != null && imagesElement.isJsonArray()) {
+            JsonArray imagesArray = imagesElement.getAsJsonArray();
+            ImageManagement imageManagement = new ImageManagement();
+
+            for (JsonElement imageElement : imagesArray) {
+                JsonObject imageObj = imageElement.getAsJsonObject();
+                String imageBase64 = imageObj.get("image").getAsString();
+                byte[] imageBytes = Base64.getDecoder().decode(imageBase64);
+
+                Image image = new Image();
+                image.setImage(imageBytes);
+
+                try {
+                    imageManagement.addImage(videogame, image);
+                } catch (SQLException | AlreadyExistException ex) {
+                    Logger.getLogger(GamesCreatorController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+
+        JsonObject successResponse = new JsonObject();
+        successResponse.addProperty("message", "Videojuego creado exitosamente");
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        try (PrintWriter out = response.getWriter()) {
+            out.print(gson.toJson(successResponse));
+            out.flush();
+        } catch (Exception e) {
+            Logger.getLogger(GamesCreatorController.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+}

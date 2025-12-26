@@ -4,9 +4,11 @@
  */
 package com.backend.gamers.servlets;
 
+import com.backend.daos.PurcharseDao;
 import com.backend.entities.Gamer;
 import com.backend.entities.Purcharse;
 import com.backend.entities.Videogame;
+import com.backend.exceptions.AlreadyExistException;
 import com.backend.extras.LocalDateAdapter;
 import com.backend.gamers.Buy;
 import com.backend.validators.ValidationException;
@@ -51,7 +53,8 @@ public class BuyController extends HttpServlet {
 
         try {
             Purcharse purchase = buy.buy();
-
+            PurcharseDao venta = new PurcharseDao("purcharse", "purcharse_id");
+            venta.create(purchase);
             response.setStatus(HttpServletResponse.SC_CREATED); // 201
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
@@ -63,6 +66,10 @@ public class BuyController extends HttpServlet {
         } catch (SQLException ex) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // 500
             response.getWriter().write("{\"error\":\"Error en base de datos\"}");
+            Logger.getLogger(BuyController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (AlreadyExistException ex) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 400
+            response.getWriter().write("{\"error\":\"" + ex.getMessage() + "\"}");
             Logger.getLogger(BuyController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

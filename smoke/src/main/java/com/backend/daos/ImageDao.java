@@ -10,6 +10,8 @@ import com.backend.exceptions.AlreadyExistException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -44,4 +46,15 @@ public class ImageDao extends Crud<Image> {
         return image;
     }
     
+    public List<Image> readByGameId(int gameId) throws SQLException {
+        String sql = "SELECT * FROM " + tabla + " WHERE game_id = ?";
+        PreparedStatement stmt = CONNECTION.prepareStatement(sql);
+        stmt.setInt(1, gameId);
+        ResultSet rs = stmt.executeQuery();
+        List<Image> images = new ArrayList<>();
+        while (rs.next()) {
+            images.add(obtenerEntidad(rs));
+        }
+        return images;
+    }
 }

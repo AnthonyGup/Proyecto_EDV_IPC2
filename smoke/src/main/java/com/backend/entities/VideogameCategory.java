@@ -10,17 +10,8 @@ package com.backend.entities;
  */
 public class VideogameCategory {
     
-    private int vcId;
     private int categoryId;
     private int gameId;
-
-    public int getVcId() {
-        return vcId;
-    }
-
-    public void setVcId(int vcId) {
-        this.vcId = vcId;
-    }
 
     public int getCategoryId() {
         return categoryId;
