@@ -1,28 +1,14 @@
-<div class="page">
-  <header class="topbar">
-    <div class="brand">Panel de administrador del sistema</div>
-    <nav class="nav">
-      <a href="#">Inicio</a>
-      <a href="#">Usuarios</a>
-      <a href="#">Juegos</a>
-      <a href="#">Reportes</a>
-    </nav>
-  </header>
-
-  <main class="content">
-    <section class="card" *ngIf="user; else noUser">
-      <h2>Perfil</h2>
-      <div class="grid">
-        <div><span class="label">Nickname:</span><span>{{ user.nickname }}</span></div>
-        <div><span class="label">Email:</span><span>{{ user.mail }}</span></div>
-        <div><span class="label">Tipo:</span><span>{{ user.type }}</span></div>
-        <div><span class="label">Nacimiento:</span><span>{{ user.birthdate }}</span></div>
-      </div>
-    </section>
-    <ng-template #noUser>
-      <div class="card">
-        <p>No hay sesión activa.</p>
-      </div>
-    </ng-template>
-  </main>
-</div>
+<section class="card" *ngIf="user; else noUser">
+  <h2>Perfil</h2>
+  <div class="grid">
+    <div><span class="label">Nickname:</span><span>{{ user.nickname }}</span></div>
+    <div><span class="label">Email:</span><span>{{ user.mail }}</span></div>
+    <div><span class="label">Tipo:</span><span>{{ user.type }}</span></div>
+    <div><span class="label">Nacimiento:</span><span>{{ user.birthdate }}</span></div>
+  </div>
+</section>
+<ng-template #noUser>
+  <div class="card">
+    <p>No hay sesión activa.</p>
+  </div>
+</ng-template>

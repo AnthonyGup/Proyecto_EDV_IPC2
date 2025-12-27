@@ -1,0 +1,14 @@
+<div class="page">
+  <header class="topbar">
+    <div class="brand">Panel de administrador del sistema</div>
+    <nav class="nav">
+      <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
+      <a routerLink="/admin/company/create" routerLinkActive="active">Crear compañía</a>
+      <button class="link" (click)="logout()">Cerrar sesión</button>
+    </nav>
+  </header>
+
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

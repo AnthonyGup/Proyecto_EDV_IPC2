@@ -41,9 +41,10 @@ public class CompanyDao extends Crud<Company> {
     public Company obtenerEntidad(ResultSet rs) throws SQLException {
         Company company = new Company();
         
-        company.setDescription(rs.getString("commision"));
+        company.setCompanyId(rs.getInt("company_id"));
+        company.setDescription(rs.getString("description"));
         company.setName(rs.getString("name"));
-        company.setCommission(rs.getDouble("commision"));
+        company.setCommission(rs.getDouble("commission"));
         
         return company;
     }

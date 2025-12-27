@@ -20,6 +20,7 @@ C:\Users\antho\Documents\VisualProjects\Proyecto_EDV_IPC2\smoke\src\main\java\co
 C:\Users\antho\Documents\VisualProjects\Proyecto_EDV_IPC2\smoke\src\main\java\com\backend\daos\CompanyDao.java
 C:\Users\antho\Documents\VisualProjects\Proyecto_EDV_IPC2\smoke\src\main\java\com\backend\gamers\Install.java
 C:\Users\antho\Documents\VisualProjects\Proyecto_EDV_IPC2\smoke\src\main\java\com\backend\users\servlets\GamerCreatorController.java
+C:\Users\antho\Documents\VisualProjects\Proyecto_EDV_IPC2\smoke\src\main\java\com\backend\users\servlets\UserCompanyController.java
 C:\Users\antho\Documents\VisualProjects\Proyecto_EDV_IPC2\smoke\src\main\java\com\backend\filters\CorsFilter.java
 C:\Users\antho\Documents\VisualProjects\Proyecto_EDV_IPC2\smoke\src\main\java\com\backend\servlets\system\CompanyController.java
 C:\Users\antho\Documents\VisualProjects\Proyecto_EDV_IPC2\smoke\src\main\java\com\backend\validators\ValidationException.java

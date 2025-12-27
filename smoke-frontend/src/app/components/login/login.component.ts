@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { extractErrorMessage } from '../../core/error.util';
 import { SessionService } from '../../core/session.service';
+import { User } from '../../models';
 
 @Component({
   standalone: true,
@@ -13,7 +14,7 @@ import { SessionService } from '../../core/session.service';
   styleUrls: ['./login.component.css'],
   imports: [ReactiveFormsModule, RouterLink, NgIf]
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   errorMessage: string | null = null;
   isLoading = false;
@@ -30,29 +31,45 @@ export class LoginComponent {
     });
   }
 
+  ngOnInit(): void {
+    const user = this.session.getUser();
+    if (user) {
+      if (user.type === 'SYSTEM_ADMIN') {
+        this.router.navigate(['/admin']);
+      } else if (user.type === 'COMPANY_ADMIN') {
+        this.router.navigate(['/company/admin']);
+      }
+    }
+  }
+
   onSubmit() {
     if (this.loginForm.valid) {
       this.errorMessage = null;
       this.isLoading = true;
       const { email, password } = this.loginForm.value;
-      this.authService.login(email, password).subscribe(
-        response => {
-          console.log('Login successful', response);
-          this.session.saveUser(response);
-          if (response?.type === 'SYSTEM_ADMIN') {
+      
+      this.authService.login(email, password).subscribe({
+        next: (user: User) => {
+          this.session.saveUser(user);
+          
+          if (user.type === 'SYSTEM_ADMIN') {
             this.router.navigate(['/admin']);
+          } else if (user.type === 'COMPANY_ADMIN') {
+            this.router.navigate(['/company/admin']);
+          } else if (user.type === 'GAMER') {
+            this.errorMessage = 'Los usuarios tipo GAMER no tienen acceso al panel de administración.';
+            this.session.clear();
           } else {
-            this.errorMessage = 'No tienes permisos de administrador.';
+            this.errorMessage = 'Tipo de usuario no reconocido.';
             this.session.clear();
           }
           this.isLoading = false;
         },
-        error => {
-          console.error('Login failed', error);
+        error: (error) => {
           this.errorMessage = extractErrorMessage(error);
           this.isLoading = false;
         }
-      );
+      });
     }
   }
 }

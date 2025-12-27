@@ -1,0 +1,82 @@
+.card {
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 640px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+input {
+  width: 100%;
+  background: #0b1220;
+  border: 1px solid #1f2937;
+  color: #e2e8f0;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+button {
+  padding: 12px 18px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
+}
+
+button:disabled {
+  background: #1f2937;
+  cursor: not-allowed;
+  color: #94a3b8;
+}
+
+button:not(:disabled):hover {
+  background: #1d4ed8;
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.35);
+}
+
+button:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+.success {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: #064e3b;
+  border: 1px solid #059669;
+  color: #bbf7d0;
+  border-radius: 8px;
+}
+
+.error {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: #7f1d1d;
+  border: 1px solid #b91c1c;
+  color: #fecaca;
+  border-radius: 8px;
+}

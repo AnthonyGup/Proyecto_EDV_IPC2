@@ -1,0 +1,53 @@
+<h1 style="margin: 0 0 12px 0;">Crear compañía</h1>
+<section class="card">
+  <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
+
+    <label class="field">
+      <span>Nombre</span>
+      <input type="text" formControlName="name" placeholder="Nombre legal" />
+      <small *ngIf="f['name']?.touched && f['name']?.invalid">
+        Nombre requerido (mínimo 3 caracteres).
+      </small>
+    </label>
+
+    <label class="field">
+      <span>Descripción</span>
+      <textarea rows="3" formControlName="description" placeholder="Resumen de la compañía"></textarea>
+      <small *ngIf="f['description']?.touched && f['description']?.invalid">
+        Agrega una descripción (mínimo 5 caracteres).
+      </small>
+    </label>
+
+    <label class="field">
+      <span>Comisión (%)</span>
+      <input type="number" formControlName="commission" placeholder="Ej. 12" />
+      <small *ngIf="f['commission']?.touched && f['commission']?.invalid">
+        Define un valor entre 0 y 100. Si no ingresas, se usa la comisión global: {{ defaultCommission ?? 0 }}%
+      </small>
+    </label>
+
+    <label class="field">
+      <span>Email administrador</span>
+      <input type="email" formControlName="adminMail" placeholder="admin@empresa.com" />
+    </label>
+    <label class="field">
+      <span>Nickname administrador</span>
+      <input type="text" formControlName="adminNickname" placeholder="admin" />
+    </label>
+    <label class="field">
+      <span>Password administrador</span>
+      <input type="password" formControlName="adminPassword" placeholder="••••••" />
+    </label>
+    <label class="field">
+      <span>Nacimiento administrador</span>
+      <input type="date" formControlName="adminBirthdate" />
+    </label>
+
+    <div class="actions">
+      <button type="submit" [disabled]="loading">{{ loading ? 'Enviando...' : 'Crear compañía' }}</button>
+    </div>
+  </form>
+
+  <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
+  <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+</section>

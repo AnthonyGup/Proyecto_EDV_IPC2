@@ -23,6 +23,7 @@ com\backend\daos\VideogameDao.class
 com\backend\entities\Videogame.class
 com\backend\images\ImageManagement.class
 com\backend\gamers\Recharge.class
+com\backend\users\servlets\UserCompanyController.class
 com\backend\gamers\FamilyGroupCreator.class
 com\backend\entities\Purcharse.class
 com\backend\daos\CompanyDao.class

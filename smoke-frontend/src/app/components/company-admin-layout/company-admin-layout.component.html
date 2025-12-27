@@ -1,0 +1,23 @@
+<div class="page">
+  <header class="topbar">
+    <div class="brand-section">
+      <div class="brand">Panel de administrador de compañía</div>
+      <div class="company-info" *ngIf="user && !loading">
+        <span class="company-name" *ngIf="company">{{ company.name }}</span>
+        <span class="company-id">ID: {{ user.company_id || user.companyId || 'N/A' }}</span>
+      </div>
+      <div class="company-info loading" *ngIf="loading">
+        <span>Cargando compañía...</span>
+      </div>
+    </div>
+    <nav class="nav">
+      <a routerLink="/company/admin" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
+      <a routerLink="/company/admin/create" routerLinkActive="active">Crear administrador</a>
+      <button class="link" (click)="logout()">Cerrar sesión</button>
+    </nav>
+  </header>
+
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

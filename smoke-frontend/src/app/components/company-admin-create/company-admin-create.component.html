@@ -1,0 +1,28 @@
+<section class="card">
+  <h2>Crear administrador de compañía</h2>
+  <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
+    <label class="field">
+      <span>Email</span>
+      <input type="email" formControlName="mail" placeholder="admin@empresa.com" />
+    </label>
+    <label class="field">
+      <span>Nickname</span>
+      <input type="text" formControlName="nickname" placeholder="admin" />
+    </label>
+    <label class="field">
+      <span>Password</span>
+      <input type="password" formControlName="password" placeholder="••••••" />
+    </label>
+    <label class="field">
+      <span>Fecha de nacimiento</span>
+      <input type="date" formControlName="birthdate" />
+    </label>
+
+    <div class="actions">
+      <button type="submit" [disabled]="loading">{{ loading ? 'Enviando...' : 'Crear administrador' }}</button>
+    </div>
+  </form>
+
+  <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
+  <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+</section>

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { SessionService } from '../../core/session.service';
 
 @Component({
@@ -7,10 +8,10 @@ import { SessionService } from '../../core/session.service';
   selector: 'app-admin-dashboard',
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css'],
-  imports: [CommonModule]
+  imports: [CommonModule, RouterModule]
 })
 export class AdminDashboardComponent {
-  user!: ReturnType<SessionService['getUser']>;
+  user: ReturnType<SessionService['getUser']> = null;
 
   constructor(private session: SessionService) {
     this.user = this.session.getUser();

@@ -139,3 +139,6 @@ CREATE TABLE globalCommission (
 
 INSERT INTO user (nickname, password, mail, birthdate, type)
 VALUES ('admin', '123', 'admin@gmail.com', '2005-12-05', 'SYSTEM_ADMIN');
+
+INSERT INTO globalCommission (id, commission) VALUES (1, 0.15)
+ON DUPLICATE KEY UPDATE commission = VALUES(commission);
