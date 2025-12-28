@@ -33,7 +33,7 @@ import java.util.logging.Logger;
  *
  * @author antho
  */
-@WebServlet(name = "ImageServlet", urlPatterns = {"/images"})
+@WebServlet(name = "ImageServlet", urlPatterns = {"/images", "/images/*"})
 public class ImageServlet extends HttpServlet {
 
     private final Gson gson = new GsonBuilder()
@@ -122,7 +122,58 @@ public class ImageServlet extends HttpServlet {
      @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-            
-
+            // Optional: accept JSON with { videogameId, images: [base64] }
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            try (PrintWriter out = response.getWriter()) {
+                out.print(gson.toJson("Not Implemented"));
+                out.flush();
+            }
             }        
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String pathInfo = request.getPathInfo(); // expecting /{id}
+        Integer imageId = null;
+        if (pathInfo != null && pathInfo.length() > 1) {
+            String[] parts = pathInfo.split("/");
+            if (parts.length >= 2) {
+                try { imageId = Integer.parseInt(parts[1]); } catch (NumberFormatException ex) { imageId = null; }
+            }
+        }
+        if (imageId == null) {
+            // fallback to query param
+            String idParam = request.getParameter("image_id");
+            if (idParam != null) {
+                try { imageId = Integer.parseInt(idParam); } catch (NumberFormatException ex) { imageId = null; }
+            }
+        }
+
+        if (imageId == null) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            JsonObject errorResponse = new JsonObject();
+            errorResponse.addProperty("message", "image_id es requerido");
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            try (PrintWriter out = response.getWriter()) {
+                out.print(gson.toJson(errorResponse));
+                out.flush();
+            }
+            return;
+        }
+
+        ImageDao dao = new ImageDao("image", "image_id");
+        try {
+            boolean ok = dao.delete(String.valueOf(imageId));
+            response.setStatus(ok ? HttpServletResponse.SC_OK : HttpServletResponse.SC_NOT_FOUND);
+            try (PrintWriter out = response.getWriter()) {
+                out.print(ok ? "{\"message\":\"Imagen eliminada\"}" : "{\"error\":\"Imagen no encontrada\"}");
+                out.flush();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ImageServlet.class.getName()).log(Level.SEVERE, null, ex);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
 }

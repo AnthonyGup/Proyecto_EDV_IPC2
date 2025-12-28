@@ -4,8 +4,12 @@
  */
 package com.backend.games.servlets;
 
+import com.backend.daos.VideogameCategoryDao;
+import com.backend.daos.VideogameDao;
 import com.backend.images.ImageManagement;
 import com.backend.entities.Image;
+import com.backend.entities.Videogame;
+import com.backend.entities.VideogameCategory;
 import com.backend.exceptions.AlreadyExistException;
 import com.backend.extras.LocalDateAdapter;
 import com.google.gson.Gson;
@@ -23,7 +27,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.Base64;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -69,7 +76,11 @@ public class GamesCreatorController extends HttpServlet {
         JsonElement categoriesElement = jsonObject.get("categories");
         if (categoriesElement != null && categoriesElement.isJsonArray()) {
             JsonArray categoriesArray = categoriesElement.getAsJsonArray();
-            VideogameCategoryDao categoryDao = new VideogameCategoryDao("videogame_category", "category_id");
+            Logger.getLogger(GamesCreatorController.class.getName())
+                    .log(Level.INFO, "Insertando {0} categorías para juego ID {1}", 
+                            new Object[]{categoriesArray.size(), videogame.getVideogameId()});
+            
+            VideogameCategoryDao categoryDao = new VideogameCategoryDao("videogameCategory", "game_id");
 
             for (JsonElement categoryElement : categoriesArray) {
                 int categoryId = categoryElement.getAsInt();
@@ -78,9 +89,15 @@ public class GamesCreatorController extends HttpServlet {
                 videogameCategory.setGameId(videogame.getVideogameId());
 
                 try {
+                    Logger.getLogger(GamesCreatorController.class.getName())
+                            .log(Level.INFO, "Insertando categoría {0} para juego {1}", 
+                                    new Object[]{categoryId, videogame.getVideogameId()});
                     categoryDao.create(videogameCategory);
+                    Logger.getLogger(GamesCreatorController.class.getName())
+                            .log(Level.INFO, "Categoría insertada exitosamente");
                 } catch (SQLException | AlreadyExistException ex) {
-                    Logger.getLogger(GamesCreatorController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(GamesCreatorController.class.getName())
+                            .log(Level.SEVERE, "Error insertando categoría", ex);
                 }
             }
         }

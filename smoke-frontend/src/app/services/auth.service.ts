@@ -28,6 +28,11 @@ export class AuthService {
     return this.http.get<GlobalCommission>(`${API_BASE_URL}/CommissionController`);
   }
 
+  updateGlobalCommission(commission: number): Observable<{ message: string }> {
+    const payload = { commission: Number(commission) };
+    return this.http.post<{ message: string }>(`${API_BASE_URL}/CommissionController`, payload);
+  }
+
   createCompanyAdmin(admin: {
     mail: string;
     nickname: string;

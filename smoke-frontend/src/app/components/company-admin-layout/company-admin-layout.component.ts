@@ -6,13 +6,14 @@ import { CompanyService } from '../../services/company.service';
 import { AuthService } from '../../services/auth.service';
 import { Company } from '../../models';
 import { switchMap } from 'rxjs/operators';
+import { FooterComponent } from '../footer/footer.component';
 
 @Component({
   standalone: true,
   selector: 'app-company-admin-layout',
   templateUrl: './company-admin-layout.component.html',
   styleUrls: ['./company-admin-layout.component.css'],
-  imports: [CommonModule, RouterModule]
+  imports: [CommonModule, RouterModule, FooterComponent]
 })
 export class CompanyAdminLayoutComponent implements OnInit {
   user: any = null;
@@ -57,6 +58,10 @@ export class CompanyAdminLayoutComponent implements OnInit {
   logout(): void {
     this.session.clear();
     this.router.navigate(['/login']);
+  }
+
+  goHome(): void {
+    this.router.navigate(['/company/admin']);
   }
 }
 

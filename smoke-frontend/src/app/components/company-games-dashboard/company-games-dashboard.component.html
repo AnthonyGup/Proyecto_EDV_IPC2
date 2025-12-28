@@ -1,0 +1,32 @@
+<div class="games-container">
+  <div class="header">
+    <h1>Gestión de Juegos</h1>
+    <p>Visualiza y edita los videojuegos de tu empresa</p>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <p>Cargando videojuegos...</p>
+  </div>
+
+  <div *ngIf="error && !loading" class="error-message">
+    <p>{{ error }}</p>
+  </div>
+
+  <div *ngIf="!loading && games.length > 0" class="games-grid">
+    <div *ngFor="let game of games" class="game-card">
+      <div class="game-image">
+        <img [src]="getImageUrl(game)" alt="{{ game.name }}" />
+      </div>
+      <div class="game-info">
+        <h3 class="game-name">{{ game.name }}</h3>
+        <div class="game-buttons">
+          <button class="btn-edit" (click)="editGame(game)">Editar juego</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && games.length === 0" class="empty-state">
+    <p>No hay videojuegos disponibles</p>
+  </div>
+</div>

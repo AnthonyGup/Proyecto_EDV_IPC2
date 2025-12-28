@@ -1,6 +1,8 @@
 export interface Image {
   imageId: number;
-  url: string;
-  description: string;
-  videogameId: number;
+  image?: string; // base64 encoded image
+  gameId?: number;
+  url?: string; // for backward compatibility
+  description?: string;
+  videogameId?: number;
 }

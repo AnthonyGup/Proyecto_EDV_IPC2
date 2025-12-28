@@ -1,4 +1,4 @@
-.card {
+  .card {
   background: #111827;
   border: 1px solid #1f2937;
   border-radius: 12px;
@@ -21,6 +21,15 @@
   color: #cbd5e1;
 }
 
+.company-display {
+  padding: 10px;
+  background: #0b1220;
+  border: 1px solid #1f2937;
+  border-radius: 8px;
+}
+
+.company-name { color: #60a5fa; font-weight: 700; }
+
 input {
   width: 100%;
   background: #0b1220;
@@ -29,6 +38,12 @@ input {
   padding: 10px;
   border-radius: 8px;
   font-size: 14px;
+}
+
+small {
+  color: #ef4444;
+  font-weight: 500;
+  font-size: 12px;
 }
 
 .actions {

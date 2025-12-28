@@ -1,0 +1,31 @@
+<div class="page">
+  <div class="shell">
+    <p class="eyebrow">Compañías</p>
+    <h1>Comisión de compañías</h1>
+    <p class="muted">Gestiona las comisiones individuales de cada compañía registrada.</p>
+
+    <div class="loading" *ngIf="loading">Cargando compañías...</div>
+    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+    <div class="cards-grid" *ngIf="!loading && companies.length > 0">
+      <div class="card" *ngFor="let company of companies">
+        <div class="card-header">
+          <h3 class="company-name">{{ company.name }}</h3>
+          <span class="company-id">#{{ company.companyId }}</span>
+        </div>
+        <p class="company-description">{{ company.description }}</p>
+        <div class="card-footer">
+          <div class="commission-info">
+            <span class="label">Comisión actual:</span>
+            <span class="value">{{ company.commission }}%</span>
+          </div>
+          <button class="edit-btn" (click)="editCommission(company)">Editar comisión</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="!loading && !errorMessage && companies.length === 0">
+      <p>No hay compañías registradas.</p>
+    </div>
+  </div>
+</div>

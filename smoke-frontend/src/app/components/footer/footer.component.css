@@ -1,0 +1,42 @@
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: #111827;
+  border-top: 1px solid #1f2937;
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+}
+
+.footer-left {
+  color: #94a3b8;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.footer-right {
+  display: flex;
+  gap: 12px;
+}
+
+.logout-btn {
+  background: #dc2626;
+  border: 1px solid #b91c1c;
+  border-radius: 8px;
+  color: #fff;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.logout-btn:hover {
+  background: #b91c1c;
+  transform: translateY(-1px);
+}
+
+.logout-btn:active {
+  transform: translateY(0);
+}

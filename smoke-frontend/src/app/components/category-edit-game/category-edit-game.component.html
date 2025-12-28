@@ -1,0 +1,41 @@
+<div class="page">
+  <div class="shell">
+    <div class="topbar">
+      <p class="eyebrow">Categorías</p>
+      <h1>Editar categorías del juego</h1>
+      <p class="subtitle">Selecciona las categorías que deseas asignar</p>
+    </div>
+
+    <div class="card">
+      <div *ngIf="loading" class="muted">Cargando...</div>
+      <div *ngIf="error" class="error">{{ error }}</div>
+      <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
+
+      <div *ngIf="!loading && allCategories.length > 0" class="form">
+        <div class="form-group">
+          <label>Categorías disponibles:</label>
+          <div class="categories-list">
+            <div *ngFor="let cat of allCategories" class="checkbox-item">
+              <input 
+                type="checkbox"
+                [id]="'cat-' + cat.categoryId"
+                [checked]="selectedCategoryIds.has(cat.categoryId)"
+                (change)="toggleCategory(cat.categoryId, $any($event).target.checked)"
+              />
+              <label [for]="'cat-' + cat.categoryId">{{ cat.name }}</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button (click)="save()" [disabled]="saving" class="btn btn-primary">
+            {{ saving ? 'Guardando...' : 'Guardar Cambios' }}
+          </button>
+          <button (click)="cancel()" [disabled]="saving" class="btn btn-secondary">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,33 @@
+<div class="page">
+  <div class="shell">
+    <div class="topbar">
+      <div>
+        <p class="eyebrow">Categorías</p>
+        <h1>Administrador de categorías</h1>
+        <p class="muted">Juegos, compañía y categorías asignadas</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div *ngIf="loading" class="muted">Cargando juegos...</div>
+      <div *ngIf="error" class="error">{{ error }}</div>
+
+      <div class="grid" *ngIf="cards.length > 0">
+        <div class="game-card" *ngFor="let item of cards">
+          <div class="head">
+            <h3 class="title">{{ item.game.name }}</h3>
+            <span class="company">{{ item.companyName }}</span>
+          </div>
+          <div class="categories">
+            <span *ngIf="item.loading" class="muted">Cargando categorías...</span>
+            <span *ngFor="let cat of item.categories" class="chip">{{ cat }}</span>
+            <span *ngIf="!item.loading && !item.categories.length" class="muted">Sin categorías</span>
+          </div>
+          <button class="edit-btn" [routerLink]="['/admin/category-edit-game', item.game.videogameId]">
+            Editar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

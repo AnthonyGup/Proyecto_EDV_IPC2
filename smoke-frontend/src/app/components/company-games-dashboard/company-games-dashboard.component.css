@@ -1,0 +1,140 @@
+.games-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  position: relative;
+}
+
+.header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 2rem;
+  margin: 0 0 0.5rem 0;
+  color: #e5e7eb;
+}
+
+.header p {
+  font-size: 1rem;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.loading,
+.error-message,
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  background: #1f2937;
+  border-radius: 8px;
+  margin-top: 2rem;
+  color: #e5e7eb;
+}
+
+.error-message {
+  background: #7f1d1d6e;
+  color: #fca5a5;
+  border: 1px solid #571212;
+}
+
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.game-card {
+  background: #1f2937;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border: 1px solid #374151;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.game-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.game-image {
+  width: 100%;
+  height: 280px;
+  overflow: hidden;
+  background: #524a4a7b;
+}
+
+.game-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.game-info {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex-grow: 1;
+}
+
+.game-name {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #e5e7eb;
+  font-weight: 600;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.game-buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: auto;
+}
+
+.btn-edit {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background 0.3s ease;
+  background: linear-gradient(135deg, #174b1967 0%, #45a04907 100%);
+}
+
+.btn-edit:hover {
+  background: linear-gradient(135deg, #174b1967 0%, #45a04971 100%);
+}
+
+@media (max-width: 768px) {
+  .games-container {
+    padding: 1rem;
+  }
+
+  .header h1 {
+    font-size: 1.5rem;
+  }
+
+  .games-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .game-image {
+    height: 220px;
+  }
+}

@@ -1,23 +1,21 @@
 <div class="page">
   <header class="topbar">
-    <div class="brand-section">
-      <div class="brand">Panel de administrador de compañía</div>
-      <div class="company-info" *ngIf="user && !loading">
-        <span class="company-name" *ngIf="company">{{ company.name }}</span>
-        <span class="company-id">ID: {{ user.company_id || user.companyId || 'N/A' }}</span>
-      </div>
-      <div class="company-info loading" *ngIf="loading">
-        <span>Cargando compañía...</span>
-      </div>
-    </div>
+    <button class="brand brand-link" (click)="goHome()">SMOKE</button>
     <nav class="nav">
-      <a routerLink="/company/admin" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
       <a routerLink="/company/admin/create" routerLinkActive="active">Crear administrador</a>
-      <button class="link" (click)="logout()">Cerrar sesión</button>
+      <a routerLink="/company/admin/game/create" routerLinkActive="active">Crear videojuego</a>
+      <a routerLink="/company/admin/comments" routerLinkActive="active">Gestión de Comentarios</a>
+      <a routerLink="/company/admin/games" routerLinkActive="active">Gestión de Juegos</a>
     </nav>
   </header>
 
   <main class="content">
+    <!-- Información de compañía opcional bajo el header -->
+    <div class="company-inline" *ngIf="user && !loading">
+      <span class="company-name" *ngIf="company">{{ company.name }}</span>
+      <span class="company-id">ID: {{ user.company_id || user.companyId || 'N/A' }}</span>
+    </div>
     <router-outlet></router-outlet>
   </main>
+  <app-footer></app-footer>
 </div>

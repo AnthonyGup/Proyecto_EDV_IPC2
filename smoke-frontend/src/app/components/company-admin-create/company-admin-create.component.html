@@ -1,21 +1,53 @@
 <section class="card">
   <h2>Crear administrador de compañía</h2>
   <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
+    <!-- Para COMPANY_ADMIN: mostrar nombre y ocultar el control -->
+    <input type="hidden" formControlName="company_id" *ngIf="!isSystemAdmin" />
+    <label class="field" *ngIf="!isSystemAdmin">
+      <span>Compañía</span>
+      <div class="company-display">
+        <span class="company-name">{{ companyName || '—' }}</span>
+      </div>
+    </label>
+    <!-- Para SYSTEM_ADMIN: permitir selección de cualquier compañía -->
+    <label class="field" *ngIf="isSystemAdmin">
+      <span>Compañía</span>
+      <select formControlName="company_id">
+        <option value="" disabled selected>{{ loadingCompanies ? 'Cargando compañías...' : 'Selecciona una compañía' }}</option>
+        <option *ngFor="let company of companies" [value]="company.companyId">{{ company.name }}</option>
+      </select>
+      <small *ngIf="f['company_id']?.touched && f['company_id']?.invalid">
+        Debes seleccionar una compañía.
+      </small>
+    </label>
+
     <label class="field">
       <span>Email</span>
       <input type="email" formControlName="mail" placeholder="admin@empresa.com" />
+      <small *ngIf="f['mail']?.touched && f['mail']?.invalid">
+        {{ f['mail']?.errors?.['required'] ? 'El email es obligatorio.' : 'Ingresa un email válido.' }}
+      </small>
     </label>
     <label class="field">
       <span>Nickname</span>
       <input type="text" formControlName="nickname" placeholder="admin" />
+      <small *ngIf="f['nickname']?.touched && f['nickname']?.invalid">
+        {{ f['nickname']?.errors?.['required'] ? 'El nickname es obligatorio.' : 'Mínimo 3 caracteres.' }}
+      </small>
     </label>
     <label class="field">
       <span>Password</span>
       <input type="password" formControlName="password" placeholder="••••••" />
+      <small *ngIf="f['password']?.touched && f['password']?.invalid">
+        {{ f['password']?.errors?.['required'] ? 'La contraseña es obligatoria.' : 'Mínimo 3 caracteres.' }}
+      </small>
     </label>
     <label class="field">
       <span>Fecha de nacimiento</span>
       <input type="date" formControlName="birthdate" />
+      <small *ngIf="f['birthdate']?.touched && f['birthdate']?.invalid">
+        La fecha de nacimiento es obligatoria.
+      </small>
     </label>
 
     <div class="actions">

@@ -1,14 +1,32 @@
 <div class="page">
   <header class="topbar">
-    <div class="brand">Panel de administrador del sistema</div>
+    <button class="brand brand-link" (click)="goHome()">SMOKE</button>
     <nav class="nav">
-      <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
-      <a routerLink="/admin/company/create" routerLinkActive="active">Crear compañía</a>
-      <button class="link" (click)="logout()">Cerrar sesión</button>
+      <div class="dropdown-container">
+        <button class="dropdown-button" (click)="toggleCompanyDropdown()">Company</button>
+        <div class="dropdown-menu" *ngIf="showCompanyDropdown">
+          <a routerLink="/admin/company/create" routerLinkActive="active" (click)="showCompanyDropdown = false">Crear compañía</a>
+          <a routerLink="/admin/company/admin/create" routerLinkActive="active" (click)="showCompanyDropdown = false">Crear admin de compañía</a>
+          <a routerLink="/admin/company/commissions" routerLinkActive="active" (click)="showCompanyDropdown = false">Comisión de compañías</a>
+        </div>
+      </div>
+      <div class="dropdown-container">
+        <button class="dropdown-button" (click)="toogleCategoryDropdown()">Category</button>
+        <div class="dropdown-menu" *ngIf="showCategoryDropdown">
+          <a routerLink ="/admin/category/create" routerLinkActive="active" (click)="showCategoryDropdown = false">Crear categoría</a>
+          <a routerLink ="/admin/category/edit" routerLinkActive="active" (click)="showCategoryDropdown=false">Editar categorías</a>
+          <a routerLink ="/admin/category/admin" routerLinkActive="active" (click)="showCategoryDropdown=false">Administrador de categorías</a>
+          </div>
+      </div>
+      
+      <a routerLink="/admin/commission/global" routerLinkActive="active" class="link">Comisión global</a>
+
     </nav>
   </header>
 
   <main class="content">
     <router-outlet></router-outlet>
   </main>
+
+  <app-footer></app-footer>
 </div>

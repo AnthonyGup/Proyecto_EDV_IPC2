@@ -24,24 +24,25 @@ public class VideogameDao extends Crud<Videogame> {
 
     @Override
     public void create(Videogame entidad) throws SQLException, AlreadyExistException {
-        String sql = "INSERT INTO "+tabla+"(videogame_id, relase_data, min_requirements, price, description, name, company_id, age_restriction, available) VALUES (?,?,?,?,?,?,?,?,?)";
-        PreparedStatement stmt = CONNECTION.prepareStatement(sql);
+        String sql = "INSERT INTO "+tabla+"(name, description, release_date, min_requirements, price, available, age_restriction, company_id) VALUES (?,?,?,?,?,?,?,?)";
+        PreparedStatement stmt = CONNECTION.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
         
-        if (readByPk("" + entidad.getVideogameId()) != null) {
-            throw new AlreadyExistException();
-        }
-        
-        stmt.setInt(1, entidad.getVideogameId());
-        stmt.setDate(2, Date.valueOf(entidad.getRelasedate()));
-        stmt.setString(3, entidad.getMinimRequirements());
-        stmt.setDouble(4, entidad.getPrice());
-        stmt.setString(5, entidad.getDescription());
-        stmt.setString(6, entidad.getName());
-        stmt.setInt(7, entidad.getCompanyId());
-        stmt.setInt(8, entidad.getAgeRestriction());
-        stmt.setBoolean(9, entidad.isAvailable());
+        stmt.setString(1, entidad.getName());
+        stmt.setString(2, entidad.getDescription());
+        stmt.setDate(3, Date.valueOf(entidad.getRelasedate()));
+        stmt.setString(4, entidad.getMinimRequirements());
+        stmt.setDouble(5, entidad.getPrice());
+        stmt.setBoolean(6, entidad.isAvailable());
+        stmt.setInt(7, entidad.getAgeRestriction());
+        stmt.setInt(8, entidad.getCompanyId());
         
         stmt.executeUpdate();
+        
+            // Obtener el ID generado automáticamente
+            ResultSet generatedKeys = stmt.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                entidad.setVideogameId(generatedKeys.getInt(1));
+            }
     }   
 
     @Override
@@ -49,8 +50,8 @@ public class VideogameDao extends Crud<Videogame> {
         Videogame game = new Videogame();
         
         game.setVideogameId(rs.getInt("videogame_id"));
-        game.setRelasedate(rs.getDate("realse_date").toLocalDate());
-        game.setMinimRequirements(rs.getString("minim_requirements"));
+        game.setRelasedate(rs.getDate("release_date").toLocalDate());
+        game.setMinimRequirements(rs.getString("min_requirements"));
         game.setPrice(rs.getDouble("price"));
         game.setDescription(rs.getString("description"));
         game.setName(rs.getString("name"));

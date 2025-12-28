@@ -1,49 +1,41 @@
 package com.backend.filters;
 
+import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpFilter;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Set;
 
-public class CorsFilter extends HttpFilter {
-
-    private static final Set<String> ALLOWED_ORIGINS = Set.of(
-            "http://localhost:4200"
-    );
-
+@WebFilter("/*")
+public class CorsFilter implements Filter {
     @Override
-    protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
+        HttpServletRequest request = (HttpServletRequest) req;
+        HttpServletResponse response = (HttpServletResponse) res;
 
         String origin = request.getHeader("Origin");
-        if (origin != null && (ALLOWED_ORIGINS.contains(origin))) {
+        if (origin != null && !origin.isBlank()) {
             response.setHeader("Access-Control-Allow-Origin", origin);
             response.setHeader("Vary", "Origin");
+            response.setHeader("Access-Control-Allow-Credentials", "true");
+        } else {
+            response.setHeader("Access-Control-Allow-Origin", "*");
         }
 
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-
-        String reqMethod = request.getHeader("Access-Control-Request-Method");
-        if (reqMethod == null || reqMethod.isBlank()) {
-            reqMethod = "GET, POST, PUT, DELETE, OPTIONS";
-        }
-        response.setHeader("Access-Control-Allow-Methods", reqMethod);
-
-        String reqHeaders = request.getHeader("Access-Control-Request-Headers");
-        if (reqHeaders == null || reqHeaders.isBlank()) {
-            reqHeaders = "Origin, Content-Type, Accept, Authorization";
-        }
-        response.setHeader("Access-Control-Allow-Headers", reqHeaders);
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        response.setHeader("Access-Control-Allow-Headers", "Origin, Content-Type, Accept, Authorization, X-Requested-With");
         response.setHeader("Access-Control-Max-Age", "3600");
 
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            response.setStatus(HttpServletResponse.SC_OK);
             return;
         }
 
-        chain.doFilter(request, response);
+        chain.doFilter(req, res);
     }
 }

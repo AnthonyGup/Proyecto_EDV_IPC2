@@ -38,6 +38,24 @@ public class CompanyController extends HttpServlet {
             throws ServletException, IOException {
         String pathInfo = request.getPathInfo();
         
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        
+        // Verificar si es solicitud de todas las compañías
+        if (pathInfo != null && pathInfo.equals("/all")) {
+            try {
+                CompanyDao dao = new CompanyDao("company", "company_id");
+                java.util.List<Company> companies = dao.readAll();
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.getWriter().write(gson.toJson(companies));
+            } catch (SQLException ex) {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.getWriter().write("{\"error\":\"Error en base de datos\"}");
+                Logger.getLogger(CompanyController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return;
+        }
+        
         if (pathInfo == null || pathInfo.equals("/")) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().write("{\"error\":\"Company ID requerido\"}");
@@ -51,8 +69,6 @@ public class CompanyController extends HttpServlet {
             
             if (company != null) {
                 response.setStatus(HttpServletResponse.SC_OK);
-                response.setContentType("application/json");
-                response.setCharacterEncoding("UTF-8");
                 response.getWriter().write(gson.toJson(company));
             } else {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);

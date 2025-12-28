@@ -1,0 +1,82 @@
+<section class="card">
+  <h2>Crear videojuego</h2>
+  <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
+    <input type="hidden" formControlName="companyId" />
+    <label class="field">
+      <span>Compañía</span>
+      <div class="company-display">
+        <span class="company-name">{{ companyName || '—' }}</span>
+      </div>
+    </label>
+
+    <label class="field">
+      <span>Nombre</span>
+      <input type="text" formControlName="name" placeholder="Nombre del juego" />
+      <small *ngIf="f['name']?.touched && f['name']?.invalid">El nombre es obligatorio.</small>
+    </label>
+
+    <label class="field">
+      <span>Descripción</span>
+      <textarea formControlName="description" rows="4" placeholder="Descripción del juego"></textarea>
+      <small *ngIf="f['description']?.touched && f['description']?.invalid">La descripción es obligatoria.</small>
+    </label>
+
+    <label class="field">
+      <span>Precio</span>
+      <input type="number" formControlName="price" min="0" step="0.01" />
+      <small *ngIf="f['price']?.touched && f['price']?.invalid">Precio inválido.</small>
+    </label>
+
+    <label class="field">
+      <span>Fecha de lanzamiento</span>
+      <input type="date" formControlName="relasedate" />
+      <small *ngIf="f['relasedate']?.touched && f['relasedate']?.invalid">Fecha requerida.</small>
+    </label>
+
+    <label class="field">
+      <span>Requisitos mínimos</span>
+      <textarea formControlName="minimRequirements" rows="3" placeholder="CPU, RAM, GPU..."></textarea>
+      <small *ngIf="f['minimRequirements']?.touched && f['minimRequirements']?.invalid">Campo requerido.</small>
+    </label>
+
+    <label class="field">
+      <span>Restricción de edad</span>
+      <input type="number" formControlName="ageRestriction" min="0" />
+      <small *ngIf="f['ageRestriction']?.touched && f['ageRestriction']?.invalid">Campo requerido.</small>
+    </label>
+
+    <label class="field inline">
+      <input type="checkbox" formControlName="available" />
+      <span>Disponible</span>
+    </label>
+
+    <!-- Categories selection -->
+    <div class="field">
+      <span>Categorías</span>
+      <div class="chips">
+        <label class="chip" *ngFor="let cat of categories">
+          <input type="checkbox" (change)="toggleCategory(cat.categoryId, $event.target.checked)" />
+          <span>{{ cat.name }}</span>
+        </label>
+      </div>
+      <small class="muted">Opcional: selecciona una o más categorías.</small>
+    </div>
+
+    <!-- Image upload -->
+    <div class="field">
+      <span>Imágenes</span>
+      <input type="file" (change)="onFilesSelected($event)" multiple accept="image/*" />
+      <div class="file-list" *ngIf="files.length">
+        <span *ngFor="let f of files" class="file-item">{{ f.name }}</span>
+      </div>
+      <small class="muted">Opcional: puedes subir múltiples imágenes.</small>
+    </div>
+
+    <div class="actions">
+      <button type="submit" [disabled]="loading">{{ loading ? 'Creando...' : 'Crear juego' }}</button>
+    </div>
+  </form>
+
+  <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
+  <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+</section>

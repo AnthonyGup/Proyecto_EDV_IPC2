@@ -10,6 +10,7 @@ import com.backend.exceptions.AlreadyExistException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Connection;
 
 /**
  *
@@ -44,8 +45,44 @@ public class CommentDao extends Crud<Comment> {
         comment.setText(rs.getString("text"));
         comment.setParentId(rs.getInt("parent_id"));
         comment.setComentId(rs.getInt("comment_id"));
+        comment.setVisible(rs.getBoolean("visible"));
         
         return comment;
+    }
+    
+    public void updateCommentVisibilityByCompany(int companyId, boolean visible) throws SQLException {
+        System.out.println("el estado es:" +  visible);
+        String sql = "UPDATE comment SET visible = ? WHERE game_id IN (SELECT videogame_id FROM videogame WHERE company_id = ?)";
+        try (PreparedStatement stmt = CONNECTION.prepareStatement(sql)) {
+            stmt.setBoolean(1, visible);
+            stmt.setInt(2, companyId);
+            int rowsAffected = stmt.executeUpdate();
+            System.out.println("Filas actualizadas: " + rowsAffected);
+        }
+    }
+    
+    public void updateCommentVisibilityByGame(int videogameId, boolean visible) throws SQLException {
+        System.out.println("Actualizando visibilidad de comentarios para juego " + videogameId + " a: " + visible);
+        String sql = "UPDATE comment SET visible = ? WHERE game_id = ?";
+        try (PreparedStatement stmt = CONNECTION.prepareStatement(sql)) {
+            stmt.setBoolean(1, visible);
+            stmt.setInt(2, videogameId);
+            int rowsAffected = stmt.executeUpdate();
+            System.out.println("Filas actualizadas para juego " + videogameId + ": " + rowsAffected);
+        }
+    }
+    
+    public boolean hasVisibleCommentsByGame(int videogameId) throws SQLException {
+        String sql = "SELECT COUNT(*) as count FROM comment WHERE game_id = ? AND visible = true";
+        try (PreparedStatement stmt = CONNECTION.prepareStatement(sql)) {
+            stmt.setInt(1, videogameId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("count") > 0;
+                }
+            }
+        }
+        return false;
     }
     
 }

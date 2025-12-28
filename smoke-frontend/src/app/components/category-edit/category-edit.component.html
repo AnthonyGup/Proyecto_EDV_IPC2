@@ -1,0 +1,41 @@
+<div class="page">
+  <div class="shell">
+    <div class="topbar">
+      <div>
+        <p class="eyebrow">Categorías</p>
+        <h1>Editar y eliminar categorías</h1>
+        <p class="muted">Gestiona las categorías existentes</p>
+      </div>
+      <a class="link" routerLink="/admin/category/create">Crear nueva</a>
+    </div>
+
+    <div class="card">
+      <div *ngIf="loading" class="muted">Cargando...</div>
+      <div *ngIf="error" class="error">{{ error }}</div>
+      <div *ngIf="success" class="success">{{ success }}</div>
+
+      <div class="grid">
+        <div class="item" *ngFor="let cat of categories">
+          <div class="item-head">
+            <span class="item-id">#{{ cat.categoryId }}</span>
+            <div class="actions">
+              <button (click)="startEdit(cat)">Editar</button>
+              <button class="danger" (click)="delete(cat)">Eliminar</button>
+            </div>
+          </div>
+
+          <div *ngIf="editingId === cat.categoryId; else readonly">
+            <input [(ngModel)]="editName" placeholder="Nombre de la categoría" />
+            <div class="row-actions">
+              <button (click)="saveEdit()">Guardar</button>
+              <button class="secondary" (click)="cancelEdit()">Cancelar</button>
+            </div>
+          </div>
+          <ng-template #readonly>
+            <p class="name">{{ cat.name }}</p>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

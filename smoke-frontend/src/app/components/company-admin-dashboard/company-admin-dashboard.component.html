@@ -18,7 +18,7 @@
   <h2>Información de la compañía</h2>
   <div class="grid">
     <div><span class="label">Nombre:</span><span class="company-name">{{ company.name }}</span></div>
-    <div><span class="label">ID:</span><span>{{ company.company_id || company.companyId }}</span></div>
+    <div><span class="label">ID:</span><span>{{ company.companyId || company.companyId }}</span></div>
     <div><span class="label">Comisión:</span><span>{{ (company.commission * 100) | number: '1.0-2' }}%</span></div>
     <div class="full-width"><span class="label">Descripción:</span><span>{{ company.description || 'No especificada' }}</span></div>
   </div>
@@ -28,10 +28,3 @@
     <p>Cargando información de la compañía...</p>
   </section>
 </ng-template>
-
-<section class="card">
-  <h2>Acciones rápidas</h2>
-  <div class="actions">
-    <a routerLink="/company/admin/create" class="btn btn-primary">Crear nuevo administrador de compañía</a>
-  </div>
-</section>

@@ -6,13 +6,13 @@ const SESSION_KEY = 'currentUser';
 @Injectable({ providedIn: 'root' })
 export class SessionService {
 
-// Guarda el usuario en el almacenamiento local
+// Guarda el usuario en la sesión del navegador
   saveUser(user: User): void {
-    localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(user));
   }
-// Obtiene el usuario del almacenamiento local
+// Obtiene el usuario de la sesión del navegador
   getUser(): User | null {
-    const raw = localStorage.getItem(SESSION_KEY);
+    const raw = sessionStorage.getItem(SESSION_KEY);
     if (!raw) return null;
     try {
       return JSON.parse(raw) as User;
@@ -20,8 +20,12 @@ export class SessionService {
       return null;
     }
   }
-// Elimina el usuario del almacenamiento local
+// Elimina el usuario de la sesión del navegador
   clear(): void {
-    localStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem(SESSION_KEY);
+  }
+
+  isAuthenticated(): boolean {
+    return this.getUser() !== null;
   }
 }

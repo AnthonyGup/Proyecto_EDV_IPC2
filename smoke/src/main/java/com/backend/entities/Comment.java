@@ -14,6 +14,7 @@ public class Comment {
     private String text;
     private int parentId; //Comentario padre
     private int comentId;
+    private boolean visible;
 
     public int getParentId() {
         return parentId;
@@ -21,6 +22,14 @@ public class Comment {
 
     public void setParentId(int parentId) {
         this.parentId = parentId;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
     
     public String getUserId() {

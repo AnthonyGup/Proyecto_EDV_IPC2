@@ -7,8 +7,10 @@ com\backend\entities\Library.class
 com\backend\entities\Rate.class
 com\backend\servlets\system\CommissionController.class
 com\backend\entities\FamilyGroup.class
+com\backend\games\servlets\GameCategoriesUpdateController.class
 com\backend\users\servlets\CompanyAdminController.class
 com\backend\entities\GroupMember.class
+com\backend\games\servlets\VideogameListController.class
 com\backend\gamers\servlets\FamilyGroupController.class
 com\backend\validators\ValidationException.class
 com\backend\daos\UserDao.class
@@ -16,6 +18,7 @@ com\backend\entities\User.class
 com\backend\gamers\servlets\InstallController.class
 com\backend\gamers\servlets\LibraryController.class
 com\backend\entities\Gamer.class
+com\backend\servlets\system\CategoryController.class
 com\backend\daos\VideogameCategoryDao.class
 com\backend\entities\Image.class
 com\backend\gamers\servlets\BuyController.class
@@ -32,11 +35,14 @@ com\backend\entities\Comment.class
 com\backend\crud\Crud.class
 com\backend\entities\enums\UserType.class
 com\backend\gamers\SearchGames.class
+com\backend\games\servlets\VideogameCategoriesController.class
 com\backend\exceptions\AlreadyExistException.class
 com\backend\gamers\GamesGroup.class
 com\backend\gamers\Install.class
+com\backend\games\servlets\GamesCreatorController.class
 com\backend\entities\UserCompany.class
 com\backend\categories\CategoryEditor.class
+com\backend\comments\servlets\CommentVisibilityServlet.class
 com\backend\extras\LocalDateAdapter.class
 com\backend\daos\ImageDao.class
 com\backend\validators\LogginValidator.class
@@ -44,6 +50,7 @@ com\backend\daos\CommentDao.class
 com\backend\entities\enums\LibraryOrigin.class
 com\backend\filters\CorsFilter.class
 com\backend\entities\VideogameCategory.class
+com\backend\games\servlets\VideogameCategoriesSimpleController.class
 com\backend\daos\UserCompanyDao.class
 com\backend\db\DBConnection.class
 com\backend\entities\GlobalCommission.class
@@ -57,6 +64,7 @@ com\backend\daos\GlobalCommissionDao.class
 com\backend\daos\FamilyGroupDao.class
 com\backend\gamers\MemberGroup.class
 com\backend\categories\CategorySetter.class
+com\backend\comments\servlets\GameCommentsController.class
 com\backend\gamers\Buy.class
 com\backend\gamers\LibraryView.class
 com\backend\users\servlets\UserLogginController.class

@@ -1,0 +1,175 @@
+.card {
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 800px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+}
+
+h2 {
+  margin: 0 0 16px;
+  font-size: 22px;
+  font-weight: 800;
+  color: #e2e8f0;
+  text-align: left;
+  border-left: 3px solid #2563eb;
+  padding-left: 10px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+.field.inline {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.company-display {
+  padding: 10px;
+  background: #0b1220;
+  border: 1px solid #1f2937;
+  border-radius: 8px;
+}
+
+.company-name {
+  color: #60a5fa;
+  font-weight: 700;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  background: #0b1220;
+  border: 1px solid #1f2937;
+  color: #e2e8f0;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: #2563eb;
+  background: #0f172a;
+}
+
+small {
+  color: #ef4444;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.muted {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+button {
+  padding: 12px 18px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
+}
+
+button:disabled {
+  background: #1f2937;
+  cursor: not-allowed;
+  color: #94a3b8;
+}
+
+button:not(:disabled):hover {
+  background: #1d4ed8;
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.35);
+}
+
+button:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: #0f172a;
+  border: 1px solid #1f2937;
+  border-radius: 999px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.chip:hover {
+  background: #1f2937;
+}
+
+.chip input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+}
+
+.file-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.file-item {
+  background: #0f172a;
+  border: 1px solid #1f2937;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 12px;
+  color: #cbd5e1;
+}
+
+.success {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: #064e3b;
+  border: 1px solid #059669;
+  color: #bbf7d0;
+  border-radius: 8px;
+}
+
+.error {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: #7f1d1d;
+  border: 1px solid #b91c1c;
+  color: #fecaca;
+  border-radius: 8px;
+}

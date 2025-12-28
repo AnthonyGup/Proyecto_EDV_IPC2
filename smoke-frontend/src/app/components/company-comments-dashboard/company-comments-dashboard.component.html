@@ -1,0 +1,72 @@
+<div class="comments-container">
+  <!-- Success Message Toast -->
+  <div class="success-toast" [class.exiting]="successMessageExiting" *ngIf="successMessage">
+    {{ successMessage }}
+  </div>
+
+  <div class="header">
+    <h1>Gestión de Comentarios</h1>
+    <p>Selecciona un juego para editar sus comentarios</p>
+  </div>
+
+  <div class="visibility-control">
+    <div class="buttons-container">
+      <button 
+        class="btn-toggle-comments"
+        (click)="toggleCommentsVisibility()"
+        [disabled]="updatingVisibility"
+      >
+        Desactivar Comentarios
+      </button>
+      <button 
+        class="btn-enable-all"
+        (click)="activateCommentsVisibility()"
+        [disabled]="updatingVisibility"
+      >
+        Activar Comentarios
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <p>Cargando videojuegos...</p>
+  </div>
+
+  <div *ngIf="error && !loading" class="error-message">
+    <p>{{ error }}</p>
+    <button (click)="loadVideogames()" class="btn-retry">Reintentar</button>
+  </div>
+
+  <!-- Games grid -->
+  <div *ngIf="!loading && videogames.length > 0" class="games-grid">
+    <div *ngFor="let game of videogames" class="game-card">
+      <div class="game-image">
+        <img [src]="getImageUrl(game)" alt="{{ game.name }}" />
+      </div>
+      <div class="game-info">
+        <h3 class="game-name">{{ game.name }}</h3>
+        <div class="game-buttons">
+          <button 
+            class="btn-disable" 
+            (click)="disableGameComments(game)"
+            [disabled]="game.updatingComments"
+          >
+            {{ game.updatingComments ? 'Procesando...' : 'Desactivar' }}
+          </button>
+          <button 
+            class="btn-enable" 
+            (click)="enableGameComments(game)"
+            [disabled]="game.updatingComments"
+          >
+            {{ game.updatingComments ? 'Procesando...' : 'Activar' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="!loading && videogames.length === 0" class="empty-state">
+    <p>No hay videojuegos disponibles</p>
+  </div>
+</div>

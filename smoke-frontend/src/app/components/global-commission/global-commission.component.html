@@ -1,0 +1,45 @@
+<div class="page">
+  <div class="shell">
+    <p class="eyebrow">Comisiones</p>
+    <h1>Comisión global</h1>
+    <p class="muted">Define el porcentaje que aplicará como base para todas las compañías.</p>
+
+    <section class="card">
+      <div class="status" *ngIf="loading">Cargando comisión actual...</div>
+      <div class="status" *ngIf="!loading && currentCommission !== null">
+        <span class="label">Valor actual:</span>
+        <span class="value">{{ currentCommission }}%</span>
+      </div>
+      <div class="status warning" *ngIf="!loading && currentCommission === null">
+        No se pudo obtener la comisión global actual.
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
+        <label class="field">
+          <span>Comisión (%)</span>
+          <input
+            type="number"
+            formControlName="commission"
+            min="0"
+            max="100"
+            step="0.01"
+            placeholder="Ej. 15"
+          />
+          <small *ngIf="f['commission']?.touched && f['commission']?.invalid">
+            Ingresa un valor entre 0 y 100.
+          </small>
+        </label>
+
+        <div class="actions">
+          <button type="submit" [disabled]="saving || loading">
+            {{ saving ? 'Guardando...' : 'Guardar comisión' }}
+          </button>
+        </div>
+      </form>
+
+      <p class="hint">Las compañías con una comisión mayor serán ajustadas automáticamente en el backend.</p>
+      <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
+      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    </section>
+  </div>
+</div>

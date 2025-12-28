@@ -25,7 +25,7 @@ public class VideogameCategoryDao extends Crud<VideogameCategory> {
 
     @Override
     public void create(VideogameCategory entidad) throws SQLException, AlreadyExistException {
-        String sql = "INSERT INTO"+tabla+"(category_id, game_id) VALUES (?,?)";
+        String sql = "INSERT INTO " + tabla + "(category_id, game_id) VALUES (?,?)";
         
         PreparedStatement stmt = CONNECTION.prepareStatement(sql);
         
@@ -33,6 +33,7 @@ public class VideogameCategoryDao extends Crud<VideogameCategory> {
         stmt.setInt(2, entidad.getGameId());
         
         stmt.executeUpdate();
+        stmt.close();
     }
 
     @Override

@@ -1,0 +1,67 @@
+<div class="category-create-container">
+  <div class="form-card">
+    <h2 class="form-title">Crear Nueva Categoría</h2>
+    
+    <form (ngSubmit)="onSubmit()" #categoryForm="ngForm">
+      
+      <div class="form-group">
+        <label for="categoryName" class="form-label">
+          Nombre de la Categoría
+          <span class="required">*</span>
+        </label>
+        <input 
+          type="text" 
+          id="categoryName"
+          name="categoryName"
+          [(ngModel)]="category.name"
+          (input)="clearMessages()"
+          class="form-input"
+          placeholder="Ej: Acción, Aventura, RPG..."
+          required
+          maxlength="100"
+          [disabled]="isLoading"
+        />
+        <small class="form-hint">Ingresa un nombre descriptivo para la categoría</small>
+      </div>
+
+      <div *ngIf="successMessage" class="alert alert-success">
+        <svg class="alert-icon" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+        </svg>
+        {{ successMessage }}
+      </div>
+
+      <div *ngIf="errorMessage" class="alert alert-error">
+        <svg class="alert-icon" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+        </svg>
+        {{ errorMessage }}
+      </div>
+
+      <div class="form-actions">
+        <button 
+          type="button" 
+          (click)="onCancel()" 
+          class="btn btn-secondary"
+          [disabled]="isLoading"
+        >
+          Cancelar
+        </button>
+        
+        <button 
+          type="submit" 
+          class="btn btn-primary"
+          [disabled]="isLoading || !category.name.trim()"
+        >
+          <span *ngIf="!isLoading">Crear Categoría</span>
+          <span *ngIf="isLoading" class="loading-spinner">
+            <svg class="spinner" viewBox="0 0 24 24">
+              <circle class="spinner-circle" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
+            </svg>
+            Creando...
+          </span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

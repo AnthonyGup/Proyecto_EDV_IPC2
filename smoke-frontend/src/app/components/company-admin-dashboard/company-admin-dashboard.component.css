@@ -43,11 +43,7 @@
   font-weight: 600;
 }
 
-.actions {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
+
 
 .btn {
   display: inline-block;

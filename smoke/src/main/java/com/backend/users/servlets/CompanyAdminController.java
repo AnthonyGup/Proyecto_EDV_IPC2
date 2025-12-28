@@ -5,6 +5,7 @@
 package com.backend.users.servlets;
 
 import com.backend.daos.UserCompanyDao;
+import com.backend.daos.UserDao;
 import com.backend.entities.UserCompany;
 import com.backend.exceptions.AlreadyExistException;
 import com.backend.extras.LocalDateAdapter;
@@ -54,24 +55,31 @@ public class CompanyAdminController extends HttpServlet {
         UserCompany userCompany = gson.fromJson(json, UserCompany.class);
 
         UserCompanyDao dao = new UserCompanyDao("userCompany", "user_id");
-
-        try {
-            dao.create(userCompany);
-        } catch (SQLException | AlreadyExistException ex) {
-            Logger.getLogger(GamerCreatorController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        // Usamos el mismo gson configurado para serializar
-        JsonElement jison = gson.toJsonTree(userCompany);
-
+        UserDao userDao =  new UserDao("user",  "mail");
+        
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-
-        try (PrintWriter out = response.getWriter()) {
-            out.print(gson.toJson(jison));
-            out.flush();
-        } catch (Exception e) {
+        
+        try {
+            // Verificar si el email ya existe
+            if (userDao.readByPk(userCompany.getMail()) != null) {
+                response.setStatus(HttpServletResponse.SC_CONFLICT);
+                response.getWriter().write("{\"error\":\"El email ya está registrado en el sistema\"}");
+                return;
+            }
             
+            // Crear el usuario si el email es único
+            dao.create(userCompany);
+            response.setStatus(HttpServletResponse.SC_CREATED);
+            response.getWriter().write(gson.toJson(userCompany));
+        } catch (AlreadyExistException ex) {
+            response.setStatus(HttpServletResponse.SC_CONFLICT);
+            response.getWriter().write("{\"error\":\"El usuario ya existe\"}");
+            Logger.getLogger(CompanyAdminController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("{\"error\":\"Error en base de datos\"}");
+            Logger.getLogger(CompanyAdminController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

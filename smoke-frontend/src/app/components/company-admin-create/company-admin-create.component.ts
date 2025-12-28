@@ -1,11 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators, FormGroup } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators, FormGroup, FormControl } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { AuthService } from '../../services/auth.service';
+import { CompanyService } from '../../services/company.service';
 import { SessionService } from '../../core/session.service';
 import { extractErrorMessage } from '../../core/error.util';
+import { Company } from '../../models';
 
 @Component({
   standalone: true,
@@ -14,17 +16,27 @@ import { extractErrorMessage } from '../../core/error.util';
   styleUrls: ['./company-admin-create.component.css'],
   imports: [CommonModule, ReactiveFormsModule, RouterModule]
 })
-export class CompanyAdminCreateComponent {
+export class CompanyAdminCreateComponent implements OnInit {
   form!: FormGroup;
-
+  companyName: string = '';
+  loadingCompany = false;
+  isSystemAdmin = false;
+  companies: Company[] = [];
+  loadingCompanies = false;
   loading = false;
   errorMessage = '';
   successMessage = '';
 
   user: any | null = null;
 
-  constructor(private fb: FormBuilder, private auth: AuthService, private session: SessionService) {
+  constructor(
+    private fb: FormBuilder,
+    private auth: AuthService,
+    private companyService: CompanyService,
+    private session: SessionService
+  ) {
     this.form = this.fb.group({
+      company_id: new FormControl('', [Validators.required]),
       mail: ['', [Validators.required, Validators.email]],
       nickname: ['', [Validators.required, Validators.minLength(3)]],
       password: ['', [Validators.required, Validators.minLength(3)]],
@@ -32,24 +44,66 @@ export class CompanyAdminCreateComponent {
     });
 
     this.user = this.session.getUser();
+    this.isSystemAdmin = this.user?.type === 'SYSTEM_ADMIN';
+  }
+
+  ngOnInit(): void {
+    const user = this.user;
+    if (this.isSystemAdmin) {
+      // Sistema puede elegir cualquier compañía
+      this.loadCompanies();
+    } else {
+      // Company admin: fija su propia compañía
+      if (user?.company_id) {
+        this.form.patchValue({ company_id: user.company_id });
+        this.fetchCompanyName(user.company_id);
+      } else if (user?.mail) {
+        this.loadingCompany = true;
+        this.auth.getUserCompanyInfo(user.mail)
+          .pipe(finalize(() => (this.loadingCompany = false)))
+          .subscribe({
+            next: (info) => {
+              const cid = info.company_id;
+              this.user = { ...user, company_id: cid };
+              this.session.saveUser(this.user);
+              this.form.patchValue({ company_id: cid });
+              this.fetchCompanyName(cid);
+            },
+            error: () => {
+              this.errorMessage = 'No se pudo obtener la compañía del usuario.';
+            }
+          });
+      }
+    }
+  }
+
+  fetchCompanyName(companyId: number): void {
+    this.companyService.getCompanyById(companyId).subscribe({
+      next: (company) => {
+        this.companyName = company?.name || '';
+      }
+    });
+  }
+
+  loadCompanies(): void {
+    this.loadingCompanies = true;
+    this.companyService.getAllCompanies()
+      .pipe(finalize(() => (this.loadingCompanies = false)))
+      .subscribe({
+        next: (companies) => {
+          this.companies = companies || [];
+        },
+        error: () => {
+          this.errorMessage = 'Error al cargar las compañías.';
+        }
+      });
   }
 
   get f() { return this.form.controls; }
 
   submit(): void {
-    if (!this.user || this.user.type !== 'COMPANY_ADMIN') {
-      this.errorMessage = 'Acceso restringido.';
-      return;
-    }
-
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      return;
-    }
-
-    const companyId = (this.user as any).company_id ?? (this.user as any).companyId;
-    if (!companyId) {
-      this.errorMessage = 'No se encontró el company_id en la sesión.';
       return;
     }
 
@@ -57,7 +111,7 @@ export class CompanyAdminCreateComponent {
     this.errorMessage = '';
     this.successMessage = '';
 
-    const { mail, nickname, password, birthdate } = this.form.value as any;
+    const { company_id, mail, nickname, password, birthdate } = this.form.value as any;
 
     const payload: {
       mail: string;
@@ -72,7 +126,7 @@ export class CompanyAdminCreateComponent {
       password: String(password),
       birthdate: String(birthdate),
       type: 'COMPANY_ADMIN',
-      company_id: Number(companyId)
+      company_id: Number(company_id)
     };
 
     this.auth.createCompanyAdmin(payload)
