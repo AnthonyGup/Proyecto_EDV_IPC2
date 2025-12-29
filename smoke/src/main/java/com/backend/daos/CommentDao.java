@@ -7,10 +7,15 @@ package com.backend.daos;
 import com.backend.crud.Crud;
 import com.backend.entities.Comment;
 import com.backend.exceptions.AlreadyExistException;
+import com.backend.comments.CommentThread;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -24,13 +29,17 @@ public class CommentDao extends Crud<Comment> {
 
     @Override
     public void create(Comment entidad) throws SQLException, AlreadyExistException {
-        String sql = "INSERT INTO" +tabla+ "(user_id, text, gme_id, parent_id) VALUES (?,?,?,?)";
+        String sql = "INSERT INTO comment (user_id, game_id, text, parent_id) VALUES (?,?,?,?)";
         PreparedStatement stmt = CONNECTION.prepareStatement(sql);
         
         stmt.setString(1, entidad.getUserId());
         stmt.setInt(2, entidad.getGameId());
         stmt.setString(3, entidad.getText());
-        stmt.setInt(4, entidad.getParentId());
+        if (entidad.getParentId() > 0) {
+            stmt.setInt(4, entidad.getParentId());
+        } else {
+            stmt.setNull(4, java.sql.Types.INTEGER);
+        }
         
         stmt.executeUpdate();
         
@@ -84,5 +93,49 @@ public class CommentDao extends Crud<Comment> {
         }
         return false;
     }
-    
-}
+
+    public java.util.List<Comment> readByGameId(int gameId) throws SQLException {
+        java.util.List<Comment> comments = new java.util.ArrayList<>();
+        String sql = "SELECT * FROM " + tabla + " WHERE game_id = ? AND visible = true";
+        try (PreparedStatement stmt = CONNECTION.prepareStatement(sql)) {
+            stmt.setInt(1, gameId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    comments.add(obtenerEntidad(rs));
+                }
+            }
+        }
+        return comments;
+    }
+
+    public List<CommentThread> readThreadedByGameId(int gameId) throws SQLException {
+        // Obtener todos los comentarios visibles del juego
+        List<Comment> allComments = readByGameId(gameId);
+        
+        // Crear un mapa para acceso rápido por ID
+        Map<Integer, CommentThread> commentMap = new HashMap<>();
+        List<CommentThread> rootComments = new ArrayList<>();
+        
+        // Crear CommentThread para cada comentario
+        for (Comment comment : allComments) {
+            commentMap.put(comment.getComentId(), new CommentThread(comment));
+        }
+        
+        // Organizar en estructura jerárquica
+        for (Comment comment : allComments) {
+            CommentThread thread = commentMap.get(comment.getComentId());
+            
+            if (comment.getParentId() == 0 || comment.getParentId() == -1) {
+                // Es un comentario raíz
+                rootComments.add(thread);
+            } else {
+                // Es una respuesta, agregar al comentario padre
+                CommentThread parentThread = commentMap.get(comment.getParentId());
+                if (parentThread != null) {
+                    parentThread.addReply(thread);
+                }
+            }
+        }
+        
+        return rootComments;
+    }}

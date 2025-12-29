@@ -12,6 +12,7 @@ public class Image {
     private int imageId;
     private byte[] image;
     private int gameId;
+    private Boolean baner = false;
 
     public byte[] getImage() {
         return image;
@@ -35,5 +36,13 @@ public class Image {
 
     public void setGameId(int gameId) {
         this.gameId = gameId;
+    }
+
+    public Boolean getBaner() {
+        return baner;
+    }
+
+    public void setBaner(Boolean baner) {
+        this.baner = baner;
     }
 }

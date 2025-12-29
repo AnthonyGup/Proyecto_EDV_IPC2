@@ -41,6 +41,27 @@ public class CompanyController extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         
+        // Búsqueda por nombre: /company/search?q=...
+        if (pathInfo != null && pathInfo.equals("/search")) {
+            String q = request.getParameter("q");
+            if (q == null || q.trim().isEmpty()) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write("{\"error\":\"Parámetro q requerido\"}");
+                return;
+            }
+            try {
+                CompanyDao dao = new CompanyDao("company", "company_id");
+                java.util.List<Company> companies = dao.searchByName(q.trim());
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.getWriter().write(gson.toJson(companies));
+            } catch (SQLException ex) {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.getWriter().write("{\"error\":\"Error en base de datos\"}");
+                Logger.getLogger(CompanyController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return;
+        }
+        
         // Verificar si es solicitud de todas las compañías
         if (pathInfo != null && pathInfo.equals("/all")) {
             try {

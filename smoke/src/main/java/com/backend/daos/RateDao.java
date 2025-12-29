@@ -23,20 +23,14 @@ public class RateDao extends Crud<Rate> {
 
     @Override
     public void create(Rate entidad) throws SQLException, AlreadyExistException {
-        String sql = "INSERT INTO "+tabla+" (rate_id, user_id, game_id, stars) VALUES (?,?,?,?)";
-        PreparedStatement stmt = CONNECTION.prepareStatement(sql);
-        
-        String id = entidad.getUserId() + entidad.getGameId();
-        
-        stmt.setString(1, id);
-        stmt.setString(2, entidad.getUserId());
-        stmt.setInt(3, entidad.getGameId());
-        stmt.setInt(4, entidad.getStars());
-        
-        if (readByPk(id) != null) {
+        if (existsByUserAndGame(entidad.getUserId(), entidad.getGameId())) {
             throw new AlreadyExistException();
         }
-        
+        String sql = "INSERT INTO " + tabla + " (user_id, game_id, stars) VALUES (?,?,?)";
+        PreparedStatement stmt = CONNECTION.prepareStatement(sql);
+        stmt.setString(1, entidad.getUserId());
+        stmt.setInt(2, entidad.getGameId());
+        stmt.setInt(3, entidad.getStars());
         stmt.executeUpdate();
     }
 
@@ -44,7 +38,6 @@ public class RateDao extends Crud<Rate> {
     public Rate obtenerEntidad(ResultSet rs) throws SQLException {
         Rate rate = new Rate();
         
-        rate.setRateId(rs.getString("rate_id"));
         rate.setUserId(rs.getString("user_id"));
         rate.setGameId(rs.getInt("game_id"));
         rate.setStars(rs.getInt("stars"));
@@ -52,5 +45,13 @@ public class RateDao extends Crud<Rate> {
         return rate;
     }
     
+    public boolean existsByUserAndGame(String userId, int gameId) throws SQLException {
+        String sql = "SELECT 1 FROM " + tabla + " WHERE user_id = ? AND game_id = ? LIMIT 1";
+        PreparedStatement stmt = CONNECTION.prepareStatement(sql);
+        stmt.setString(1, userId);
+        stmt.setInt(2, gameId);
+        ResultSet rs = stmt.executeQuery();
+        return rs.next();
+    }
     
 }

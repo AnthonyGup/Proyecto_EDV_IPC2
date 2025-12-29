@@ -1,0 +1,37 @@
+<div class="profile-container" *ngIf="!loading">
+  <div *ngIf="error" class="error">{{ error }}</div>
+  <div *ngIf="info" class="profile-header">
+    <h1>{{ info.nickname }}</h1>
+    <p class="email">{{ info.userEmail }}</p>
+    <div class="meta">
+      <span class="country" *ngIf="info.country">{{ info.country }}</span>
+      <span class="phone" *ngIf="info.phone">{{ info.phone }}</span>
+    </div>
+  </div>
+
+  <div class="games-section">
+    <h2>Juegos que posee</h2>
+    <div class="games-grid" *ngIf="ownedGames.length > 0; else empty">
+      <div class="game-card" *ngFor="let game of ownedGames" [routerLink]="['/gamer/game', game.videogameId]">
+        <div class="cover" *ngIf="getCover(game.videogameId); else noCover">
+          <img [src]="'data:image/png;base64,' + getCover(game.videogameId)" [alt]="game.name" />
+        </div>
+        <ng-template #noCover>
+          <div class="cover placeholder">Sin imagen</div>
+        </ng-template>
+        <div class="info">
+          <h3>{{ game.name }}</h3>
+          <p class="desc">{{ game.description }}</p>
+          <div class="meta">
+            <span class="price">${{ game.price }}</span>
+            <span class="age">{{ game.ageRestriction }}+</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #empty>
+      <div class="empty">Este gamer no posee juegos aún</div>
+    </ng-template>
+  </div>
+</div>
+<div *ngIf="loading" class="loading">Cargando...</div>

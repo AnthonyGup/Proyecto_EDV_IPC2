@@ -1,0 +1,18 @@
+<div class="comment-thread" [style.margin-left.px]="depth * 24">
+  <div class="comment-main">
+    <div class="comment-header">
+      <a class="comment-author" [routerLink]="['/gamer/gamers', thread.comment.userId]">
+        {{ nicknames?.[thread.comment.userId] || thread.comment.userId }}
+      </a>
+      <button *ngIf="allowReply" class="reply-btn" (click)="onReply()">Responder</button>
+    </div>
+    <p class="comment-text">{{ thread.comment.text }}</p>
+  </div>
+
+  <div *ngIf="thread.replies && thread.replies.length > 0" class="replies">
+    <div *ngFor="let reply of thread.replies" class="reply-item">
+      <span class="reply-arrow">↳</span>
+      <app-comment-thread [thread]="reply" [depth]="depth + 1"></app-comment-thread>
+    </div>
+  </div>
+</div>

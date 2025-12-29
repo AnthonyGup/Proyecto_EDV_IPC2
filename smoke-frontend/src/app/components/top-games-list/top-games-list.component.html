@@ -1,0 +1,27 @@
+<div class="top-games-container">
+  <h2>Juegos Destacados</h2>
+
+  <div *ngIf="loading" class="loading">
+    <p>Cargando juegos destacados...</p>
+  </div>
+
+  <div *ngIf="error" class="error">
+    <p>{{ error }}</p>
+  </div>
+
+  <div *ngIf="!loading && topGames.length > 0" class="games-list">
+    <div *ngFor="let item of topGames" class="game-item" [routerLink]="['/gamer/game', item.game.videogameId]">
+      <div class="game-image">
+        <img [src]="item.imageUrl" [alt]="item.game.name" />
+      </div>
+      <div class="game-info">
+        <h3>{{ item.game.name }}</h3>
+        <p class="price">${{ item.game.price }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && topGames.length === 0" class="empty">
+    <p>No hay juegos destacados en este momento</p>
+  </div>
+</div>

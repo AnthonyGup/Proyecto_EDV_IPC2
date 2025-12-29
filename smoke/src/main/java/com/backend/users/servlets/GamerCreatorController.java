@@ -50,29 +50,36 @@ public class GamerCreatorController extends HttpServlet {
         }
 
         String json = sb.toString();
-        //System.out.println("JSON recibido: [" + json + "]"); // <-- AGREGA ESTO
-        //System.out.println("Longitud: " + json.length());     // <-- Y ESTO
         Gamer gamer = gson.fromJson(json, Gamer.class);
         gamer.setType(UserType.GAMER);
         GamerDao dao = new GamerDao("gamer", "user_id");
 
-        try {
-            dao.create(gamer);
-        } catch (SQLException | AlreadyExistException ex) {
-            Logger.getLogger(GamerCreatorController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        // Usamos el mismo gson configurado para serializar
-        JsonElement jison = gson.toJsonTree(gamer);
-
-        response.setContentType("application/json"); // corregido
+        response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-        try (PrintWriter out = response.getWriter()) {
-            out.print(gson.toJson(jison));
-            out.flush();
-        } catch (Exception e) {
-            
+        try {
+            dao.create(gamer);
+            // Éxito: retorna 200 con el gamer creado
+            response.setStatus(HttpServletResponse.SC_OK);
+            JsonElement jison = gson.toJsonTree(gamer);
+            try (PrintWriter out = response.getWriter()) {
+                out.print(gson.toJson(jison));
+                out.flush();
+            }
+        } catch (AlreadyExistException ex) {
+            Logger.getLogger(GamerCreatorController.class.getName()).log(Level.WARNING, "Usuario ya existe: " + gamer.getMail());
+            response.setStatus(HttpServletResponse.SC_CONFLICT); // 409
+            try (PrintWriter out = response.getWriter()) {
+                out.print("{\"error\":\"El correo ya está registrado\"}");
+                out.flush();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(GamerCreatorController.class.getName()).log(Level.SEVERE, "Error al crear gamer", ex);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // 500
+            try (PrintWriter out = response.getWriter()) {
+                out.print("{\"error\":\"Error al registrar usuario\"}");
+                out.flush();
+            }
         }
     }
 }

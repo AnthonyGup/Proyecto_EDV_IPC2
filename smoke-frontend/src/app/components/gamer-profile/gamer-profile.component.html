@@ -1,0 +1,83 @@
+<div class="profile-container" *ngIf="user">
+  <h2>Mi Perfil</h2>
+
+  <div class="profile-card">
+    <div class="profile-section" *ngIf="!isEditing">
+      <div class="profile-info">
+        <div class="info-row">
+          <label>Nombre de usuario</label>
+          <p>{{ user.nickname }}</p>
+        </div>
+        <div class="info-row">
+          <label>Correo</label>
+          <p>{{ user.mail }}</p>
+        </div>
+        <div class="info-row">
+          <label>Fecha de nacimiento</label>
+          <p>{{ getFormattedDate(user.birthdate) }}</p>
+        </div>
+        <div class="info-row">
+          <label>Tipo</label>
+          <p class="badge">{{ user.type }}</p>
+        </div>
+        <div class="info-row">
+          <label>Wallet</label>
+          <p class="wallet-amount">${{ wallet.toFixed(2) }}</p>
+        </div>
+      </div>
+      <div class="profile-actions">
+        <button class="btn-edit" (click)="toggleEdit()">Editar Perfil</button>
+        <button class="btn-recharge" (click)="rechargeModal = !rechargeModal">Recargar Wallet</button>
+      </div>
+    </div>
+
+    <div class="edit-section" *ngIf="isEditing">
+      <form class="edit-form">
+        <div class="form-group">
+          <label>Nombre de usuario</label>
+          <input type="text" [(ngModel)]="editForm.nickname" name="nickname" />
+        </div>
+        <div class="form-group">
+          <label>Correo</label>
+          <input type="email" [(ngModel)]="editForm.mail" name="mail" disabled />
+        </div>
+        <div class="form-group">
+          <label>Fecha de nacimiento</label>
+          <input type="date" [(ngModel)]="editForm.birthdate" name="birthdate" />
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-save" (click)="saveChanges()">Guardar</button>
+          <button type="button" class="btn-cancel" (click)="cancelEdit()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="recharge-modal" *ngIf="rechargeModal">
+  <div class="modal-content">
+    <h3>Recargar Wallet</h3>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Monto a recargar</label>
+        <input type="number" [(ngModel)]="rechargeAmount" min="0.01" step="0.01" [disabled]="isRecharging" />
+      </div>
+      <p class="charge-preview">Se recargarán: ${{ rechargeAmount }}</p>
+      <div *ngIf="rechargeMessage" class="message" [class.success]="!rechargeMessage.includes('Error')">
+        {{ rechargeMessage }}
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-confirm" (click)="rechargeWallet()" [disabled]="isRecharging">
+        {{ isRecharging ? 'Procesando...' : 'Recargar' }}
+      </button>
+      <button class="btn-cancel" (click)="rechargeModal = false" [disabled]="isRecharging">
+        Cancelar
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="empty" *ngIf="!user">
+  <p>No se encontraron datos del perfil</p>
+</div>

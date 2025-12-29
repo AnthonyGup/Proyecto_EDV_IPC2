@@ -1,0 +1,31 @@
+<section class="panel">
+  <h2>Mis grupos familiares</h2>
+
+  <div *ngIf="!currentUserEmail" class="alert error">Debes iniciar sesión para ver tus grupos.</div>
+  <div *ngIf="loading" class="muted">Cargando...</div>
+
+  <div *ngIf="message" class="alert error">{{ message }}</div>
+
+  <div class="groups" *ngIf="currentUserEmail && groups.length > 0">
+    <div class="group-card" *ngFor="let g of groups">
+      <div class="card-header">
+        <h3>{{ g.groupName || g.name }}</h3>
+        <button *ngIf="g.ownerId === currentUserEmail" class="btn-delete" (click)="deleteGroup(g)" title="Eliminar grupo">
+          ✕
+        </button>
+      </div>
+      <p class="owner">Dueño: {{ getNickname(g.ownerId) }}</p>
+      <div class="members">
+        <strong>Integrantes:</strong>
+        <ul>
+          <li *ngFor="let m of members[g.groupId || 0]">{{ getNickname(m.userId) }}</li>
+          <li *ngIf="!members[g.groupId || 0] || (members[g.groupId || 0]?.length || 0) === 0" class="muted">Sin integrantes listados</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="currentUserEmail && !loading && groups.length === 0" class="muted">
+    No perteneces a ningún grupo.
+  </div>
+</section>

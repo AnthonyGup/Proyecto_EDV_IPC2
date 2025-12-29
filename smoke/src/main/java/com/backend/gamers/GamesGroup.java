@@ -31,7 +31,7 @@ public class GamesGroup {
     
     public void addGamesToGamer(Gamer targetGamer) throws SQLException, AlreadyExistException {
         GroupMemberDao groupDao = new GroupMemberDao("groupMember", "");
-        LibraryDao libDao = new LibraryDao("library", "");
+        LibraryDao libDao = new LibraryDao("`library`", "");
         
             // obtener todos los miembros del grupo
             List<GroupMember> members = groupDao.readAll();

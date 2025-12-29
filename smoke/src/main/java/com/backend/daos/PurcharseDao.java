@@ -24,22 +24,20 @@ public class PurcharseDao extends Crud<Purcharse>  {
 
     @Override
     public void create(Purcharse entidad) throws SQLException, AlreadyExistException {
-        String sql = "INSERT INTO "+tabla+" (game_id, price, date, user_id, purcharse_id) VALUES (?,?,?,?,?)";
-        
+        // Evitar compras duplicadas (usuario + juego)
+        if (existsByUserAndGame(entidad.getUserId(), entidad.getGameId())) {
+            throw new AlreadyExistException();
+        }
+
+        String sql = "INSERT INTO " + tabla + " (game_id, price, date, user_id) VALUES (?,?,?,?)";
+
         PreparedStatement stmt = CONNECTION.prepareStatement(sql);
-        
+
         stmt.setInt(1, entidad.getGameId());
         stmt.setDouble(2, entidad.getPrice());
         stmt.setDate(3, Date.valueOf(entidad.getDate()));
         stmt.setString(4, entidad.getUserId());
-        
-        String purcharseId = entidad.getUserId() + entidad.getGameId();
-        stmt.setString(5, purcharseId);
-        
-        if (readByPk(purcharseId) != null) {
-            throw new AlreadyExistException();
-        }
-        
+
         stmt.executeUpdate();
     }
 
@@ -50,10 +48,30 @@ public class PurcharseDao extends Crud<Purcharse>  {
         buy.setUserId(rs.getString("user_id"));
         buy.setDate(rs.getDate("date").toLocalDate());
         buy.setPrice(rs.getDouble("price"));
-        buy.setPurcharseId(rs.getString("purcharse_id"));
+        buy.setPurcharseId(rs.getInt("purcharse_id"));
         buy.setGameId(rs.getInt("game_id"));
         
         return buy;
+    }
+
+    /**
+     * Verifica si ya existe una compra para el usuario y el juego.
+     */
+    public boolean existsByUserAndGame(String userId, int gameId) throws SQLException {
+        String sql = "SELECT 1 FROM " + tabla + " WHERE user_id = ? AND game_id = ? LIMIT 1";
+        PreparedStatement stmt = CONNECTION.prepareStatement(sql);
+        stmt.setString(1, userId);
+        stmt.setInt(2, gameId);
+        ResultSet rs = stmt.executeQuery();
+        return rs.next();
+    }
+
+    public void deleteByUserAndGame(String userId, int gameId) throws SQLException {
+        String sql = "DELETE FROM " + tabla + " WHERE user_id = ? AND game_id = ?";
+        PreparedStatement stmt = CONNECTION.prepareStatement(sql);
+        stmt.setString(1, userId);
+        stmt.setInt(2, gameId);
+        stmt.executeUpdate();
     }
     
 }

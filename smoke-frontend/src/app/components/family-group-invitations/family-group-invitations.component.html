@@ -1,0 +1,24 @@
+<section class="panel">
+  <h2>Invitaciones</h2>
+  <p *ngIf="loading" class="muted">Cargando invitaciones...</p>
+  <p *ngIf="error" class="error">{{ error }}</p>
+  <p *ngIf="message" class="message">{{ message }}</p>
+
+  <div *ngIf="!loading && invitations.length === 0" class="empty">
+    No tienes invitaciones pendientes.
+  </div>
+
+  <ul *ngIf="!loading && invitations.length > 0" class="invite-list">
+    <li *ngFor="let inv of invitations" class="invite-item">
+      <div class="invite-info">
+        <div class="name">Grupo: <strong>{{ inv.groupName || inv.familyGroupId }}</strong></div>
+        <div class="owner">Propietario: <span>{{ getNickname(inv.ownerId) }}</span></div>
+        <div class="date">Enviado: {{ inv.createdAt | date:'dd/MM/yyyy HH:mm' }}</div>
+      </div>
+      <div class="actions">
+        <button class="btn accept" (click)="respond(inv.invitationId!, 'accept')">Aceptar</button>
+        <button class="btn reject" (click)="respond(inv.invitationId!, 'reject')">Rechazar</button>
+      </div>
+    </li>
+  </ul>
+</section>

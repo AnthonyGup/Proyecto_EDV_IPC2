@@ -10,6 +10,8 @@ import com.backend.exceptions.AlreadyExistException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -51,6 +53,18 @@ public class FamilyGroupDao extends Crud<FamilyGroup> {
         group.setOwnerId(rs.getString("owner_id"));
         
         return group;
+    }
+
+    public List<FamilyGroup> listByOwner(String ownerId) throws SQLException {
+        String sql = "SELECT * FROM " + tabla + " WHERE owner_id = ?";
+        PreparedStatement stmt = CONNECTION.prepareStatement(sql);
+        stmt.setString(1, ownerId);
+        ResultSet rs = stmt.executeQuery();
+        List<FamilyGroup> groups = new ArrayList<>();
+        while (rs.next()) {
+            groups.add(obtenerEntidad(rs));
+        }
+        return groups;
     }
     
 }

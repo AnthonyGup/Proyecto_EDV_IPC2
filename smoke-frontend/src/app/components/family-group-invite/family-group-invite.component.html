@@ -1,0 +1,24 @@
+<section class="panel">
+  <h2>Invitar miembros</h2>
+
+  <div *ngIf="!currentUserEmail" class="alert error">Debes iniciar sesión para invitar miembros.</div>
+
+  <form *ngIf="currentUserEmail" (ngSubmit)="sendInvite()" class="form">
+    <label class="field">
+      Grupo
+      <select [(ngModel)]="selectedGroupId" name="group" required>
+        <option *ngFor="let g of groups" [ngValue]="g.groupId">{{ g.groupName || g.name }}</option>
+      </select>
+      <small *ngIf="groups.length === 0" class="muted">No tienes grupos propios aún.</small>
+    </label>
+
+    <label class="field">
+      Correo del invitado
+      <input type="email" [(ngModel)]="inviteEmail" name="email" placeholder="correo@ejemplo.com" required />
+    </label>
+
+    <button class="btn" type="submit" [disabled]="loading || groups.length === 0">{{ loading ? 'Enviando...' : 'Enviar invitación' }}</button>
+  </form>
+
+  <div *ngIf="message" class="alert" [class.success]="success" [class.error]="!success">{{ message }}</div>
+</section>

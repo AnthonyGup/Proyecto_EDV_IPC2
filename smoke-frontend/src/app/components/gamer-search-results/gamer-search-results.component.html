@@ -1,0 +1,23 @@
+<div class="search-results-container">
+  <h2>Gamers</h2>
+
+  <div *ngIf="loading" class="loading">Buscando...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div class="results" *ngIf="!loading && results.length > 0">
+    <div class="result-item" *ngFor="let g of results" [routerLink]="['/gamer/gamers', g.mail]">
+      <div class="info">
+        <h3>{{ g.nickname }}</h3>
+        <p class="desc">{{ g.mail }}</p>
+        <div class="meta">
+          <span class="country" *ngIf="g.country">{{ g.country }}</span>
+          <span class="phone" *ngIf="g.phone">{{ g.phone }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="empty" *ngIf="!loading && results.length === 0 && !error">
+    <p>No se encontraron gamers</p>
+  </div>
+</div>

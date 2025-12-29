@@ -1,0 +1,51 @@
+<div class="comments-container">
+  <div class="header">
+    <h1>Gestión de Banner</h1>
+    <p>Elige un juego y marca sus imágenes para el banner.</p>
+  </div>
+
+  <div *ngIf="successMessage" class="success-toast" [class.exiting]="successMessageExiting">
+    {{ successMessage }}
+  </div>
+
+  
+
+  <div *ngIf="error" class="error-message">
+    <p>{{ error }}</p>
+  </div>
+
+  <div class="games-grid" *ngIf="!loadingGames && videogames.length > 0">
+    <div class="game-card" *ngFor="let g of videogames" (click)="selectGame(g)" [class.selected]="selectedGame?.videogameId === g.videogameId">
+      <div class="game-image">
+        <img [src]="getGameImageUrl(g)" alt="Juego" />
+      </div>
+      <div class="game-info">
+        <h3 class="game-name">{{ g.name }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="images-section" *ngIf="selectedGame">
+    <h2>Imágenes de {{ selectedGame.name }}</h2>
+    <div class="games-grid">
+      <div class="image-card" *ngFor="let img of images">
+        <div class="image-wrapper" [class.selected]="isSelected(img)">
+          <img [src]="getImageUrl(img)" alt="Imagen" />
+        </div>
+        <div class="image-info">
+          <span class="badge" [class.baner]="img.baner">{{ img.baner ? 'Banner' : 'Normal' }}</span>
+          <div class="game-buttons">
+            <label>
+              <input type="checkbox" [checked]="isSelected(img)" (change)="onSelectCheckbox(img, $event)" />
+              Seleccionar
+            </label>
+            <button class="btn-disable" (click)="removeFromBanner(img)" [disabled]="!img.baner || updating">Quitar de banner</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="actions-bottom">
+      <button class="btn-enable" (click)="addSelectedToBanner()" [disabled]="selecting.size === 0 || updating">Agregar seleccionadas al banner</button>
+    </div>
+  </div>
+</div>

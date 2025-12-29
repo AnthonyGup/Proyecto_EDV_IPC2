@@ -1,0 +1,19 @@
+<div class="library-container">
+  <h1>Mi Biblioteca</h1>
+  <div *ngIf="loading" class="loading">Cargando biblioteca...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div class="games-grid" *ngIf="!loading && games.length > 0">
+    <div class="game-card" *ngFor="let game of games" (click)="openGame(game)">
+      <div class="game-cover">
+        <img [src]="covers[game.videogameId] || getPlaceholder(300, 180, game.name)" [alt]="game.name" />
+      </div>
+      <div class="game-title">{{ game.name }}</div>
+      <div class="game-status" [class.owned]="game.buyed" [class.borrowed]="!game.buyed">
+        {{ game.buyed ? 'Comprado' : 'Prestado' }}
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && games.length === 0" class="empty">No tienes juegos aún</div>
+</div>

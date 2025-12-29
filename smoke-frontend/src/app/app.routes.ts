@@ -17,8 +17,15 @@ import { CategoryEditComponent } from './components/category-edit/category-edit.
 import { CategoryAdminComponent } from './components/category-admin/category-admin.component';
 import { CategoryEditGameComponent } from './components/category-edit-game/category-edit-game.component';
 import { VideogameCreateComponent } from './components/videogame-create/videogame-create.component';
+import { BannerAdminComponent } from './components/banner-admin/banner-admin.component';
+import { GamerLayoutComponent } from './components/gamer-layout/gamer-layout.component';
+import { GamerDashboardComponent } from './components/gamer-dashboard/gamer-dashboard.component';
+import { GameDetailComponent } from './components/game-detail/game-detail.component';
+import { GameSearchResultsComponent } from './components/game-search-results/game-search-results.component';
+import { GamerProfileComponent } from './components/gamer-profile/gamer-profile.component';
 import { adminGuard } from './core/admin.guard';
 import { companyAdminGuard } from './core/company-admin.guard';
+import { gamerGuard } from './core/gamer.guard';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -33,6 +40,7 @@ export const routes: Routes = [
       { path: 'company/admin/create', component: CompanyAdminCreateComponent },
       { path: 'company/commissions', component: CompanyCommissionsComponent },
       { path: 'commission/global', component: GlobalCommissionComponent },
+      { path: 'banner', component: BannerAdminComponent },
       { path: 'category/create', component: CategoryCreateComponent },
       { path: 'category/edit', component: CategoryEditComponent },
       { path: 'category/admin', component: CategoryAdminComponent },
@@ -52,5 +60,26 @@ export const routes: Routes = [
       { path: 'game/edit/:id', component: VideogameEditComponent }
     ]
   },
+  {
+    path: 'gamer',
+    component: GamerLayoutComponent,
+    canActivate: [gamerGuard],
+    children: [
+      { path: '', component: GamerDashboardComponent },
+      { path: 'game/:id', component: GameDetailComponent },
+      { path: 'search', component: GameSearchResultsComponent },
+      { path: 'company/search', loadComponent: () => import('./components/company-search-results/company-search-results.component').then(m => m.CompanySearchResultsComponent) },
+      { path: 'gamers/search', loadComponent: () => import('./components/gamer-search-results/gamer-search-results.component').then(m => m.GamerSearchResultsComponent) },
+      { path: 'gamers/:email', loadComponent: () => import('./components/gamer-public-profile/gamer-public-profile.component').then(m => m.GamerPublicProfileComponent) },
+      { path: 'library', loadComponent: () => import('./components/gamer-library/gamer-library.component').then(m => m.GamerLibraryComponent) },
+      { path: 'family-group/create', loadComponent: () => import('./components/family-group-create/family-group-create.component').then(m => m.FamilyGroupCreateComponent) },
+      { path: 'family-group/invitations', loadComponent: () => import('./components/family-group-invitations/family-group-invitations.component').then(m => m.FamilyGroupInvitationsComponent) },
+      { path: 'family-group/invite', loadComponent: () => import('./components/family-group-invite/family-group-invite.component').then(m => m.FamilyGroupInviteComponent) },
+      { path: 'family-group/list', loadComponent: () => import('./components/family-group-list/family-group-list.component').then(m => m.FamilyGroupListComponent) },
+      { path: 'company/:id', loadComponent: () => import('./components/company-profile/company-profile.component').then(m => m.CompanyProfileComponent) },
+      { path: 'profile', component: GamerProfileComponent }
+    ]
+  },
+  { path: 'game/:id', component: GameDetailComponent },
   { path: '', redirectTo: '/login', pathMatch: 'full' }
 ];

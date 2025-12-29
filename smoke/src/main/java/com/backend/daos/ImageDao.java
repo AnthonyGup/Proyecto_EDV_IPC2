@@ -25,12 +25,13 @@ public class ImageDao extends Crud<Image> {
 
     @Override
     public void create(Image entidad) throws SQLException, AlreadyExistException {
-        String sql = "INSERT INTO "+tabla+" (image, game_id) VALUES (?,?)";
+        String sql = "INSERT INTO "+tabla+" (image, game_id, baner) VALUES (?,?,?)";
         
         PreparedStatement stmt = CONNECTION.prepareStatement(sql);
        
         stmt.setBytes(1, entidad.getImage());
         stmt.setInt(2, entidad.getGameId());
+        stmt.setBoolean(3, entidad.getBaner() != null ? entidad.getBaner() : false);
         
         stmt.executeUpdate();
     }
@@ -42,6 +43,7 @@ public class ImageDao extends Crud<Image> {
         image.setImageId(rs.getInt("image_id"));
         image.setGameId(rs.getInt("game_id"));
         image.setImage(rs.getBytes("image"));
+        image.setBaner(rs.getBoolean("baner"));
         
         return image;
     }
@@ -56,5 +58,9 @@ public class ImageDao extends Crud<Image> {
             images.add(obtenerEntidad(rs));
         }
         return images;
+    }
+
+    public boolean updateBaner(int imageId, boolean baner) throws SQLException {
+        return update(String.valueOf(imageId), "baner", baner);
     }
 }

@@ -1,0 +1,39 @@
+<div class="page">
+  <div class="card">
+    <h1>Crear grupo familiar</h1>
+    <p class="hint">Comparte tu biblioteca con hasta 6 miembros.</p>
+
+    <form (ngSubmit)="createGroup()" class="form">
+      <label class="field">
+        <span>Nombre del grupo</span>
+        <input
+          type="text"
+          [(ngModel)]="groupName"
+          name="groupName"
+          required
+          maxlength="100"
+          placeholder="Ej. Familia Ramírez"
+        />
+      </label>
+
+      <label class="field">
+        <span>Descripción (opcional)</span>
+        <textarea
+          [(ngModel)]="description"
+          name="description"
+          rows="3"
+          maxlength="200"
+          placeholder="Agrega una nota para tus miembros"
+        ></textarea>
+      </label>
+
+      <button type="submit" class="primary" [disabled]="isSubmitting || !ownerEmail">
+        {{ isSubmitting ? 'Creando...' : 'Crear grupo' }}
+      </button>
+    </form>
+
+    <p *ngIf="message" class="message" [class.success]="success" [class.error]="!success">
+      {{ message }}
+    </p>
+  </div>
+</div>

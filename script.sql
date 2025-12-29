@@ -67,6 +67,7 @@ CREATE TABLE image (
     image_id INT NOT NULL AUTO_INCREMENT,
     image LONGBLOB NOT NULL,
     game_id INT NOT NULL,
+    baner BOOLEAN NOT NULL DEFAULT FALSE,
     CONSTRAINT pk_image PRIMARY KEY (image_id),
     CONSTRAINT fk_image_videogame FOREIGN KEY (game_id) REFERENCES videogame(videogame_id) ON DELETE CASCADE
 );
@@ -93,18 +94,18 @@ CREATE TABLE comment (
     CONSTRAINT fk_comment_parent FOREIGN KEY (parent_id) REFERENCES comment(comment_id) ON DELETE SET NULL
 );
 
-CREATE TABLE purchase (
-    purchase_id INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE purcharse (
+    purcharse_id INT NOT NULL AUTO_INCREMENT,
     user_id VARCHAR(255) NOT NULL,
     game_id INT NOT NULL,
     date DATE NOT NULL,
     price DECIMAL(10,2) NOT NULL,
-    CONSTRAINT pk_purchase PRIMARY KEY (purchase_id),
-    CONSTRAINT fk_purchase_user FOREIGN KEY (user_id) REFERENCES user(mail) ON DELETE CASCADE,
-    CONSTRAINT fk_purchase_game FOREIGN KEY (game_id) REFERENCES videogame(videogame_id) ON DELETE CASCADE
+    CONSTRAINT pk_purcharse PRIMARY KEY (purcharse_id),
+    CONSTRAINT fk_purcharse_user FOREIGN KEY (user_id) REFERENCES user(mail) ON DELETE CASCADE,
+    CONSTRAINT fk_purcharse_game FOREIGN KEY (game_id) REFERENCES videogame(videogame_id) ON DELETE CASCADE
 );
 
-CREATE TABLE library (
+CREATE TABLE `library` (
     library_id INT NOT NULL AUTO_INCREMENT,
     user_id VARCHAR(255) NOT NULL,
     game_id INT NOT NULL,
@@ -129,6 +130,18 @@ CREATE TABLE groupMember (
     CONSTRAINT pk_groupMember PRIMARY KEY (user_id, familyGroup_id),
     CONSTRAINT fk_groupMember_user FOREIGN KEY (user_id) REFERENCES user(mail) ON DELETE CASCADE,
     CONSTRAINT fk_groupMember_group FOREIGN KEY (familyGroup_id) REFERENCES familyGroup(group_id) ON DELETE CASCADE
+);
+
+CREATE TABLE invitation (
+    invitation_id INT NOT NULL AUTO_INCREMENT,
+    user_id VARCHAR(255) NOT NULL,
+    familyGroup_id INT NOT NULL,
+    status ENUM('PENDING','ACCEPTED','REJECTED') NOT NULL DEFAULT 'PENDING',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT pk_invitation PRIMARY KEY (invitation_id),
+    CONSTRAINT uq_invitation UNIQUE (user_id, familyGroup_id, status),
+    CONSTRAINT fk_invitation_user FOREIGN KEY (user_id) REFERENCES user(mail) ON DELETE CASCADE,
+    CONSTRAINT fk_invitation_group FOREIGN KEY (familyGroup_id) REFERENCES familyGroup(group_id) ON DELETE CASCADE
 );
 
 CREATE TABLE globalCommission (

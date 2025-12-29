@@ -1,0 +1,30 @@
+<div class="search-results-container">
+  <h2>Resultados de Búsqueda</h2>
+
+  <div *ngIf="loading" class="loading">Buscando...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div class="results" *ngIf="!loading && results.length > 0">
+    <div class="result-item" *ngFor="let g of results" [routerLink]="['/gamer/game', g.videogameId]">
+      <div class="image-container" *ngIf="getGameImage(g.videogameId)">
+        <img [src]="'data:image/png;base64,' + getGameImage(g.videogameId)" [alt]="g.name" />
+      </div>
+      <div class="image-container placeholder" *ngIf="!getGameImage(g.videogameId)">
+        <span>Sin imagen</span>
+      </div>
+      <div class="info">
+        <h3>{{ g.name }}</h3>
+        <p class="desc">{{ g.description }}</p>
+        <div class="meta">
+          <span class="price">${{ g.price }}</span>
+          <span class="age">{{ g.ageRestriction }}+</span>
+          <span class="date">{{ g.relasedate | date:'dd/MM/yyyy' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="empty" *ngIf="!loading && results.length === 0 && !error">
+    <p>No se encontraron juegos con estos filtros</p>
+  </div>
+</div>

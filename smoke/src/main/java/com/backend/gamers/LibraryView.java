@@ -23,7 +23,7 @@ import java.util.List;
 public class LibraryView {
 
     public List<Videogame> getGamesByUserAndFilter(String userId, String filterType, String filterValue) throws SQLException {
-        LibraryDao libDao = new LibraryDao("library", "library_id");
+        LibraryDao libDao = new LibraryDao("`library`", "library_id");
         List<Library> libs = libDao.readByGamer(userId);
         
         List<Videogame> result = new ArrayList<>();
@@ -31,22 +31,29 @@ public class LibraryView {
         
         for (Library lib : libs) {
             Videogame vg = vgDao.readByPk(String.valueOf(lib.getGameId()));
-            if (vg != null) {
-                boolean matches = false;
-                if ("name".equals(filterType)) {
-                    matches = vg.getName().toLowerCase().contains(filterValue.toLowerCase());
-                } else if ("category".equals(filterType)) {
-                    CategoryDao catDao = new CategoryDao("category", "category_id");
-                    Category cat = catDao.readByColumn(filterValue, "name");
-                    if (cat != null) {
-                        VideogameCategoryDao vcDao = new VideogameCategoryDao("videogameCategory", "videogameCategory_id");
-                        List<VideogameCategory> vcs = vcDao.readByGameId(lib.getGameId());
-                        matches = vcs.stream().anyMatch(vc -> vc.getCategoryId() == cat.getCategoryId());
-                    }
+            if (vg == null) continue;
+
+            // Si no hay filtro, incluir todos los juegos comprados
+            if (filterType == null || filterType.isBlank()) {
+                result.add(vg);
+                continue;
+            }
+
+            boolean matches = false;
+            if ("name".equals(filterType) && filterValue != null) {
+                matches = vg.getName().toLowerCase().contains(filterValue.toLowerCase());
+            } else if ("category".equals(filterType) && filterValue != null) {
+                CategoryDao catDao = new CategoryDao("category", "category_id");
+                Category cat = catDao.readByColumn(filterValue, "name");
+                if (cat != null) {
+                    VideogameCategoryDao vcDao = new VideogameCategoryDao("videogameCategory", "videogameCategory_id");
+                    List<VideogameCategory> vcs = vcDao.readByGameId(lib.getGameId());
+                    matches = vcs.stream().anyMatch(vc -> vc.getCategoryId() == cat.getCategoryId());
                 }
-                if (matches) {
-                    result.add(vg);
-                }
+            }
+
+            if (matches) {
+                result.add(vg);
             }
         }
         
