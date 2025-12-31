@@ -1,32 +1,32 @@
-<div class="games-container">
-  <div class="header">
-    <h1>Gestión de Juegos</h1>
-    <p>Visualiza y edita los videojuegos de tu empresa</p>
-  </div>
+<div class="container-fluid py-4" style="background-color: #0f172a; min-height: 100vh; color: #e2e8f0;">
+  <div style="max-width: 1200px; margin: 0 auto;">
+    <div class="text-center mb-4">
+      <h1 class="h2 text-light">Gestión de Juegos</h1>
+      <p class="text-secondary">Visualiza y edita los videojuegos de tu empresa</p>
+    </div>
 
-  <div *ngIf="loading" class="loading">
-    <p>Cargando videojuegos...</p>
-  </div>
+    <div *ngIf="loading" class="text-center text-secondary py-5">
+      <p>Cargando videojuegos...</p>
+    </div>
 
-  <div *ngIf="error && !loading" class="error-message">
-    <p>{{ error }}</p>
-  </div>
+    <div *ngIf="error && !loading" class="alert alert-danger">
+      {{ error }}
+    </div>
 
-  <div *ngIf="!loading && games.length > 0" class="games-grid">
-    <div *ngFor="let game of games" class="game-card">
-      <div class="game-image">
-        <img [src]="getImageUrl(game)" alt="{{ game.name }}" />
-      </div>
-      <div class="game-info">
-        <h3 class="game-name">{{ game.name }}</h3>
-        <div class="game-buttons">
-          <button class="btn-edit" (click)="editGame(game)">Editar juego</button>
+    <div *ngIf="!loading && games.length > 0" class="row g-3">
+      <div class="col-md-6 col-lg-4 col-xl-3" *ngFor="let game of games">
+        <div class="card bg-dark border h-100" style="border-color: #1f2937 !important;">
+          <img [src]="getImageUrl(game)" class="card-img-top" alt="{{ game.name }}" style="height: 200px; object-fit: cover;" />
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title text-light flex-grow-1">{{ game.name }}</h5>
+            <button class="btn btn-primary btn-sm w-100" (click)="editGame(game)">Editar juego</button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div *ngIf="!loading && games.length === 0" class="empty-state">
-    <p>No hay videojuegos disponibles</p>
+    <div *ngIf="!loading && games.length === 0" class="text-center text-secondary py-5">
+      <p>No hay videojuegos disponibles</p>
+    </div>
   </div>
 </div>

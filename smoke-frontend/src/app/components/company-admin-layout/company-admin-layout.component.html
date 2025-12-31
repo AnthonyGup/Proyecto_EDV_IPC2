@@ -1,19 +1,34 @@
-<div class="page">
-  <header class="topbar">
-    <button class="brand brand-link" (click)="goHome()">SMOKE</button>
-    <nav class="nav">
-      <a routerLink="/company/admin/create" routerLinkActive="active">Crear administrador</a>
-      <a routerLink="/company/admin/game/create" routerLinkActive="active">Crear videojuego</a>
-      <a routerLink="/company/admin/comments" routerLinkActive="active">Gestión de Comentarios</a>
-      <a routerLink="/company/admin/games" routerLinkActive="active">Gestión de Juegos</a>
-    </nav>
-  </header>
+<div class="d-flex flex-column min-vh-100" style="background-color: #0f172a; color: #e2e8f0;">
+  <nav class="navbar navbar-dark bg-dark border-bottom" style="background-color: #111827 !important;">
+    <div class="container-fluid">
+      <button class="btn btn-outline-light btn-sm me-3" (click)="goHome()" style="border-color: #1f2937;">SMOKE</button>
+      <div class="d-flex gap-2 flex-wrap">
+        <a routerLink="/company/admin/create" routerLinkActive="active" class="btn btn-sm btn-outline-light" style="border-color: #1f2937;">Crear administrador</a>
+        <a routerLink="/company/admin/game/create" routerLinkActive="active" class="btn btn-sm btn-outline-light" style="border-color: #1f2937;">Crear videojuego</a>
+        <a routerLink="/company/admin/comments" routerLinkActive="active" class="btn btn-sm btn-outline-light" style="border-color: #1f2937;">Comentarios</a>
+        <a routerLink="/company/admin/games" routerLinkActive="active" class="btn btn-sm btn-outline-light" style="border-color: #1f2937;">Juegos</a>
+        
+        <div class="dropdown-container">
+          <button 
+            class="btn btn-sm btn-outline-light" 
+            style="border-color: #1f2937;" 
+            (click)="toggleReportsDropdown()">
+            Reportes ▼
+          </button>
+          <div *ngIf="showReports" class="dropdown-menu">
+            <a routerLink="/company/admin/reports/sales" class="dropdown-item" (click)="showReports = false">Ventas Propias</a>
+            <a routerLink="/company/admin/reports/feedback" class="dropdown-item" (click)="showReports = false">Feedback</a>
+            <a routerLink="/company/admin/reports/top-games" class="dropdown-item" (click)="showReports = false">Top Juegos</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
 
-  <main class="content">
-    <!-- Información de compañía opcional bajo el header -->
-    <div class="company-inline" *ngIf="user && !loading">
-      <span class="company-name" *ngIf="company">{{ company.name }}</span>
-      <span class="company-id">ID: {{ user.company_id || user.companyId || 'N/A' }}</span>
+  <main class="flex-grow-1 p-4">
+    <div class="mb-3" *ngIf="user && !loading">
+      <span class="badge bg-success me-2" *ngIf="company">{{ company.name }}</span>
+      <small class="text-secondary">ID: {{ user.company_id || user.companyId || 'N/A' }}</small>
     </div>
     <router-outlet></router-outlet>
   </main>

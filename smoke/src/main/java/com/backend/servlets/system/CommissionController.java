@@ -17,7 +17,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -136,7 +136,7 @@ public class CommissionController extends HttpServlet {
 
         companies = companyDao.readAll();
         for (Company company : companies) {
-            if (company.getCommission() > commission.getCommission()) {
+            if (company.getCommission() > commission.getCommission() || company.getCommission() < commission.getCommission()) {
                 companyDao.update(company.getCompanyId() + "", "commission", commission.getCommission());
             }
         }

@@ -1,7 +1,8 @@
 package com.backend.gamers.servlets;
 
-import com.backend.entities.Gamer;
 import com.backend.daos.GamerDao;
+import com.backend.entities.Gamer;
+import com.backend.gamers.dto.GamerInfoDTO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import jakarta.servlet.ServletException;
@@ -44,13 +45,13 @@ public class GamerInfoController extends HttpServlet {
                 return;
             }
 
-            // Crear DTO con solo los campos que necesitamos
-                    GamerInfoDTO gamerInfo = new GamerInfoDTO(
-                        gamer.getMail(),
-                        gamer.getNickname(),
-                        gamer.getCountry(),
-                        gamer.getPhone()
-                    );
+            GamerInfoDTO gamerInfo = new GamerInfoDTO(
+                gamer.getMail(),
+                gamer.getNickname(),
+                gamer.getCountry(),
+                gamer.getPhone(),
+                gamer.getWallet()
+            );
 
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write(gson.toJson(gamerInfo));
@@ -64,18 +65,4 @@ public class GamerInfoController extends HttpServlet {
         }
     }
 
-    // DTO simple para evitar problemas de serialización
-    public static class GamerInfoDTO {
-        public String userEmail;
-        public String nickname;
-        public String country;
-        public int phone;
-
-        public GamerInfoDTO(String userEmail, String nickname, String country, int phone) {
-            this.userEmail = userEmail;
-            this.nickname = nickname;
-            this.country = country;
-            this.phone = phone;
-        }
-    }
 }

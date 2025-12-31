@@ -2,7 +2,6 @@ package com.backend.gamers.servlets;
 
 import com.backend.daos.FamilyGroupDao;
 import com.backend.daos.GroupMemberDao;
-import com.backend.daos.LibraryDao;
 import com.backend.db.DBConnection;
 import com.backend.entities.FamilyGroup;
 import com.backend.entities.GroupMember;
@@ -103,7 +102,6 @@ public class FamilyGroupDeleteController extends HttpServlet {
      * - Elimina de la library del miembro todos los juegos con buyed=FALSE que no estén en otro grupo.
      */
     private void cleanupLibrariesForMembers(List<GroupMember> members, GroupMemberDao gmDao) throws SQLException {
-        LibraryDao libDao = new LibraryDao("`library`", "library_id");
         Connection conn = DBConnection.getInstance().getConnection();
 
         for (GroupMember member : members) {

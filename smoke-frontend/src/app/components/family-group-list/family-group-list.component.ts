@@ -113,4 +113,35 @@ export class FamilyGroupListComponent implements OnInit {
       }
     });
   }
+
+  removeMember(group: FamilyGroup, memberEmail: string): void {
+    if (!this.currentUserEmail || !group.groupId) return;
+    if (group.ownerId !== this.currentUserEmail) {
+      this.message = 'Solo el dueño puede eliminar miembros';
+      return;
+    }
+    if (memberEmail === this.currentUserEmail) {
+      this.message = 'No puedes eliminarte a ti mismo del grupo';
+      return;
+    }
+    const nickname = this.getNickname(memberEmail);
+    if (!confirm(`¿Estás seguro de eliminar a ${nickname} del grupo? Perderá acceso a los juegos compartidos.`)) {
+      return;
+    }
+    this.loading = true;
+    this.familyService.removeMember(group.groupId, memberEmail, this.currentUserEmail).subscribe({
+      next: () => {
+        this.loading = false;
+        this.message = 'Miembro eliminado exitosamente';
+        if (group.groupId) {
+          this.loadMembers(group.groupId);
+        }
+      },
+      error: (err) => {
+        this.loading = false;
+        this.message = err.error?.message || err.error?.error || 'No se pudo eliminar el miembro';
+        console.error('Error eliminando miembro', err);
+      }
+    });
+  }
 }

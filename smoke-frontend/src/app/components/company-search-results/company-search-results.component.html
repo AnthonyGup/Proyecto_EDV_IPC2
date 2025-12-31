@@ -1,22 +1,25 @@
-<div class="search-results-container">
-  <h2>Empresas</h2>
+<div class="container-fluid py-4" style="background-color: #0f172a; min-height: 100vh;">
+  <h2 class="text-light mb-4">Empresas</h2>
 
-  <div *ngIf="loading" class="loading">Buscando...</div>
-  <div *ngIf="error" class="error">{{ error }}</div>
+  <div *ngIf="loading" class="text-center py-5">
+    <p class="text-light">Buscando...</p>
+  </div>
+  
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 
-  <div class="results" *ngIf="!loading && results.length > 0">
-    <div class="result-item" *ngFor="let c of results" [routerLink]="['/gamer/company', c.companyId]">
-      <div class="info">
-        <h3>{{ c.name }}</h3>
-        <p class="desc">{{ c.description }}</p>
-        <div class="meta">
-          <span class="commission">Comisión: {{ c.commission | number:'1.0-2' }}%</span>
+  <div class="row g-3" *ngIf="!loading && results.length > 0">
+    <div class="col-md-6 col-lg-4" *ngFor="let c of results" [routerLink]="['/gamer/company', c.companyId]" style="cursor: pointer;">
+      <div class="card bg-dark border-secondary">
+        <div class="card-body">
+          <h5 class="card-title text-light">{{ c.name }}</h5>
+          <p class="card-text text-secondary">{{ c.description }}</p>
+          <span class="badge bg-primary">Comisión: {{ c.commission | number:'1.0-2' }}%</span>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="empty" *ngIf="!loading && results.length === 0 && !error">
-    <p>No se encontraron compañías</p>
+  <div *ngIf="!loading && results.length === 0 && !error" class="text-center py-5">
+    <p class="text-secondary">No se encontraron compañías</p>
   </div>
 </div>

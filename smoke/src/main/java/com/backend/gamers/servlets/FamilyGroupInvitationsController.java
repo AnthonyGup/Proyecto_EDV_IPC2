@@ -1,12 +1,9 @@
 package com.backend.gamers.servlets;
 
-import com.backend.daos.FamilyGroupDao;
 import com.backend.daos.GroupMemberDao;
 import com.backend.daos.InvitationDao;
 import com.backend.db.DBConnection;
-import com.backend.entities.FamilyGroup;
 import com.backend.entities.GroupMember;
-import com.backend.entities.Invitation;
 import com.backend.exceptions.AlreadyExistException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -23,7 +20,6 @@ import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 @WebServlet(name = "FamilyGroupInvitationsController", urlPatterns = {"/family-group/invitations"})
 public class FamilyGroupInvitationsController extends HttpServlet {
@@ -48,7 +44,6 @@ public class FamilyGroupInvitationsController extends HttpServlet {
             return;
         }
 
-        InvitationDao invDao = new InvitationDao("invitation", "invitation_id");
         try (PrintWriter out = response.getWriter()) {
             // Devolver invitaciones con datos del grupo (nombre y owner)
             String sql = "SELECT i.invitation_id, i.user_id, i.familyGroup_id, i.status, i.created_at, "

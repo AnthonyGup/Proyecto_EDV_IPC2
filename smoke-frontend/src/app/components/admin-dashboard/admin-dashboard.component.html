@@ -1,14 +1,26 @@
-<section class="card" *ngIf="user; else noUser">
-  <h2>Perfil</h2>
-  <div class="grid">
-    <div><span class="label">Nickname:</span><span>{{ user.nickname }}</span></div>
-    <div><span class="label">Email:</span><span>{{ user.mail }}</span></div>
-    <div><span class="label">Tipo:</span><span>{{ user.type }}</span></div>
-    <div><span class="label">Nacimiento:</span><span>{{ user.birthdate }}</span></div>
+<section class="card bg-dark border" *ngIf="user; else noUser">
+  <h2 class="card-title">Perfil</h2>
+  <div class="row g-3">
+    <div class="col-md-6">
+      <small class="text-secondary">Nickname:</small>
+      <p class="text-light">{{ user.nickname }}</p>
+    </div>
+    <div class="col-md-6">
+      <small class="text-secondary">Email:</small>
+      <p class="text-light">{{ user.mail }}</p>
+    </div>
+    <div class="col-md-6">
+      <small class="text-secondary">Tipo:</small>
+      <p class="text-light">{{ user.type }}</p>
+    </div>
+    <div class="col-md-6">
+      <small class="text-secondary">Nacimiento:</small>
+      <p class="text-light">{{ user.birthdate }}</p>
+    </div>
   </div>
 </section>
 <ng-template #noUser>
-  <div class="card">
-    <p>No hay sesión activa.</p>
+  <div class="card bg-dark border">
+    <p class="text-secondary">No hay sesión activa.</p>
   </div>
 </ng-template>

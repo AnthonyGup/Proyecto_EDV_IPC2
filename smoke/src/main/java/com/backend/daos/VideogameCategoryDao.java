@@ -75,4 +75,48 @@ public class VideogameCategoryDao extends Crud<VideogameCategory> {
         
         return games;
     }
+    
+    /**
+     * Elimina todas las categorías asociadas a un videojuego
+     * @param gameId ID del videojuego
+     * @throws SQLException
+     */
+    public void deleteByGameId(int gameId) throws SQLException {
+        String sql = "DELETE FROM " + tabla + " WHERE game_id = ?";
+        PreparedStatement stmt = CONNECTION.prepareStatement(sql);
+        stmt.setInt(1, gameId);
+        stmt.executeUpdate();
+        stmt.close();
+    }
+    
+    /**
+     * Inserta múltiples categorías para un videojuego
+     * @param gameId ID del videojuego
+     * @param categoryIds Lista de IDs de categorías a insertar
+     * @throws SQLException
+     */
+    public void insertBulkCategories(int gameId, List<Integer> categoryIds) throws SQLException {
+        String sql = "INSERT INTO " + tabla + "(game_id, category_id) VALUES (?, ?)";
+        PreparedStatement stmt = CONNECTION.prepareStatement(sql);
+        
+        for (Integer categoryId : categoryIds) {
+            stmt.setInt(1, gameId);
+            stmt.setInt(2, categoryId);
+            stmt.executeUpdate();
+        }
+        
+        stmt.close();
+    }
+    
+    /**
+     * Actualiza todas las categorías de un videojuego
+     * Elimina las categorías actuales e inserta las nuevas
+     * @param gameId ID del videojuego
+     * @param categoryIds Lista de IDs de categorías nuevas
+     * @throws SQLException
+     */
+    public void updateGameCategories(int gameId, List<Integer> categoryIds) throws SQLException {
+        deleteByGameId(gameId);
+        insertBulkCategories(gameId, categoryIds);
+    }
 }

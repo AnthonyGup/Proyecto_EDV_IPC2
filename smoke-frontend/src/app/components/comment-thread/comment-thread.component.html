@@ -1,18 +1,20 @@
-<div class="comment-thread" [style.margin-left.px]="depth * 24">
-  <div class="comment-main">
-    <div class="comment-header">
-      <a class="comment-author" [routerLink]="['/gamer/gamers', thread.comment.userId]">
+<div class="card bg-dark text-light border-secondary mb-2" [style.margin-left.px]="depth * 24">
+  <div class="card-body py-2 px-3">
+    <div class="d-flex justify-content-between align-items-center mb-1">
+      <a class="text-primary text-decoration-none" [routerLink]="['/gamer/gamers', thread.comment.userId]">
         {{ nicknames?.[thread.comment.userId] || thread.comment.userId }}
       </a>
-      <button *ngIf="allowReply" class="reply-btn" (click)="onReply()">Responder</button>
+      <button *ngIf="allowReply" class="btn btn-sm btn-outline-light" (click)="onReply()">Responder</button>
     </div>
-    <p class="comment-text">{{ thread.comment.text }}</p>
+    <p class="mb-0 text-light">{{ thread.comment.text }}</p>
   </div>
 
-  <div *ngIf="thread.replies && thread.replies.length > 0" class="replies">
-    <div *ngFor="let reply of thread.replies" class="reply-item">
-      <span class="reply-arrow">↳</span>
-      <app-comment-thread [thread]="reply" [depth]="depth + 1"></app-comment-thread>
+  <div *ngIf="thread.replies && thread.replies.length > 0" class="ps-3">
+    <div *ngFor="let reply of thread.replies" class="d-flex align-items-start mb-2">
+      <span class="text-secondary me-2">↳</span>
+      <div class="flex-grow-1">
+        <app-comment-thread [thread]="reply" [depth]="depth + 1" [allowReply]="allowReply" [nicknames]="nicknames"></app-comment-thread>
+      </div>
     </div>
   </div>
 </div>

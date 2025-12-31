@@ -5,7 +5,9 @@
 package com.backend.servlets.system;
 
 import com.backend.daos.CompanyDao;
+import com.backend.daos.GlobalCommissionDao;
 import com.backend.entities.Company;
+import com.backend.entities.GlobalCommission;
 import com.backend.exceptions.AlreadyExistException;
 import com.backend.extras.LocalDateAdapter;
 import com.google.gson.Gson;
@@ -135,6 +137,80 @@ public class CompanyController extends HttpServlet {
         } catch (SQLException ex) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // 500
             response.getWriter().write("{\"error\":\"Error en base de datos\"}");
+            Logger.getLogger(CompanyController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        
+        String pathInfo = request.getPathInfo();
+        
+        if (pathInfo == null || pathInfo.equals("/")) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("{\"error\":\"Company ID requerido en la URL\"}");
+            return;
+        }
+        
+        try {
+            String companyId = pathInfo.substring(1);
+            int id = Integer.parseInt(companyId);
+            
+            // Leer JSON del cuerpo
+            String json = request.getReader().lines().collect(Collectors.joining());
+            Company company = gson.fromJson(json, Company.class);
+            
+            // Validar que los IDs coincidan
+            if (company.getCompanyId() != id) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write("{\"error\":\"El ID en la URL no coincide con el del body\"}");
+                return;
+            }
+            
+            CompanyDao dao = new CompanyDao("company", "company_id");
+            
+            // Verificar que la compañía exista
+            Company existing = dao.readByPk(String.valueOf(id));
+            if (existing == null) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                response.getWriter().write("{\"error\":\"Company no encontrada\"}");
+                return;
+            }
+            
+            // Obtener la comisión global para validar
+            GlobalCommissionDao globalDao = new GlobalCommissionDao("globalCommission", "id");
+            GlobalCommission globalCommission = globalDao.readByPk("1");
+            
+            if (globalCommission == null) {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.getWriter().write("{\"error\":\"No se pudo obtener la comisión global\"}");
+                return;
+            }
+            
+            // Validar que la comisión de la compañía no sea mayor que la global
+            if (company.getCommission() > globalCommission.getCommission()) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write("{\"error\":\"La comisión de la compañía no puede ser mayor que la comisión global (" + globalCommission.getCommission() + "%)\"}");
+                return;
+            }
+            
+            // Actualizar solo la comisión
+            dao.update(String.valueOf(id), "commission", company.getCommission());
+            
+            // Devolver la compañía actualizada
+            Company updated = dao.readByPk(String.valueOf(id));
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.getWriter().write(gson.toJson(updated));
+            
+        } catch (NumberFormatException ex) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("{\"error\":\"ID inválido\"}");
+        } catch (SQLException ex) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("{\"error\":\"Error en base de datos: " + ex.getMessage() + "\"}");
             Logger.getLogger(CompanyController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

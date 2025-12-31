@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { SessionService } from '../../core/session.service';
@@ -19,6 +19,7 @@ export class CompanyAdminLayoutComponent implements OnInit {
   user: any = null;
   company: Company | null = null;
   loading = true;
+  showReports = false;
 
   constructor(
     private session: SessionService, 
@@ -63,5 +64,16 @@ export class CompanyAdminLayoutComponent implements OnInit {
   goHome(): void {
     this.router.navigate(['/company/admin']);
   }
-}
 
+  toggleReportsDropdown(): void {
+    this.showReports = !this.showReports;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.dropdown-container')) {
+      this.showReports = false;
+    }
+  }
+}

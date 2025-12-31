@@ -26,4 +26,11 @@ export class CompanyService {
   searchCompanies(q: string): Observable<Company[]> {
     return this.http.get<Company[]>(`${API_BASE_URL}/company/search`, { params: { q } });
   }
+
+  updateCommission(companyId: number, commission: number): Observable<Company> {
+    return this.http.put<Company>(`${API_BASE_URL}/company/${companyId}`, { 
+      companyId: companyId,
+      commission: commission 
+    });
+  }
 }

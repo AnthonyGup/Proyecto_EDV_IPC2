@@ -1,24 +1,35 @@
-<section class="panel">
-  <h2>Invitar miembros</h2>
+<div class="container-fluid py-4" style="background-color: #0f172a; min-height: 100vh;">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="card bg-dark text-light border-secondary">
+        <div class="card-header" style="background-color: #111827; border-bottom: 1px solid #374151;">
+          <h2 class="mb-0">Invitar miembros</h2>
+        </div>
+        <div class="card-body">
+          <div *ngIf="!currentUserEmail" class="alert alert-danger">Debes iniciar sesión para invitar miembros.</div>
 
-  <div *ngIf="!currentUserEmail" class="alert error">Debes iniciar sesión para invitar miembros.</div>
+          <form *ngIf="currentUserEmail" (ngSubmit)="sendInvite()">
+            <div class="mb-3">
+              <label class="form-label">Grupo</label>
+              <select class="form-select bg-dark text-light border-secondary" [(ngModel)]="selectedGroupId" name="group" required>
+                <option *ngFor="let g of groups" [ngValue]="g.groupId">{{ g.groupName || g.name }}</option>
+              </select>
+              <small *ngIf="groups.length === 0" class="text-secondary">No tienes grupos propios aún.</small>
+            </div>
 
-  <form *ngIf="currentUserEmail" (ngSubmit)="sendInvite()" class="form">
-    <label class="field">
-      Grupo
-      <select [(ngModel)]="selectedGroupId" name="group" required>
-        <option *ngFor="let g of groups" [ngValue]="g.groupId">{{ g.groupName || g.name }}</option>
-      </select>
-      <small *ngIf="groups.length === 0" class="muted">No tienes grupos propios aún.</small>
-    </label>
+            <div class="mb-3">
+              <label class="form-label">Correo del invitado</label>
+              <input type="email" class="form-control bg-dark text-light border-secondary" [(ngModel)]="inviteEmail" name="email" placeholder="correo@ejemplo.com" required />
+            </div>
 
-    <label class="field">
-      Correo del invitado
-      <input type="email" [(ngModel)]="inviteEmail" name="email" placeholder="correo@ejemplo.com" required />
-    </label>
+            <div class="d-grid">
+              <button class="btn btn-primary" type="submit" [disabled]="loading || groups.length === 0">{{ loading ? 'Enviando...' : 'Enviar invitación' }}</button>
+            </div>
+          </form>
 
-    <button class="btn" type="submit" [disabled]="loading || groups.length === 0">{{ loading ? 'Enviando...' : 'Enviar invitación' }}</button>
-  </form>
-
-  <div *ngIf="message" class="alert" [class.success]="success" [class.error]="!success">{{ message }}</div>
-</section>
+          <div *ngIf="message" class="alert mt-3" [class.alert-success]="success" [class.alert-danger]="!success">{{ message }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

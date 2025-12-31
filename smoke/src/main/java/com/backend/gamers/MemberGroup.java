@@ -18,11 +18,9 @@ import java.util.List;
  */
 public class MemberGroup {
     
-    private Gamer owner;
     private FamilyGroup group;
     
     public MemberGroup(Gamer owner, FamilyGroup group) {
-        this.owner = owner;
         this.group = group;
     }
     

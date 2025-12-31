@@ -1,27 +1,25 @@
-<div class="top-games-container">
-  <h2>Juegos Destacados</h2>
+<div class="container-fluid mb-4">
+  <h2 class="text-light mb-3">Juegos Destacados</h2>
 
-  <div *ngIf="loading" class="loading">
-    <p>Cargando juegos destacados...</p>
+  <div *ngIf="loading" class="text-center py-5">
+    <p class="text-light">Cargando juegos destacados...</p>
   </div>
 
-  <div *ngIf="error" class="error">
-    <p>{{ error }}</p>
-  </div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 
-  <div *ngIf="!loading && topGames.length > 0" class="games-list">
-    <div *ngFor="let item of topGames" class="game-item" [routerLink]="['/gamer/game', item.game.videogameId]">
-      <div class="game-image">
-        <img [src]="item.imageUrl" [alt]="item.game.name" />
-      </div>
-      <div class="game-info">
-        <h3>{{ item.game.name }}</h3>
-        <p class="price">${{ item.game.price }}</p>
+  <div *ngIf="!loading && topGames.length > 0" class="row g-3">
+    <div class="col-6 col-md-4 col-lg-3 col-xl-2" *ngFor="let item of topGames" [routerLink]="['/gamer/game', item.game.videogameId]" style="cursor: pointer;">
+      <div class="card bg-dark border-secondary h-100">
+        <img [src]="item.imageUrl" class="card-img-top" [alt]="item.game.name" style="height: 180px; object-fit: cover;" />
+        <div class="card-body p-2">
+          <h6 class="card-title text-light mb-1">{{ item.game.name }}</h6>
+          <p class="text-primary mb-0">${{ item.game.price }}</p>
+        </div>
       </div>
     </div>
   </div>
 
-  <div *ngIf="!loading && topGames.length === 0" class="empty">
-    <p>No hay juegos destacados en este momento</p>
+  <div *ngIf="!loading && topGames.length === 0" class="text-center py-5">
+    <p class="text-secondary">No hay juegos destacados en este momento</p>
   </div>
 </div>

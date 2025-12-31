@@ -1,8 +1,10 @@
 package com.backend.gamers.servlets;
 
+import com.backend.daos.GamerDao;
 import com.backend.entities.Gamer;
 import com.backend.gamers.Recharge;
-import com.backend.daos.GamerDao;
+import com.backend.gamers.dto.RechargeRequest;
+import com.backend.gamers.dto.RechargeResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import jakarta.servlet.ServletException;
@@ -62,7 +64,7 @@ public class RechargeWalletController extends HttpServlet {
 
             // Realizar la recarga
             Recharge recharge = new Recharge();
-            recharge.recharch(gamer, rechargeReq.amount);
+            recharge.recharge(gamer, rechargeReq.amount);
 
             // Obtener el nuevo wallet
             Gamer updatedGamer = gamerDao.readByPk(userEmail);
@@ -79,18 +81,4 @@ public class RechargeWalletController extends HttpServlet {
         }
     }
 
-    public static class RechargeRequest {
-        public double amount;
-        public String userEmail;
-    }
-
-    public static class RechargeResponse {
-        public String message;
-        public double newWallet;
-
-        public RechargeResponse(String message, double newWallet) {
-            this.message = message;
-            this.newWallet = newWallet;
-        }
-    }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -16,6 +16,7 @@ import { Category } from '../../models/Category';
 export class GamerNavbarComponent implements OnInit {
   showFilters = false;
   showFamilyDropdown = false;
+  showReportsDropdown = false;
   isFamilyDropdownPinned = false;
   searchName = '';
   filterAvailable: boolean | undefined;
@@ -50,6 +51,10 @@ export class GamerNavbarComponent implements OnInit {
 
   toggleFilters(): void {
     this.showFilters = !this.showFilters;
+  }
+
+  toggleReportsDropdown(): void {
+    this.showReportsDropdown = !this.showReportsDropdown;
   }
 
   toggleFamilyDropdown(): void {
@@ -126,4 +131,13 @@ export class GamerNavbarComponent implements OnInit {
     this.session.clear();
     this.router.navigate(['/login']);
   }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.dropdown-container') && !target.closest('.reports-dropdown-container')) {
+      this.showReportsDropdown = false;
+    }
+  }
 }
+

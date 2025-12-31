@@ -1,31 +1,80 @@
-<div class="page">
-  <div class="shell">
-    <p class="eyebrow">Compañías</p>
-    <h1>Comisión de compañías</h1>
-    <p class="muted">Gestiona las comisiones individuales de cada compañía registrada.</p>
+<div class="container-fluid py-4" style="background-color: #0f172a; min-height: 100vh; color: #e2e8f0;">
+  <div style="max-width: 1200px; margin: 0 auto;">
+    <small class="text-secondary d-block">Compañías</small>
+    <h1 class="h2 text-light">Comisión de compañías</h1>
+    <p class="text-secondary mb-4">Gestiona las comisiones individuales de cada compañía registrada.</p>
 
-    <div class="loading" *ngIf="loading">Cargando compañías...</div>
-    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    <div *ngIf="loading" class="text-center text-secondary py-5">Cargando compañías...</div>
+    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
 
-    <div class="cards-grid" *ngIf="!loading && companies.length > 0">
-      <div class="card" *ngFor="let company of companies">
-        <div class="card-header">
-          <h3 class="company-name">{{ company.name }}</h3>
-          <span class="company-id">#{{ company.companyId }}</span>
-        </div>
-        <p class="company-description">{{ company.description }}</p>
-        <div class="card-footer">
-          <div class="commission-info">
-            <span class="label">Comisión actual:</span>
-            <span class="value">{{ company.commission }}%</span>
+    <div class="row g-3" *ngIf="!loading && companies.length > 0">
+      <div class="col-md-6 col-lg-4" *ngFor="let company of companies">
+        <div class="card bg-dark border h-100" style="border-color: #1f2937 !important;">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <h5 class="card-title text-light mb-0">{{ company.name }}</h5>
+              <small class="text-light">#{{ company.companyId }}</small>
+            </div>
+            <p class="text-light small mb-3">{{ company.description }}</p>
+            <div class="d-flex justify-content-between align-items-center pt-3 border-top" style="border-color: #1f2937 !important;">
+              <div>
+                <small class="text-secondary d-block">Comisión actual:</small>
+                <span class="text-info fw-bold">{{ company.commission }}%</span>
+              </div>
+              <button class="btn btn-sm btn-primary" (click)="editCommission(company)">Editar</button>
+            </div>
           </div>
-          <button class="edit-btn" (click)="editCommission(company)">Editar comisión</button>
         </div>
       </div>
     </div>
 
-    <div class="empty-state" *ngIf="!loading && !errorMessage && companies.length === 0">
+    <div *ngIf="!loading && !errorMessage && companies.length === 0" class="text-center text-secondary py-5">
       <p>No hay compañías registradas.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para editar comisión -->
+<div class="modal fade" [class.show]="showModal" [style.display]="showModal ? 'block' : 'none'" style="background-color: rgba(0,0,0,0.5);" *ngIf="showModal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-light border-secondary">
+      <div class="modal-header border-secondary">
+        <h5 class="modal-title">Editar Comisión</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeModal()" [disabled]="saveLoading"></button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="editingCompany">
+          <p class="text-light">Compañía: <strong class="text-light">{{ editingCompany.name }}</strong></p>
+          <p class="text-light">Comisión actual: <strong class="text-info">{{ (editingCompany.commission * 100).toFixed(2) }}%</strong></p>
+          
+          <div class="mb-3">
+            <label class="form-label">Nueva Comisión (%)</label>
+            <input 
+              type="number" 
+              class="form-control bg-dark text-light border-secondary" 
+              [(ngModel)]="newCommission" 
+              min="0" 
+              max="100" 
+              step="0.01"
+              [disabled]="saveLoading"
+              placeholder="Ej: 15.5"
+            />
+            <small class="text-light">Valor entre 0 y 100</small>
+          </div>
+
+          <div *ngIf="saveMessage" class="alert" [class.alert-success]="!saveMessage.includes('Error')" [class.alert-danger]="saveMessage.includes('Error')">
+            {{ saveMessage }}
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-secondary">
+        <button class="btn btn-success" (click)="saveCommission()" [disabled]="saveLoading">
+          {{ saveLoading ? 'Guardando...' : 'Guardar' }}
+        </button>
+        <button class="btn btn-secondary" (click)="closeModal()" [disabled]="saveLoading">
+          Cancelar
+        </button>
+      </div>
     </div>
   </div>
 </div>

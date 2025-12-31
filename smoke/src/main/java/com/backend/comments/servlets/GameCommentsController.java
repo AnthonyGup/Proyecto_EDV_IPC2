@@ -34,7 +34,7 @@ public class GameCommentsController extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
 
         if (pathInfo != null && pathInfo.matches("/\\d+/status")) {
-            handleGetCommentStatus(request, response, pathInfo);
+            handleGetCommentStatus(response, pathInfo);
         }
       
         else if (pathInfo != null && pathInfo.matches("/\\d+")) {
@@ -50,7 +50,7 @@ public class GameCommentsController extends HttpServlet {
         }
     }
 
-    private void handleGetCommentStatus(HttpServletRequest request, HttpServletResponse response, String pathInfo)
+    private void handleGetCommentStatus(HttpServletResponse response, String pathInfo)
             throws IOException {
         String[] parts = pathInfo.split("/");
         int videogameId = Integer.parseInt(parts[1]);

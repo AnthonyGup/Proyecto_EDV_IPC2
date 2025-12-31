@@ -2,6 +2,7 @@ package com.backend.gamers.servlets;
 
 import com.backend.daos.GamerDao;
 import com.backend.entities.Gamer;
+import com.backend.gamers.dto.GamerSummaryDTO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import jakarta.servlet.ServletException;
@@ -53,17 +54,4 @@ public class GamerSearchController extends HttpServlet {
         }
     }
 
-    static class GamerSummaryDTO {
-        public String mail;
-        public String nickname;
-        public String country;
-        public int phone;
-
-        public GamerSummaryDTO(String mail, String nickname, String country, int phone) {
-            this.mail = mail;
-            this.nickname = nickname;
-            this.country = country;
-            this.phone = phone;
-        }
-    }
 }

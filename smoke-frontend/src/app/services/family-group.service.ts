@@ -68,4 +68,12 @@ export class FamilyGroupService {
     const params = new HttpParams().set('groupId', groupId).set('userId', userId);
     return this.http.delete<MessageResponse>(`${API_BASE_URL}/family-group/delete`, { params });
   }
+
+  removeMember(groupId: number, memberEmail: string, ownerEmail: string): Observable<MessageResponse> {
+    const params = new HttpParams()
+      .set('groupId', groupId)
+      .set('memberEmail', memberEmail)
+      .set('ownerEmail', ownerEmail);
+    return this.http.delete<MessageResponse>(`${API_BASE_URL}/family-group/member`, { params });
+  }
 }

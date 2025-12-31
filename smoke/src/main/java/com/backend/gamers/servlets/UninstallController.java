@@ -2,8 +2,6 @@ package com.backend.gamers.servlets;
 
 import com.backend.daos.LibraryDao;
 import com.backend.entities.Library;
-import com.backend.entities.Gamer;
-import com.backend.entities.Videogame;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

@@ -1,9 +1,7 @@
 package com.backend.games.servlets;
 
-import com.backend.daos.CompanyDao;
 import com.backend.daos.VideogameDao;
 import com.backend.db.DBConnection;
-import com.backend.entities.Company;
 import com.backend.entities.Videogame;
 import com.backend.extras.LocalDateAdapter;
 import com.google.gson.Gson;

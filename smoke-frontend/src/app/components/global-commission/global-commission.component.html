@@ -1,45 +1,46 @@
-<div class="page">
-  <div class="shell">
-    <p class="eyebrow">Comisiones</p>
-    <h1>Comisión global</h1>
-    <p class="muted">Define el porcentaje que aplicará como base para todas las compañías.</p>
+<div class="container-fluid py-4" style="background-color: #0f172a; min-height: 100vh; color: #e2e8f0;">
+  <div style="max-width: 720px; margin: 0 auto;">
+    <small class="text-secondary d-block">Comisiones</small>
+    <h1 class="h2 text-light">Comisión global</h1>
+    <p class="text-secondary mb-4">Define el porcentaje que aplicará como base para todas las compañías.</p>
 
-    <section class="card">
-      <div class="status" *ngIf="loading">Cargando comisión actual...</div>
-      <div class="status" *ngIf="!loading && currentCommission !== null">
-        <span class="label">Valor actual:</span>
-        <span class="value">{{ currentCommission }}%</span>
-      </div>
-      <div class="status warning" *ngIf="!loading && currentCommission === null">
-        No se pudo obtener la comisión global actual.
-      </div>
+    <div class="card bg-dark border" style="border-color: #1f2937 !important;">
+      <div class="card-body">
+        <div *ngIf="loading" class="text-secondary mb-3">Cargando comisión actual...</div>
+        <div *ngIf="!loading && currentCommission !== null" class="mb-3">
+          <span class="text-secondary">Valor actual: </span>
+          <span class="text-info fw-bold">{{ currentCommission }}%</span>
+        </div>
+        <div *ngIf="!loading && currentCommission === null" class="alert alert-warning">
+          No se pudo obtener la comisión global actual.
+        </div>
 
-      <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
-        <label class="field">
-          <span>Comisión (%)</span>
-          <input
-            type="number"
-            formControlName="commission"
-            min="0"
-            max="100"
-            step="0.01"
-            placeholder="Ej. 15"
-          />
-          <small *ngIf="f['commission']?.touched && f['commission']?.invalid">
-            Ingresa un valor entre 0 y 100.
-          </small>
-        </label>
+        <form [formGroup]="form" (ngSubmit)="submit()">
+          <div class="mb-3">
+            <label class="form-label text-light">Comisión (%) <span class="text-danger">*</span></label>
+            <input
+              type="number"
+              formControlName="commission"
+              min="0"
+              max="100"
+              step="0.01"
+              placeholder="Ej. 15"
+              class="form-control bg-dark text-light border-secondary"
+            />
+            <small *ngIf="f['commission']?.touched && f['commission']?.invalid" class="text-danger d-block mt-1">
+              Ingresa un valor entre 0 y 100.
+            </small>
+          </div>
 
-        <div class="actions">
-          <button type="submit" [disabled]="saving || loading">
+          <button type="submit" class="btn btn-primary" [disabled]="saving || loading">
             {{ saving ? 'Guardando...' : 'Guardar comisión' }}
           </button>
-        </div>
-      </form>
+        </form>
 
-      <p class="hint">Las compañías con una comisión mayor serán ajustadas automáticamente en el backend.</p>
-      <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
-      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
-    </section>
+        <small class="text-info d-block mt-3">Las compañías con una comisión mayor serán ajustadas automáticamente en el backend.</small>
+        <div class="alert alert-success mt-3" *ngIf="successMessage">{{ successMessage }}</div>
+        <div class="alert alert-danger mt-3" *ngIf="errorMessage">{{ errorMessage }}</div>
+      </div>
+    </div>
   </div>
 </div>

@@ -1,159 +1,157 @@
-<div class="page-wrapper">
+<div class="d-flex flex-column min-vh-100" style="background-color: #0f172a;">
   <app-gamer-navbar *ngIf="!inGamerLayout"></app-gamer-navbar>
 
-  <main class="main-content">
-    <div class="game-detail-container">
-      <div *ngIf="loading" class="loading">
-        <p>Cargando detalles del juego...</p>
+  <main class="flex-grow-1">
+    <div class="container-fluid py-4">
+      <div *ngIf="loading" class="text-center py-5">
+        <p class="text-light">Cargando detalles del juego...</p>
       </div>
 
-      <div *ngIf="error" class="error">
-        <p>{{ error }}</p>
-      </div>
+      <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 
-      <div *ngIf="!loading && game" class="game-content">
-        <!-- Header con título y precio -->
-        <div class="game-header">
-          <h1>{{ game.name }}</h1>
-          <div class="game-meta">
-            <span class="price">${{ game.price }}</span>
-            <span class="age-restriction" *ngIf="game.ageRestriction > 0">+{{ game.ageRestriction }}</span>
-            <span class="company" *ngIf="company">
-              Empresa: <a [routerLink]="['/gamer/company', game.companyId]">{{ company.name }}</a>
-            </span>
-            <span class="avg-rating" *ngIf="averageRating !== null">
-              <span class="stars">
-                <ng-container *ngFor="let s of [1,2,3,4,5]">
-                  <span class="star" [class.filled]="s <= averageStarsRounded">★</span>
-                </ng-container>
+      <div *ngIf="!loading && game">
+        <!-- Header -->
+        <div class="card bg-dark text-light border-secondary mb-4">
+          <div class="card-body">
+            <h1 class="mb-3">{{ game.name }}</h1>
+            <div class="d-flex flex-wrap gap-2 mb-3">
+              <span class="badge bg-primary fs-5">${{ game.price }}</span>
+              <span class="badge bg-warning" *ngIf="game.ageRestriction > 0">+{{ game.ageRestriction }}</span>
+              <span *ngIf="company">
+                Empresa: <a class="text-primary" [routerLink]="['/gamer/company', game.companyId]">{{ company.name }}</a>
               </span>
-              <span class="avg-text">{{ averageRating }} / 5</span>
-              <span class="count-text">({{ ratingsCount }} valoraciones)</span>
-            </span>
-          </div>
-          <ng-container *ngIf="!isLibraryMode; else installBlock">
-            <button 
-              class="buy-button" 
-              (click)="openBuyModal()"
-              [disabled]="isLoadingBuy || !userEmail">
-              {{ isLoadingBuy ? 'Comprando...' : 'Comprar Juego' }}
-            </button>
-          </ng-container>
-          <ng-template #installBlock>
-            <ng-container *ngIf="isInLibrary; else notInLibrary">
-              <button 
-                class="buy-button" 
-                [ngClass]="isInstalled ? 'uninstall' : 'install'"
-                (click)="toggleInstall()"
-                [disabled]="isInstalling || !userEmail">
-                {{ isInstalling ? (isInstalled ? 'Desinstalando...' : 'Instalando...') : (isInstalled ? 'Desinstalar' : 'Instalar Juego') }}
+              <span *ngIf="averageRating !== null">
+                <span class="text-warning">
+                  <ng-container *ngFor="let s of [1,2,3,4,5]">
+                    <span [class.text-secondary]="s > averageStarsRounded">★</span>
+                  </ng-container>
+                </span>
+                <span class="text-light">{{ averageRating }} / 5</span>
+                <span class="text-secondary">({{ ratingsCount }} valoraciones)</span>
+              </span>
+            </div>
+            <ng-container *ngIf="!isBuyed && !isLibraryMode; else installBlock">
+              <button class="btn btn-success" (click)="openBuyModal()" [disabled]="isLoadingBuy || !userEmail">
+                {{ isLoadingBuy ? 'Comprando...' : 'Comprar Juego' }}
               </button>
             </ng-container>
-            <ng-template #notInLibrary>
-              <p class="buy-message error">Este juego no está en tu biblioteca.</p>
+            <ng-template #installBlock>
+              <ng-container *ngIf="isInLibrary; else notInLibrary">
+                <button class="btn" [class.btn-danger]="isInstalled" [class.btn-primary]="!isInstalled"
+                  (click)="toggleInstall()" [disabled]="isInstalling || !userEmail">
+                  {{ isInstalling ? (isInstalled ? 'Desinstalando...' : 'Instalando...') : (isInstalled ? 'Desinstalar' : 'Instalar Juego') }}
+                </button>
+              </ng-container>
+              <ng-template #notInLibrary>
+                <div class="alert alert-danger">Este juego no está en tu biblioteca.</div>
+              </ng-template>
+              <div *ngIf="installMessage" class="alert mt-2" [class.alert-success]="installSuccess" [class.alert-danger]="!installSuccess">
+                {{ installMessage }}
+              </div>
             </ng-template>
-            <p *ngIf="installMessage" class="buy-message" [class.success]="installSuccess" [class.error]="!installSuccess">
-              {{ installMessage }}
-            </p>
-          </ng-template>
+          </div>
         </div>
 
-        <!-- Contenido principal -->
-        <div class="game-main">
-          <!-- Carrusel de imágenes -->
-          <div class="images-section" *ngIf="gameImages.length > 0">
-            <div class="image-carousel">
-              <div class="carousel-main">
-                <img [src]="getImageUrl(gameImages[currentImageIndex])" [alt]="game.name" />
-              </div>
-              <div class="carousel-controls" *ngIf="gameImages.length > 1">
-                <button (click)="previousImage()" class="nav-button">❮</button>
-                <button (click)="nextImage()" class="nav-button">❯</button>
-              </div>
-              <div class="carousel-thumbnails" *ngIf="gameImages.length > 1">
-                <button
-                  *ngFor="let img of gameImages; let i = index"
-                  class="thumbnail"
-                  [class.active]="i === currentImageIndex"
-                  (click)="goToImage(i)"
-                >
-                  <img [src]="getImageUrl(img)" [alt]="'Imagen ' + (i + 1)" />
-                </button>
+        <!-- Imágenes y Info -->
+        <div class="row g-4 mb-4">
+          <!-- Carrusel -->
+          <div class="col-lg-8" *ngIf="gameImages.length > 0">
+            <div class="card bg-dark border-secondary">
+              <div class="card-body p-0">
+                <div class="position-relative" style="height: 400px;">
+                  <img [src]="getImageUrl(gameImages[currentImageIndex])" [alt]="game.name" class="w-100 h-100" style="object-fit: cover;" />
+                  <button *ngIf="gameImages.length > 1" class="btn btn-dark position-absolute top-50 start-0 translate-middle-y ms-2" (click)="previousImage()">❮</button>
+                  <button *ngIf="gameImages.length > 1" class="btn btn-dark position-absolute top-50 end-0 translate-middle-y me-2" (click)="nextImage()">❯</button>
+                </div>
+                <div *ngIf="gameImages.length > 1" class="d-flex gap-2 p-2 overflow-auto">
+                  <img *ngFor="let img of gameImages; let i = index"
+                    [src]="getImageUrl(img)" [alt]="'Imagen ' + (i + 1)"
+                    class="rounded" [class.border-primary]="i === currentImageIndex"
+                    style="width: 80px; height: 60px; object-fit: cover; cursor: pointer; border: 2px solid;"
+                    [style.border-color]="i === currentImageIndex ? '' : 'transparent'"
+                    (click)="goToImage(i)" />
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- Información del juego -->
-          <div class="game-info">
-            <div class="info-section">
-              <h2>Descripción</h2>
-              <p>{{ game.description }}</p>
-            </div>
-
-            <div class="info-section" *ngIf="categories.length > 0">
-              <h2>Categorías</h2>
-              <div class="categories-list">
-                <span class="category-badge" *ngFor="let category of categories">{{ category.name }}</span>
+          <!-- Info -->
+          <div class="col-lg-4">
+            <div class="card bg-dark text-light border-secondary mb-3">
+              <div class="card-header" style="background-color: #111827;">
+                <h5 class="mb-0">Descripción</h5>
+              </div>
+              <div class="card-body">
+                <p class="mb-0">{{ game.description }}</p>
               </div>
             </div>
 
-            <div class="info-section">
-              <h2>Información</h2>
-              <div class="info-grid">
-                <div class="info-item">
-                  <span class="label">Fecha de Lanzamiento:</span>
-                  <span class="value">{{ game.relasedate | date: 'dd/MM/yyyy' }}</span>
-                </div>
-                <div class="info-item">
-                  <span class="label">Requisitos Mínimos:</span>
-                  <span class="value">{{ game.minimRequirements }}</span>
-                </div>
+            <div class="card bg-dark text-light border-secondary mb-3" *ngIf="categories.length > 0">
+              <div class="card-header" style="background-color: #111827;">
+                <h5 class="mb-0">Categorías</h5>
+              </div>
+              <div class="card-body">
+                <span class="badge bg-secondary me-1 mb-1" *ngFor="let category of categories">{{ category.name }}</span>
+              </div>
+            </div>
+
+            <div class="card bg-dark text-light border-secondary">
+              <div class="card-header" style="background-color: #111827;">
+                <h5 class="mb-0">Información</h5>
+              </div>
+              <div class="card-body">
+                <p class="mb-2"><strong>Fecha de Lanzamiento:</strong> {{ game.relasedate | date: 'dd/MM/yyyy' }}</p>
+                <p class="mb-0"><strong>Requisitos Mínimos:</strong> {{ game.minimRequirements }}</p>
               </div>
             </div>
           </div>
         </div>
 
         <!-- Calificación -->
-        <div class="rating-section" *ngIf="userEmail && isBuyed">
-          <h2>Tu calificación</h2>
-          <div class="stars" [class.disabled]="myRating !== null">
-            <button 
-              *ngFor="let s of [0,1,2,3,4,5]"
-              class="star"
-              [class.active]="myRating !== null ? (s <= myRating) : false"
-              [disabled]="ratingLoading || myRating !== null"
-              (click)="setRating(s)">
-              ★
-            </button>
-            <span class="hint" *ngIf="myRating === null">Elige 0 a 5 estrellas</span>
-            <span class="hint" *ngIf="myRating !== null">Calificada: {{ myRating }} estrella(s)</span>
+        <div class="card bg-dark text-light border-secondary mb-4" *ngIf="userEmail && isBuyed">
+          <div class="card-header" style="background-color: #111827;">
+            <h5 class="mb-0">Tu calificación</h5>
           </div>
-          <p *ngIf="ratingMessage" class="rating-message">{{ ratingMessage }}</p>
+          <div class="card-body">
+            <div class="d-flex gap-2 align-items-center">
+              <button *ngFor="let s of [0,1,2,3,4,5]"
+                class="btn btn-lg" [class.btn-warning]="myRating !== null && s <= myRating"
+                [class.btn-outline-secondary]="myRating === null || s > myRating"
+                [disabled]="ratingLoading || myRating !== null"
+                (click)="setRating(s)">★</button>
+              <span class="text-secondary" *ngIf="myRating === null">Elige 0 a 5 estrellas</span>
+              <span class="text-success" *ngIf="myRating !== null">Calificada: {{ myRating }} estrella(s)</span>
+            </div>
+            <div *ngIf="ratingMessage" class="alert alert-info mt-2 mb-0">{{ ratingMessage }}</div>
+          </div>
         </div>
 
         <!-- Comentarios -->
-        <div class="comments-section">
-          <h2>Comentarios ({{ getTotalCommentCount() }})</h2>
-
-          <div *ngIf="commentThreads.length > 0" class="comments-list">
-            <ng-container *ngFor="let thread of commentThreads">
-              <app-comment-thread [thread]="thread" [allowReply]="true" [nicknames]="commentNicknames" (reply)="startReply($event)"></app-comment-thread>
-            </ng-container>
+        <div class="card bg-dark text-light border-secondary">
+          <div class="card-header" style="background-color: #111827;">
+            <h5 class="mb-0">Comentarios ({{ getTotalCommentCount() }})</h5>
           </div>
-          <div *ngIf="commentThreads.length === 0" class="empty">
-            <p>No hay comentarios aún</p>
-          </div>
-
-          <div class="comment-form">
-            <p class="replying" *ngIf="replyingTo">Respondiendo a comentario #{{ replyingTo }}</p>
-            <textarea [(ngModel)]="newComment" rows="3" placeholder="Escribe un comentario"></textarea>
-            <div class="form-actions">
-              <button class="btn ghost" type="button" (click)="replyingTo = null" *ngIf="replyingTo">Cancelar respuesta</button>
-              <button class="btn primary" type="button" (click)="submitComment()" [disabled]="commentsLoading || !userEmail">
-                {{ commentsLoading ? 'Enviando...' : 'Publicar' }}
-              </button>
+          <div class="card-body">
+            <div *ngIf="commentThreads.length > 0" class="mb-4">
+              <ng-container *ngFor="let thread of commentThreads">
+                <app-comment-thread [thread]="thread" [allowReply]="true" [nicknames]="commentNicknames" (reply)="startReply($event)"></app-comment-thread>
+              </ng-container>
             </div>
-            <p *ngIf="commentsError" class="error">{{ commentsError }}</p>
+            <div *ngIf="commentThreads.length === 0" class="text-center text-secondary py-4">
+              <p>No hay comentarios aún</p>
+            </div>
+
+            <div>
+              <p class="text-info mb-2" *ngIf="replyingTo">Respondiendo a comentario #{{ replyingTo }}</p>
+              <textarea class="form-control bg-dark text-light border-secondary mb-2" [(ngModel)]="newComment" rows="3" placeholder="Escribe un comentario"></textarea>
+              <div class="d-flex gap-2">
+                <button class="btn btn-secondary" type="button" (click)="replyingTo = null" *ngIf="replyingTo">Cancelar respuesta</button>
+                <button class="btn btn-primary" type="button" (click)="submitComment()" [disabled]="commentsLoading || !userEmail">
+                  {{ commentsLoading ? 'Enviando...' : 'Publicar' }}
+                </button>
+              </div>
+              <div *ngIf="commentsError" class="alert alert-danger mt-2 mb-0">{{ commentsError }}</div>
+            </div>
           </div>
         </div>
       </div>
@@ -164,31 +162,31 @@
 </div>
 
 <!-- Modal de Compra -->
-<div class="modal-overlay" *ngIf="showBuyModal" (click)="closeBuyModal()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
-    <div class="modal-header">
-      <h2>Confirmar Compra</h2>
-      <button class="modal-close" (click)="closeBuyModal()">&times;</button>
+<div class="modal fade" [class.show]="showBuyModal" [style.display]="showBuyModal ? 'block' : 'none'" style="background-color: rgba(0,0,0,0.5);" *ngIf="showBuyModal" (click)="closeBuyModal()">
+  <div class="modal-dialog modal-dialog-centered" (click)="$event.stopPropagation()">
+    <div class="modal-content bg-dark text-light border-secondary">
+      <div class="modal-header border-secondary">
+        <h5 class="modal-title">Confirmar Compra</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeBuyModal()"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>{{ game?.name }}</strong></p>
+        <p>Precio: <strong class="text-success">${{ game?.price }}</strong></p>
+        <p *ngIf="currentWallet !== null">Tu billetera: <strong class="text-info">${{ currentWallet }}</strong></p>
+        <div *ngIf="currentWallet !== null && currentWallet < (game?.price || 0)" class="alert alert-danger">
+          No tienes suficiente dinero en tu billetera.
+        </div>
+      </div>
+      <div class="modal-footer border-secondary">
+        <button class="btn btn-secondary" (click)="closeBuyModal()">Cancelar</button>
+        <button class="btn btn-success" (click)="completeBuy()"
+          [disabled]="isLoadingBuy || (currentWallet !== null && currentWallet < (game?.price || 0))">
+          {{ isLoadingBuy ? 'Procesando...' : 'Confirmar Compra' }}
+        </button>
+      </div>
+      <div *ngIf="buyMessage" class="alert mx-3 mb-3" [class.alert-success]="buySuccess" [class.alert-danger]="!buySuccess">
+        {{ buyMessage }}
+      </div>
     </div>
-    <div class="modal-body">
-      <p><strong>{{ game?.name }}</strong></p>
-      <p>Precio: <strong class="price-text">${{ game?.price }}</strong></p>
-      <p *ngIf="currentWallet !== null" class="wallet-info">Tu billetera: <strong class="wallet-amount">${{ currentWallet }}</strong></p>
-      <p *ngIf="currentWallet !== null && currentWallet < (game?.price || 0)" class="error-text">
-        No tienes suficiente dinero en tu billetera.
-      </p>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-cancel" (click)="closeBuyModal()">Cancelar</button>
-      <button 
-        class="btn-confirm" 
-        (click)="completeBuy()"
-        [disabled]="isLoadingBuy || (currentWallet !== null && currentWallet < (game?.price || 0))">
-        {{ isLoadingBuy ? 'Procesando...' : 'Confirmar Compra' }}
-      </button>
-    </div>
-    <p *ngIf="buyMessage" class="buy-message" [class.success]="buySuccess" [class.error]="!buySuccess">
-      {{ buyMessage }}
-    </p>
   </div>
 </div>

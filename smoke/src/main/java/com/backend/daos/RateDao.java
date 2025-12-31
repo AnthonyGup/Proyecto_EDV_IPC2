@@ -53,5 +53,94 @@ public class RateDao extends Crud<Rate> {
         ResultSet rs = stmt.executeQuery();
         return rs.next();
     }
+
+    /**
+     * Obtiene calificaciones promedio de los juegos de una empresa.
+     */
+    public com.google.gson.JsonArray getAverageRatingByGameForCompany(int companyId) throws SQLException {
+        String sql = "SELECT vg.videogame_id, vg.name, " +
+                "AVG(r.stars) AS average_rating, COUNT(r.user_id) AS rating_count " +
+                "FROM videogame vg " +
+                "LEFT JOIN rate r ON vg.videogame_id = r.game_id " +
+                "WHERE vg.company_id = ? " +
+                "GROUP BY vg.videogame_id, vg.name " +
+                "ORDER BY average_rating DESC";
+        
+        PreparedStatement stmt = CONNECTION.prepareStatement(sql);
+        stmt.setInt(1, companyId);
+        ResultSet rs = stmt.executeQuery();
+        
+        com.google.gson.JsonArray arr = new com.google.gson.JsonArray();
+        while (rs.next()) {
+            com.google.gson.JsonObject obj = new com.google.gson.JsonObject();
+            obj.addProperty("gameId", rs.getInt("videogame_id"));
+            obj.addProperty("gameTitle", rs.getString("name"));
+            obj.addProperty("averageRating", rs.getDouble("average_rating"));
+            obj.addProperty("ratingCount", rs.getInt("rating_count"));
+            arr.add(obj);
+        }
+        return arr;
+    }
+
+    /**
+     * Obtiene las peores calificaciones de los juegos de una empresa.
+     */
+    public com.google.gson.JsonArray getWorstRatedGamesByCompany(int companyId, int limit) throws SQLException {
+        String sql = "SELECT vg.videogame_id, vg.name, AVG(r.stars) AS average_rating, COUNT(r.user_id) AS rating_count " +
+                "FROM videogame vg " +
+                "LEFT JOIN rate r ON vg.videogame_id = r.game_id " +
+                "WHERE vg.company_id = ? " +
+                "GROUP BY vg.videogame_id, vg.name " +
+                "ORDER BY average_rating ASC, rating_count DESC " +
+                "LIMIT ?";
+        
+        PreparedStatement stmt = CONNECTION.prepareStatement(sql);
+        stmt.setInt(1, companyId);
+        stmt.setInt(2, limit);
+        ResultSet rs = stmt.executeQuery();
+        
+        com.google.gson.JsonArray arr = new com.google.gson.JsonArray();
+        while (rs.next()) {
+            com.google.gson.JsonObject obj = new com.google.gson.JsonObject();
+            obj.addProperty("gameId", rs.getInt("videogame_id"));
+            obj.addProperty("gameTitle", rs.getString("name"));
+            obj.addProperty("averageRating", rs.getDouble("average_rating"));
+            obj.addProperty("ratingCount", rs.getInt("rating_count"));
+            arr.add(obj);
+        }
+        return arr;
+    }
+
+    /**
+     * Obtiene comparativa de ratings personal vs comunidad para un usuario.
+     */
+    public com.google.gson.JsonArray getGamerRatesVsCommunitRates(String userId) throws SQLException {
+        String sql = "SELECT vg.videogame_id, vg.name, " +
+                "r.stars AS personal_rating, " +
+                "AVG(r2.stars) AS community_rating, " +
+                "COUNT(r2.user_id) AS rating_count " +
+                "FROM rate r " +
+                "JOIN videogame vg ON r.game_id = vg.videogame_id " +
+                "LEFT JOIN rate r2 ON vg.videogame_id = r2.game_id " +
+                "WHERE r.user_id = ? " +
+                "GROUP BY vg.videogame_id, vg.name, r.stars " +
+                "ORDER BY vg.name";
+        
+        PreparedStatement stmt = CONNECTION.prepareStatement(sql);
+        stmt.setString(1, userId);
+        ResultSet rs = stmt.executeQuery();
+        
+        com.google.gson.JsonArray arr = new com.google.gson.JsonArray();
+        while (rs.next()) {
+            com.google.gson.JsonObject obj = new com.google.gson.JsonObject();
+            obj.addProperty("gameId", rs.getInt("videogame_id"));
+            obj.addProperty("gameTitle", rs.getString("name"));
+            obj.addProperty("personalRating", rs.getInt("personal_rating"));
+            obj.addProperty("communityRating", rs.getDouble("community_rating"));
+            obj.addProperty("ratingCount", rs.getInt("rating_count"));
+            arr.add(obj);
+        }
+        return arr;
+    }
     
 }

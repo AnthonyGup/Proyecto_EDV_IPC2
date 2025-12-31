@@ -18,7 +18,7 @@ export class GamerProfileComponent implements OnInit {
   gamer: Gamer | null = null;
   isEditing = false;
   editForm: any = {};
-  wallet = 0;
+  wallet: number | null = null;
   rechargeAmount = 10;
   isRecharging = false;
   rechargeMessage = '';
@@ -30,6 +30,7 @@ export class GamerProfileComponent implements OnInit {
     this.user = this.session.getUser();
     if (this.user) {
       this.editForm = { ...this.user };
+      // Cargar info del gamer y esperar antes de proceder
       this.loadGamerInfo();
     }
   }
@@ -39,10 +40,14 @@ export class GamerProfileComponent implements OnInit {
     
     this.authService.getGamerInfo(this.user.mail).subscribe({
       next: (gamerInfo: any) => {
-        this.wallet = gamerInfo.wallet;
+        console.log('Gamer info recibida:', gamerInfo);
+        // El backend retorna la estructura completa del gamer
+        this.wallet = gamerInfo.wallet !== undefined && gamerInfo.wallet !== null ? Number(gamerInfo.wallet) : 0;
+        console.log('Wallet asignado:', this.wallet);
       },
       error: (err) => {
         console.error('Error loading gamer info:', err);
+        this.wallet = 0;
       }
     });
   }
@@ -63,7 +68,7 @@ export class GamerProfileComponent implements OnInit {
 
     this.authService.rechargeWallet(this.rechargeAmount, this.user.mail).subscribe({
       next: (res) => {
-        this.wallet = res.newWallet;
+        this.wallet = Number(res.newWallet);
         this.rechargeMessage = res.message;
         this.rechargeAmount = 10;
         this.isRecharging = false;

@@ -184,5 +184,14 @@ public class GroupMemberDao extends Crud<GroupMember> {
         
         return member;
     }
+
+    public boolean removeMemberFromGroup(int groupId, String userEmail) throws SQLException {
+        String sql = "DELETE FROM " + tabla + " WHERE familyGroup_id = ? AND user_id = ?";
+        PreparedStatement stmt = CONNECTION.prepareStatement(sql);
+        stmt.setInt(1, groupId);
+        stmt.setString(2, userEmail);
+        int rows = stmt.executeUpdate();
+        return rows > 0;
+    }
     
 }

@@ -5,11 +5,7 @@
 package com.backend.images.servlets;
 
 import com.backend.daos.ImageDao;
-import com.backend.daos.VideogameDao;
 import com.backend.entities.Image;
-import com.backend.entities.Videogame;
-import com.backend.images.ImageManagement;
-import com.backend.exceptions.AlreadyExistException;
 import com.backend.extras.LocalDateAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

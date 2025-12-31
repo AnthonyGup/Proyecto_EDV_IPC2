@@ -18,6 +18,16 @@ import { CategoryAdminComponent } from './components/category-admin/category-adm
 import { CategoryEditGameComponent } from './components/category-edit-game/category-edit-game.component';
 import { VideogameCreateComponent } from './components/videogame-create/videogame-create.component';
 import { BannerAdminComponent } from './components/banner-admin/banner-admin.component';
+import { ReportGlobalEarningsComponent } from './components/report-global-earnings/report-global-earnings.component';
+import { ReportTopGamesComponent } from './components/report-top-games/report-top-games.component';
+import { ReportCompanyEarningsComponent } from './components/report-company-earnings/report-company-earnings.component';
+import { ReportUserRankingComponent } from './components/report-user-ranking/report-user-ranking.component';
+import { CompanySalesReportComponent } from './components/company-sales-report/company-sales-report.component';
+import { ReportCompanyFeedbackComponent } from './components/report-company-feedback/report-company-feedback.component';
+import { CompanyTopGamesReportComponent } from './components/company-top-games-report/company-top-games-report.component';
+import { GamerExpenseHistoryComponent } from './components/gamer-expense-history/gamer-expense-history.component';
+import { GamerLibraryAnalysisComponent } from './components/gamer-library-analysis/gamer-library-analysis.component';
+import { GamerFamilyLibraryComponent } from './components/gamer-family-library/gamer-family-library.component';
 import { GamerLayoutComponent } from './components/gamer-layout/gamer-layout.component';
 import { GamerDashboardComponent } from './components/gamer-dashboard/gamer-dashboard.component';
 import { GameDetailComponent } from './components/game-detail/game-detail.component';
@@ -44,7 +54,11 @@ export const routes: Routes = [
       { path: 'category/create', component: CategoryCreateComponent },
       { path: 'category/edit', component: CategoryEditComponent },
       { path: 'category/admin', component: CategoryAdminComponent },
-      { path: 'category-edit-game/:id', component: CategoryEditGameComponent }
+      { path: 'category-edit-game/:id', component: CategoryEditGameComponent },
+      { path: 'reports/global-earnings', component: ReportGlobalEarningsComponent },
+      { path: 'reports/top-games', component: ReportTopGamesComponent },
+      { path: 'reports/company-earnings', component: ReportCompanyEarningsComponent },
+      { path: 'reports/user-ranking', component: ReportUserRankingComponent }
     ]
   },
   {
@@ -57,7 +71,10 @@ export const routes: Routes = [
       { path: 'game/create', component: VideogameCreateComponent },
       { path: 'comments', component: CompanyCommentsDashboardComponent },
       { path: 'games', component: CompanyGamesDashboardComponent },
-      { path: 'game/edit/:id', component: VideogameEditComponent }
+      { path: 'game/edit/:id', component: VideogameEditComponent },
+      { path: 'reports/sales', component: CompanySalesReportComponent },
+      { path: 'reports/feedback', component: ReportCompanyFeedbackComponent },
+      { path: 'reports/top-games', component: CompanyTopGamesReportComponent }
     ]
   },
   {
@@ -77,6 +94,9 @@ export const routes: Routes = [
       { path: 'family-group/invite', loadComponent: () => import('./components/family-group-invite/family-group-invite.component').then(m => m.FamilyGroupInviteComponent) },
       { path: 'family-group/list', loadComponent: () => import('./components/family-group-list/family-group-list.component').then(m => m.FamilyGroupListComponent) },
       { path: 'company/:id', loadComponent: () => import('./components/company-profile/company-profile.component').then(m => m.CompanyProfileComponent) },
+      { path: 'reports/expenses', component: GamerExpenseHistoryComponent },
+      { path: 'reports/library-analysis', component: GamerLibraryAnalysisComponent },
+      { path: 'reports/family-library', component: GamerFamilyLibraryComponent },
       { path: 'profile', component: GamerProfileComponent }
     ]
   },

@@ -14,7 +14,7 @@ import java.sql.SQLException;
  */
 public class Recharge {
     
-    public void recharch(Gamer gamer, double money) throws SQLException {
+    public void recharge(Gamer gamer, double money) throws SQLException {
         GamerDao dao = new GamerDao("gamer", "user_id");
         dao.update(gamer.getMail(), "wallet", (gamer.getWallet() + money));
     }

@@ -1,20 +1,28 @@
-<div class="login-shell">
-  <div class="login-container">
-    <h2>Login</h2>
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="email">Email:</label>
-        <input type="email" id="email" formControlName="email" required>
-      </div>
-      <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" id="password" formControlName="password" required>
-      </div>
-      <button type="submit" [disabled]="!loginForm.valid || isLoading">{{ isLoading ? 'Procesando...' : 'Login' }}</button>
-    </form>
-    <p class="error-banner" *ngIf="errorMessage">{{ errorMessage }}</p>
-    <p class="signup">
-      ¿No tienes cuenta? <a routerLink="/register">Regístrate</a>
-    </p>
+<div class="d-flex justify-content-center align-items-center min-vh-100" style="background-color: #0f172a;">
+  <div class="card bg-dark text-light border-secondary" style="width: 100%; max-width: 400px;">
+    <div class="card-header text-center" style="background-color: #111827; border-bottom: 1px solid #374151;">
+      <h2 class="mb-0">Login</h2>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <label for="email" class="form-label">Email:</label>
+          <input type="email" id="email" class="form-control bg-dark text-light border-secondary" formControlName="email" required>
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password:</label>
+          <input type="password" id="password" class="form-control bg-dark text-light border-secondary" formControlName="password" required>
+        </div>
+        <div class="d-grid">
+          <button type="submit" class="btn btn-primary" [disabled]="!loginForm.valid || isLoading">
+            {{ isLoading ? 'Procesando...' : 'Login' }}
+          </button>
+        </div>
+      </form>
+      <div class="alert alert-danger mt-3" *ngIf="errorMessage">{{ errorMessage }}</div>
+      <p class="text-center text-secondary mt-3">
+        ¿No tienes cuenta? <a routerLink="/register" class="text-primary">Regístrate</a>
+      </p>
+    </div>
   </div>
 </div>

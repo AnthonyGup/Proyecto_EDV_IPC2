@@ -1,24 +1,26 @@
-<section class="panel">
-  <h2>Invitaciones</h2>
-  <p *ngIf="loading" class="muted">Cargando invitaciones...</p>
-  <p *ngIf="error" class="error">{{ error }}</p>
-  <p *ngIf="message" class="message">{{ message }}</p>
+<div class="container-fluid py-4" style="background-color: #0f172a; min-height: 100vh;">
+  <h2 class="text-light mb-4">Invitaciones</h2>
+  <p *ngIf="loading" class="text-center text-light py-5">Cargando invitaciones...</p>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+  <div *ngIf="message" class="alert alert-info">{{ message }}</div>
 
-  <div *ngIf="!loading && invitations.length === 0" class="empty">
-    No tienes invitaciones pendientes.
+  <div *ngIf="!loading && invitations.length === 0" class="text-center py-5">
+    <p class="text-secondary">No tienes invitaciones pendientes.</p>
   </div>
 
-  <ul *ngIf="!loading && invitations.length > 0" class="invite-list">
-    <li *ngFor="let inv of invitations" class="invite-item">
-      <div class="invite-info">
-        <div class="name">Grupo: <strong>{{ inv.groupName || inv.familyGroupId }}</strong></div>
-        <div class="owner">Propietario: <span>{{ getNickname(inv.ownerId) }}</span></div>
-        <div class="date">Enviado: {{ inv.createdAt | date:'dd/MM/yyyy HH:mm' }}</div>
+  <div *ngIf="!loading && invitations.length > 0" class="row g-3">
+    <div class="col-md-6 col-lg-4" *ngFor="let inv of invitations">
+      <div class="card bg-dark text-light border-secondary">
+        <div class="card-body">
+          <h5 class="card-title">Grupo: <strong>{{ inv.groupName || inv.familyGroupId }}</strong></h5>
+          <p class="text-secondary mb-1">Propietario: {{ getNickname(inv.ownerId) }}</p>
+          <p class="text-secondary small">Enviado: {{ inv.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
+          <div class="d-flex gap-2 mt-3">
+            <button class="btn btn-sm btn-success flex-fill" (click)="respond(inv.invitationId!, 'accept')">Aceptar</button>
+            <button class="btn btn-sm btn-danger flex-fill" (click)="respond(inv.invitationId!, 'reject')">Rechazar</button>
+          </div>
+        </div>
       </div>
-      <div class="actions">
-        <button class="btn accept" (click)="respond(inv.invitationId!, 'accept')">Aceptar</button>
-        <button class="btn reject" (click)="respond(inv.invitationId!, 'reject')">Rechazar</button>
-      </div>
-    </li>
-  </ul>
-</section>
+    </div>
+  </div>
+</div>

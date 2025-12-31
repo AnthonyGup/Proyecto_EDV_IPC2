@@ -119,7 +119,6 @@ public class GameRateController extends HttpServlet {
 
         String userEmail = request.getParameter("userEmail");
 
-        RateDao dao = new RateDao("rate", "user_id");
         try (PrintWriter out = response.getWriter()) {
             if (userEmail != null && !userEmail.isBlank()) {
                 // devolver la calificación del usuario

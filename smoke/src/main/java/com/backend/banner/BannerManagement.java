@@ -56,7 +56,6 @@ public class BannerManagement {
     private double calcularValor(Videogame game) throws SQLException {
         Connection conn = DBConnection.getInstance().getConnection();
 
-        int cantidadRate = 0;
         double promedioRate = 0.0;
         int ventasTotales = 0;
 
@@ -66,14 +65,13 @@ public class BannerManagement {
             ps.setInt(1, game.getVideogameId());
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    cantidadRate = rs.getInt("cnt");
                     promedioRate = rs.getDouble("avgStars");
                 }
             }
         }
 
-        // Obtener cantidad de compras desde la tabla correcta 'purchase'
-        String sqlPurchase = "SELECT COUNT(*) AS cnt FROM purchase WHERE game_id = ?";
+        // Obtener cantidad de compras desde la tabla correcta 'purcharse'
+        String sqlPurchase = "SELECT COUNT(*) AS cnt FROM purcharse WHERE game_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sqlPurchase)) {
             ps.setInt(1, game.getVideogameId());
             try (ResultSet rs = ps.executeQuery()) {

@@ -11,7 +11,7 @@ import com.backend.comments.CommentThread;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Connection;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -138,4 +138,65 @@ public class CommentDao extends Crud<Comment> {
         }
         
         return rootComments;
-    }}
+    }
+
+    /**
+     * Top usuarios por cantidad de reseñas/comentarios.
+     * @param limit máximo de usuarios
+     * @return 
+     * @throws java.sql.SQLException
+     */
+    public com.google.gson.JsonArray getTopUsersByComments(int limit) throws SQLException {
+        String sql = "SELECT user_id, COUNT(comment_id) AS comments_count "
+                + "FROM comment "
+                + "GROUP BY user_id "
+                + "ORDER BY comments_count DESC "
+                + "LIMIT ?";
+
+        PreparedStatement stmt = CONNECTION.prepareStatement(sql);
+        stmt.setInt(1, limit);
+        ResultSet rs = stmt.executeQuery();
+
+        com.google.gson.JsonArray arr = new com.google.gson.JsonArray();
+        while (rs.next()) {
+            com.google.gson.JsonObject obj = new com.google.gson.JsonObject();
+            obj.addProperty("userId", rs.getString("user_id"));
+            obj.addProperty("commentsCount", rs.getInt("comments_count"));
+            arr.add(obj);
+        }
+        return arr;
+    }
+
+    /**
+     * Obtiene los mejores comentarios (más interacciones/respuestas) de una empresa.
+     */
+    public com.google.gson.JsonArray getTopCommentsByCompany(int companyId, int limit) throws SQLException {
+        String sql = "SELECT c.comment_id, c.user_id, c.game_id, vg.name, c.text as comment_text, " +
+                "COUNT(DISTINCT c2.comment_id) as reply_count " +
+                "FROM comment c " +
+                "JOIN videogame vg ON c.game_id = vg.videogame_id " +
+                "LEFT JOIN comment c2 ON c.comment_id = c2.parent_id " +
+                "WHERE vg.company_id = ? AND c.parent_id IS NULL " +
+                "GROUP BY c.comment_id, c.user_id, c.game_id, vg.name, c.text " +
+                "ORDER BY reply_count DESC " +
+                "LIMIT ?";
+        
+        PreparedStatement stmt = CONNECTION.prepareStatement(sql);
+        stmt.setInt(1, companyId);
+        stmt.setInt(2, limit);
+        ResultSet rs = stmt.executeQuery();
+        
+        com.google.gson.JsonArray arr = new com.google.gson.JsonArray();
+        while (rs.next()) {
+            com.google.gson.JsonObject obj = new com.google.gson.JsonObject();
+            obj.addProperty("commentId", rs.getInt("comment_id"));
+            obj.addProperty("userId", rs.getString("user_id"));
+            obj.addProperty("gameId", rs.getInt("game_id"));
+            obj.addProperty("gameTitle", rs.getString("name"));
+            obj.addProperty("commentText", rs.getString("comment_text"));
+            obj.addProperty("replyCount", rs.getInt("reply_count"));
+            arr.add(obj);
+        }
+        return arr;
+    }
+}
