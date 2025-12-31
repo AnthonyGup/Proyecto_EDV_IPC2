@@ -1,0 +1,62 @@
+<div class="container-fluid py-4" style="background-color: #0f172a; min-height: 100vh; color: #e2e8f0;">
+  <div style="max-width: 1200px; margin: 0 auto;">
+    <div class="text-center mb-4">
+      <h1 class="h2 text-light">Gestión de Banner</h1>
+      <p class="text-secondary">Elige un juego y marca sus imágenes para el banner.</p>
+    </div>
+
+    <div *ngIf="successMessage" class="alert alert-success position-fixed top-0 end-0 m-3" style="z-index: 1000;" [class.d-none]="successMessageExiting">
+      {{ successMessage }}
+    </div>
+
+    <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+    <div class="row g-3 mb-4" *ngIf="!loadingGames && videogames.length > 0">
+      <div class="col-md-6 col-lg-4 col-xl-3" *ngFor="let g of videogames">
+        <div class="card bg-dark border h-100" 
+             [class.border-success]="selectedGame?.videogameId === g.videogameId"
+             [class.border-secondary]="selectedGame?.videogameId !== g.videogameId"
+             (click)="selectGame(g)"
+             style="cursor: pointer; transition: transform 0.2s;">
+          <img [src]="getGameImageUrl(g)" class="card-img-top" alt="Juego" style="height: 280px; object-fit: cover;" />
+          <div class="card-body">
+            <h5 class="card-title text-light">{{ g.name }}</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="selectedGame" class="mt-5">
+      <h2 class="h3 text-light mb-3">Imágenes de {{ selectedGame.name }}</h2>
+      <div class="row g-3 mb-3">
+        <div class="col-md-6 col-lg-4 col-xl-3" *ngFor="let img of images">
+          <div class="card bg-dark border h-100" 
+               [class.border-primary]="isSelected(img)"
+               [class.border-secondary]="!isSelected(img)"
+               style="border-color: #1f2937 !important;">
+            <img [src]="getImageUrl(img)" class="card-img-top" alt="Imagen" style="height: 200px; object-fit: cover;" />
+            <div class="card-body">
+              <span class="badge mb-2" [class.bg-success]="img.baner" [class.bg-secondary]="!img.baner">
+                {{ img.baner ? 'Banner' : 'Normal' }}
+              </span>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" [checked]="isSelected(img)" (change)="onSelectCheckbox(img, $event)" [id]="'img-' + img.imageId" />
+                <label class="form-check-label text-light" [for]="'img-' + img.imageId">
+                  Seleccionar
+                </label>
+              </div>
+              <button class="btn btn-sm btn-danger w-100" (click)="removeFromBanner(img)" [disabled]="!img.baner || updating">
+                Quitar de banner
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="text-end">
+        <button class="btn btn-success" (click)="addSelectedToBanner()" [disabled]="selecting.size === 0 || updating">
+          Agregar seleccionadas al banner
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

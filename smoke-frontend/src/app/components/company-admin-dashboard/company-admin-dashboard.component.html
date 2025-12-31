@@ -1,30 +1,57 @@
-<section class="card" *ngIf="user; else noUser">
-  <h2>Perfil del administrador</h2>
-  <div class="grid">
-    <div><span class="label">Nickname:</span><span>{{ user.nickname }}</span></div>
-    <div><span class="label">Email:</span><span>{{ user.mail }}</span></div>
-    <div><span class="label">Tipo:</span><span>{{ user.type }}</span></div>
-    <div><span class="label">Nacimiento:</span><span>{{ user.birthdate }}</span></div>
-    <div><span class="label">Compañía ID:</span><span>{{ user.company_id || user.companyId || 'N/A' }}</span></div>
+<section class="card bg-dark border" *ngIf="user; else noUser">
+  <h2 class="text-light">Perfil del administrador</h2>
+  <div class="row g-3">
+    <div class="col-md-6">
+      <small class="text-secondary">Nickname:</small>
+      <p class="text-light">{{ user.nickname }}</p>
+    </div>
+    <div class="col-md-6">
+      <small class="text-secondary">Email:</small>
+      <p class="text-light">{{ user.mail }}</p>
+    </div>
+    <div class="col-md-6">
+      <small class="text-secondary">Tipo:</small>
+      <p class="text-light">{{ user.type }}</p>
+    </div>
+    <div class="col-md-6">
+      <small class="text-secondary">Nacimiento:</small>
+      <p class="text-light">{{ user.birthdate }}</p>
+    </div>
+    <div class="col-md-6">
+      <small class="text-secondary">Compañía ID:</small>
+      <p class="text-light">{{ user.company_id || user.companyId || 'N/A' }}</p>
+    </div>
   </div>
 </section>
 <ng-template #noUser>
-  <div class="card">
-    <p>No hay sesión activa.</p>
+  <div class="card bg-dark border">
+    <p class="text-secondary">No hay sesión activa.</p>
   </div>
 </ng-template>
 
-<section class="card" *ngIf="company && !loading; else loadingCompany">
-  <h2>Información de la compañía</h2>
-  <div class="grid">
-    <div><span class="label">Nombre:</span><span class="company-name">{{ company.name }}</span></div>
-    <div><span class="label">ID:</span><span>{{ company.companyId || company.companyId }}</span></div>
-    <div><span class="label">Comisión:</span><span>{{ (company.commission * 100) | number: '1.0-2' }}%</span></div>
-    <div class="full-width"><span class="label">Descripción:</span><span>{{ company.description || 'No especificada' }}</span></div>
+<section class="card bg-dark border" *ngIf="company && !loading; else loadingCompany">
+  <h2 class="text-light">Información de la compañía</h2>
+  <div class="row g-3">
+    <div class="col-md-6">
+      <small class="text-secondary">Nombre:</small>
+      <span class="badge bg-success">{{ company.name }}</span>
+    </div>
+    <div class="col-md-6">
+      <small class="text-secondary">ID:</small>
+      <p class="text-light">{{ company.companyId || company.companyId }}</p>
+    </div>
+    <div class="col-md-6">
+      <small class="text-secondary">Comisión:</small>
+      <p class="text-light">{{ (company.commission * 100) | number: '1.0-2' }}%</p>
+    </div>
+    <div class="col-12">
+      <small class="text-secondary">Descripción:</small>
+      <p class="text-light">{{ company.description || 'No especificada' }}</p>
+    </div>
   </div>
 </section>
 <ng-template #loadingCompany>
-  <section class="card" *ngIf="loading">
-    <p>Cargando información de la compañía...</p>
+  <section class="card bg-dark border" *ngIf="loading">
+    <p class="text-secondary">Cargando información de la compañía...</p>
   </section>
 </ng-template>

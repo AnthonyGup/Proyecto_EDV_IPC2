@@ -1,39 +1,46 @@
-<div class="page">
-  <div class="shell">
-    <div class="topbar">
-      <p class="eyebrow">Categorías</p>
-      <h1>Editar categorías del juego</h1>
-      <p class="subtitle">Selecciona las categorías que deseas asignar</p>
+<div class="container-fluid py-4" style="background-color: #0f172a; min-height: 100vh; color: #e2e8f0;">
+  <div style="max-width: 800px; margin: 0 auto;">
+    <div class="mb-4">
+      <small class="text-secondary d-block">Categorías</small>
+      <h1 class="h2 text-light">Editar categorías del juego</h1>
+      <p class="text-secondary">Selecciona las categorías que deseas asignar</p>
     </div>
 
-    <div class="card">
-      <div *ngIf="loading" class="muted">Cargando...</div>
-      <div *ngIf="error" class="error">{{ error }}</div>
-      <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
+    <div class="card bg-dark border" style="border-color: #1f2937 !important;">
+      <div class="card-body">
+        <div *ngIf="loading" class="text-secondary">Cargando...</div>
+        <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+        <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
 
-      <div *ngIf="!loading && allCategories.length > 0" class="form">
-        <div class="form-group">
-          <label>Categorías disponibles:</label>
-          <div class="categories-list">
-            <div *ngFor="let cat of allCategories" class="checkbox-item">
-              <input 
-                type="checkbox"
-                [id]="'cat-' + cat.categoryId"
-                [checked]="selectedCategoryIds.has(cat.categoryId)"
-                (change)="toggleCategory(cat.categoryId, $any($event).target.checked)"
-              />
-              <label [for]="'cat-' + cat.categoryId">{{ cat.name }}</label>
+        <div *ngIf="!loading && allCategories.length > 0">
+          <div class="mb-4">
+            <label class="form-label text-light fw-bold">Categorías disponibles:</label>
+            <div class="row g-2">
+              <div class="col-md-6" *ngFor="let cat of allCategories">
+                <div class="form-check p-3 bg-dark border border-secondary rounded">
+                  <input 
+                    class="form-check-input"
+                    type="checkbox"
+                    [id]="'cat-' + cat.categoryId"
+                    [checked]="selectedCategoryIds.has(cat.categoryId)"
+                    (change)="toggleCategory(cat.categoryId, $any($event).target.checked)"
+                  />
+                  <label class="form-check-label text-light" [for]="'cat-' + cat.categoryId">
+                    {{ cat.name }}
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="actions">
-          <button (click)="save()" [disabled]="saving" class="btn btn-primary">
-            {{ saving ? 'Guardando...' : 'Guardar Cambios' }}
-          </button>
-          <button (click)="cancel()" [disabled]="saving" class="btn btn-secondary">
-            Cancelar
-          </button>
+          <div class="d-flex gap-2">
+            <button (click)="save()" [disabled]="saving" class="btn btn-primary">
+              {{ saving ? 'Guardando...' : 'Guardar Cambios' }}
+            </button>
+            <button (click)="cancel()" [disabled]="saving" class="btn btn-secondary">
+              Cancelar
+            </button>
+          </div>
         </div>
       </div>
     </div>

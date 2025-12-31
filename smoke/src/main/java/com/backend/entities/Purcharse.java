@@ -14,7 +14,7 @@ public class Purcharse {
     private String userId;
     private LocalDate date;
     private double price;
-    private String purcharseId;
+    private int purcharseId;
     private int gameId;
 
     public String getUserId() {
@@ -41,11 +41,11 @@ public class Purcharse {
         this.price = price;
     }
 
-    public String getPurcharseId() {
+    public int getPurcharseId() {
         return purcharseId;
     }
 
-    public void setPurcharseId(String purcharseId) {
+    public void setPurcharseId(int purcharseId) {
         this.purcharseId = purcharseId;
     }
 
@@ -56,6 +56,4 @@ public class Purcharse {
     public void setGameId(int gameId) {
         this.gameId = gameId;
     }
-    
-    
 }

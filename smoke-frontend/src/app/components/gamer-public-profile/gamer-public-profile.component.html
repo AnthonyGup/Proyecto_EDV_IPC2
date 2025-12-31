@@ -1,0 +1,43 @@
+<div class="container-fluid py-4" style="background-color: #0f172a; min-height: 100vh;" *ngIf="!loading">
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+  <div *ngIf="info" class="card bg-dark text-light border-secondary mb-4">
+    <div class="card-body">
+      <h1 class="mb-2">{{ info.nickname }}</h1>
+      <p class="text-secondary">{{ info.userEmail }}</p>
+      <div class="d-flex gap-2">
+        <span class="badge bg-secondary" *ngIf="info.country">{{ info.country }}</span>
+        <span class="badge bg-info" *ngIf="info.phone">{{ info.phone }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <h2 class="text-light mb-4">Juegos que posee</h2>
+    <div class="row g-3" *ngIf="ownedGames.length > 0; else empty">
+      <div class="col-md-6 col-lg-4" *ngFor="let game of ownedGames" [routerLink]="['/gamer/game', game.videogameId]" style="cursor: pointer;">
+        <div class="card bg-dark border-secondary h-100">
+          <img *ngIf="getCover(game.videogameId)" [src]="'data:image/png;base64,' + getCover(game.videogameId)" class="card-img-top" [alt]="game.name" style="height: 200px; object-fit: cover;" />
+          <div *ngIf="!getCover(game.videogameId)" class="bg-secondary d-flex justify-content-center align-items-center" style="height: 200px;">
+            <span class="text-secondary">Sin imagen</span>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title text-light">{{ game.name }}</h5>
+            <p class="card-text text-secondary">{{ game.description }}</p>
+            <div class="d-flex gap-2">
+              <span class="badge bg-primary">${{ game.price }}</span>
+              <span class="badge bg-secondary">{{ game.ageRestriction }}+</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #empty>
+      <div class="text-center py-5">
+        <p class="text-secondary">Este gamer no posee juegos aún</p>
+      </div>
+    </ng-template>
+  </div>
+</div>
+<div *ngIf="loading" class="text-center py-5" style="background-color: #0f172a; min-height: 100vh;">
+  <p class="text-light">Cargando...</p>
+</div>

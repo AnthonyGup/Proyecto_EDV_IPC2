@@ -1,78 +1,94 @@
-<div class="edit-container" *ngIf="!loading; else loadingTpl">
-  <!-- Success Message Toast -->
-  <div class="success-toast" [class.exiting]="successMessageExiting" *ngIf="successMessage">
-    {{ successMessage }}
-  </div>
-  <div class="header">
-    <h1>Editar juego</h1>
-    <p *ngIf="game">{{ game.name }}</p>
-  </div>
+<div class="container-fluid py-4" style="background-color: #0f172a; min-height: 100vh;" *ngIf="!loading; else loadingTpl">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-10">
+      <div class="alert alert-success" [class.fade]="successMessageExiting" *ngIf="successMessage">{{ successMessage }}</div>
+      
+      <div class="card bg-dark text-light border-secondary">
+        <div class="card-header" style="background-color: #111827; border-bottom: 1px solid #374151;">
+          <h1 class="mb-0">Editar juego</h1>
+          <p class="text-secondary mb-0" *ngIf="game">{{ game.name }}</p>
+        </div>
+        <div class="card-body">
+          <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 
-  <div *ngIf="error" class="error-message">
-    <p>{{ error }}</p>
-  </div>
+          <div *ngIf="game">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Nombre</label>
+                <input type="text" class="form-control bg-dark text-light border-secondary" [(ngModel)]="game.name" />
+              </div>
+              <div class="col-md-3 mb-3">
+                <label class="form-label">Precio</label>
+                <input type="number" class="form-control bg-dark text-light border-secondary" [(ngModel)]="game.price" />
+              </div>
+              <div class="col-md-3 mb-3">
+                <label class="form-label">Estado</label>
+                <button class="btn w-100"
+                        [class.btn-success]="game.available"
+                        [class.btn-danger]="!game.available"
+                        (click)="toggleAvailability()">
+                  {{ game.available ? 'Disponible' : 'No disponible' }}
+                </button>
+              </div>
+            </div>
 
-  <div *ngIf="game" class="form">
-    <!-- Datos básicos -->
-    <label>
-      Nombre
-      <input type="text" [(ngModel)]="game.name" />
-    </label>
-    <label>
-      Precio
-      <input type="number" [(ngModel)]="game.price" />
-    </label>
-    <label>
-      Descripción
-      <textarea [(ngModel)]="game.description"></textarea>
-    </label>
-    <div class="availability">
-      <span>Estado:</span>
-      <button class="btn-toggle"
-              [class.available]="game.available"
-              [class.unavailable]="!game.available"
-              [style.background]="(game.available ? 'linear-gradient(135deg, #174b1967 0%, #45a04907 100%)' : 'linear-gradient(135deg, #4d2421 0%, #98191988 100%)')"
-              (click)="toggleAvailability()">
-        {{ game.available ? 'Disponible' : 'No disponible' }}
-      </button>
-    </div>
+            <div class="mb-3">
+              <label class="form-label">Descripción</label>
+              <textarea class="form-control bg-dark text-light border-secondary" [(ngModel)]="game.description" rows="4"></textarea>
+            </div>
 
-    <!-- Gestión de imágenes -->
-    <div class="images">
-      <span>Imágenes actuales</span>
-      <div class="image-grid">
-        <div class="image-card" *ngFor="let img of images">
-          <img [src]="img.url || (img.image ? 'data:image/png;base64,'+img.image : '')" alt="image" />
-          <button class="btn-remove" (click)="removeImage(img)">Eliminar</button>
+            <div class="mb-4">
+              <label class="form-label">Imágenes actuales</label>
+              <div class="row g-3">
+                <div class="col-6 col-md-4 col-lg-3" *ngFor="let img of images">
+                  <div class="card bg-secondary">
+                    <img [src]="img.url || (img.image ? 'data:image/png;base64,'+img.image : '')" class="card-img-top" alt="image" />
+                    <div class="card-body p-2">
+                      <button class="btn btn-sm btn-danger w-100" (click)="removeImage(img)">Eliminar</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-3">
+                <label class="form-label">Agregar imágenes</label>
+                <input type="file" class="form-control bg-dark text-light border-secondary" (change)="onFilesSelected($event)" multiple />
+              </div>
+            </div>
+
+            <div class="d-grid mb-4">
+              <button class="btn btn-primary" (click)="save()" [disabled]="saving">{{ saving ? 'Guardando...' : 'Guardar' }}</button>
+            </div>
+
+            <div class="card bg-secondary border-secondary">
+              <div class="card-header" style="background-color: #1f2937;">
+                <div class="d-flex justify-content-between align-items-center">
+                  <span>Categorías</span>
+                  <span class="badge bg-primary">Seleccionadas: {{ selectedCategoryIds.length }}</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-6 col-lg-4 mb-2" *ngFor="let cat of allCategories">
+                    <div class="form-check">
+                      <input type="checkbox" class="form-check-input" [checked]="isCategorySelected(cat.categoryId)" (change)="toggleCategory(cat.categoryId)" id="cat-{{cat.categoryId}}" />
+                      <label class="form-check-label" for="cat-{{cat.categoryId}}">{{ cat.name }}</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="d-grid mt-3">
+                  <button class="btn btn-primary" (click)="saveCategories()">Guardar categorías</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <label class="upload">
-        Agregar imágenes
-        <input type="file" (change)="onFilesSelected($event)" multiple />
-      </label>
-    </div>
-
-    <button class="btn-save" (click)="save()" [disabled]="saving">{{ saving ? 'Guardando...' : 'Guardar' }}</button>
-
-    <!-- Categorías -->
-    <div class="categories">
-      <div class="categories-header">
-        <span>Categorías</span>
-        <span class="count">Seleccionadas: {{ selectedCategoryIds.length }}</span>
-      </div>
-      <div class="categories-grid">
-        <label class="category-item" *ngFor="let cat of allCategories">
-          <input type="checkbox" [checked]="isCategorySelected(cat.categoryId)" (change)="toggleCategory(cat.categoryId)" />
-          <span>{{ cat.name }}</span>
-        </label>
-      </div>
-      <button class="btn-save" (click)="saveCategories()">Guardar categorías</button>
     </div>
   </div>
 </div>
 
 <ng-template #loadingTpl>
-  <div class="loading">
-    <p>Cargando juego...</p>
+  <div class="d-flex justify-content-center align-items-center" style="min-height: 100vh; background-color: #0f172a;">
+    <p class="text-light">Cargando juego...</p>
   </div>
 </ng-template>

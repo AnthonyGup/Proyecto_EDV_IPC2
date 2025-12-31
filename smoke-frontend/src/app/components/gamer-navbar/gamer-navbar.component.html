@@ -1,0 +1,84 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top border-bottom border-secondary">
+  <div class="container-fluid">
+    <button class="btn btn-outline-light" (click)="goHome()">SMOKE</button>
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a routerLink="/gamer" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">Tienda</a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/gamer/profile" routerLinkActive="active" class="nav-link">Perfil</a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/gamer/library" routerLinkActive="active" class="nav-link">Biblioteca</a>
+        </li>
+        <li class="nav-item dropdown" (mouseleave)="closeFamilyDropdown()" (mouseenter)="openFamilyDropdown()">
+          <a class="nav-link dropdown-toggle" role="button" (click)="toggleFamilyDropdown()">Grupo familiar</a>
+          <ul class="dropdown-menu bg-dark" [class.show]="showFamilyDropdown">
+            <li><a routerLink="/gamer/family-group/list" class="dropdown-item text-light" (click)="unpinAndCloseFamilyDropdown()">Mis grupos</a></li>
+            <li><a routerLink="/gamer/family-group/create" class="dropdown-item text-light" (click)="unpinAndCloseFamilyDropdown()">Crear grupo</a></li>
+            <li><a routerLink="/gamer/family-group/invitations" class="dropdown-item text-light" (click)="unpinAndCloseFamilyDropdown()">Ver invitaciones</a></li>
+            <li><a routerLink="/gamer/family-group/invite" class="dropdown-item text-light" (click)="unpinAndCloseFamilyDropdown()">Invitar miembros</a></li>
+          </ul>
+        </li>
+        <li class="nav-item reports-dropdown-container">
+          <a class="nav-link dropdown-toggle" role="button" (click)="toggleReportsDropdown()">Reportes</a>
+          <ul class="dropdown-menu bg-dark" [class.show]="showReportsDropdown">
+            <li><a routerLink="/gamer/reports/expenses" class="dropdown-item text-light" (click)="showReportsDropdown = false">Historial de Gastos</a></li>
+            <li><a routerLink="/gamer/reports/library-analysis" class="dropdown-item text-light" (click)="showReportsDropdown = false">Análisis de Biblioteca</a></li>
+            <li><a routerLink="/gamer/reports/family-library" class="dropdown-item text-light" (click)="showReportsDropdown = false">Biblioteca Familiar</a></li>
+          </ul>
+        </li>
+      </ul>
+      
+      <div class="d-flex gap-2 flex-wrap align-items-center">
+        <div class="position-relative">
+          <input type="text" class="form-control form-control-sm bg-dark text-light border-secondary" 
+                 placeholder="Buscar juegos..." [(ngModel)]="searchName" (click)="toggleFilters()" style="width: 200px; --bs-form-control-placeholder-color: #cbd5e1;" />
+          
+          <div class="position-absolute bg-dark border border-secondary rounded p-3 mt-1" 
+               style="right: 0; z-index: 1050; min-width: 300px;" *ngIf="showFilters">
+            <div class="mb-2">
+              <label class="form-label small">Categoría</label>
+              <select class="form-select form-select-sm bg-dark text-light border-secondary" [(ngModel)]="filterCategoryId">
+                <option [ngValue]="undefined">Todas</option>
+                <option *ngFor="let c of categories" [ngValue]="c.categoryId">{{ c.name }}</option>
+              </select>
+            </div>
+            <div class="row">
+              <div class="col-6 mb-2">
+                <label class="form-label small">Precio min</label>
+                <input type="number" class="form-control form-control-sm bg-dark text-light border-secondary" [(ngModel)]="filterMinPrice" min="0" step="0.01" />
+              </div>
+              <div class="col-6 mb-2">
+                <label class="form-label small">Precio max</label>
+                <input type="number" class="form-control form-control-sm bg-dark text-light border-secondary" [(ngModel)]="filterMaxPrice" min="0" step="0.01" />
+              </div>
+            </div>
+            <div class="mb-2">
+              <label class="form-label small">Edad máx</label>
+              <input type="number" class="form-control form-control-sm bg-dark text-light border-secondary" [(ngModel)]="filterMaxAge" min="0"/>
+            </div>
+            <div class="d-flex gap-2">
+              <button class="btn btn-sm btn-primary flex-fill" (click)="performSearch()">Buscar</button>
+              <button class="btn btn-sm btn-secondary flex-fill" (click)="clearSearch()">Limpiar</button>
+            </div>
+          </div>
+        </div>
+        
+        <input type="text" class="form-control form-control-sm bg-dark text-light border-secondary" 
+               placeholder="Buscar compañías..." [(ngModel)]="companyQuery" style="width: 150px; --bs-form-control-placeholder-color: #cbd5e1;" />
+        <button class="btn btn-sm btn-primary" (click)="searchCompanies()">Buscar</button>
+        
+        <input type="text" class="form-control form-control-sm bg-dark text-light border-secondary" 
+               placeholder="Buscar gamers..." [(ngModel)]="gamerQuery" (keyup.enter)="searchGamers()" style="width: 150px; --bs-form-control-placeholder-color: #cbd5e1;" />
+        <button class="btn btn-sm btn-primary" (click)="searchGamers()">Buscar</button>
+      </div>
+    </div>
+  </div>
+</nav>

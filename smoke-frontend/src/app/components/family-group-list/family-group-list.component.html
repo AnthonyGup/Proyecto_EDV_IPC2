@@ -1,0 +1,47 @@
+<div class="container-fluid py-4" style="background-color: #0f172a; min-height: 100vh;">
+  <h2 class="text-light mb-4">Mis grupos familiares</h2>
+
+  <div *ngIf="!currentUserEmail" class="alert alert-danger">Debes iniciar sesión para ver tus grupos.</div>
+  <div *ngIf="loading" class="text-center py-5">
+    <p class="text-light">Cargando...</p>
+  </div>
+
+  <div *ngIf="message" class="alert alert-danger">{{ message }}</div>
+
+  <div class="row g-3" *ngIf="currentUserEmail && groups.length > 0">
+    <div class="col-md-6 col-lg-4" *ngFor="let g of groups">
+      <div class="card bg-dark text-light border-secondary h-100">
+        <div class="card-header d-flex justify-content-between align-items-center" style="background-color: #111827; border-bottom: 1px solid #374151;">
+          <h5 class="mb-0">{{ g.groupName || g.name }}</h5>
+          <button *ngIf="g.ownerId === currentUserEmail" class="btn btn-sm btn-danger" (click)="deleteGroup(g)" title="Eliminar grupo">
+            ✕
+          </button>
+        </div>
+        <div class="card-body">
+          <p class="text-secondary small">Dueño: {{ getNickname(g.ownerId) }}</p>
+          <div>
+            <strong class="d-block mb-2">Integrantes:</strong>
+            <ul class="list-unstyled">
+              <li class="mb-1 d-flex justify-content-between align-items-center" *ngFor="let m of members[g.groupId || 0]">
+                <span class="badge bg-secondary">{{ getNickname(m.userId) }}</span>
+                <button *ngIf="g.ownerId === currentUserEmail && m.userId !== currentUserEmail" 
+                        class="btn btn-sm btn-outline-danger ms-2" 
+                        (click)="removeMember(g, m.userId)"
+                        title="Eliminar miembro">
+                  ✕
+                </button>
+              </li>
+              <li *ngIf="!members[g.groupId || 0] || (members[g.groupId || 0]?.length || 0) === 0" class="text-secondary">
+                Sin integrantes listados
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="currentUserEmail && !loading && groups.length === 0" class="text-center py-5">
+    <p class="text-secondary">No perteneces a ningún grupo.</p>
+  </div>
+</div>

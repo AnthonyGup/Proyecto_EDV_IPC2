@@ -1,0 +1,27 @@
+<div class="container-fluid py-4" style="background-color: #0f172a; min-height: 100vh;">
+  <h1 class="text-light mb-4">Mi Biblioteca</h1>
+  
+  <div *ngIf="loading" class="text-center py-5">
+    <p class="text-light">Cargando biblioteca...</p>
+  </div>
+  
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <div class="row g-3" *ngIf="!loading && games.length > 0">
+    <div class="col-6 col-md-4 col-lg-3 col-xl-2" *ngFor="let game of games" (click)="openGame(game)" style="cursor: pointer;">
+      <div class="card bg-dark border-secondary h-100">
+        <img [src]="covers[game.videogameId] || getPlaceholder(300, 180, game.name)" class="card-img-top" [alt]="game.name" style="height: 180px; object-fit: cover;" />
+        <div class="card-body p-2">
+          <h6 class="card-title text-light mb-1">{{ game.name }}</h6>
+          <span class="badge" [class.bg-success]="game.buyed" [class.bg-info]="!game.buyed">
+            {{ game.buyed ? 'Comprado' : 'Prestado' }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && games.length === 0" class="text-center py-5">
+    <p class="text-secondary">No tienes juegos aún</p>
+  </div>
+</div>

@@ -1,0 +1,68 @@
+<div class="container py-4">
+  <h2 class="mb-3 text-light">Ranking de usuarios</h2>
+  <p class="text-secondary">Top compradores y top reseñadores.</p>
+
+  <div class="row g-3 mb-3">
+    <div class="col-12 col-md-3">
+      <label class="form-label text-secondary">Límite</label>
+      <input class="form-control form-control-sm bg-dark text-light" type="number" [(ngModel)]="limit" (change)="fetch()" min="1" max="100" />
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="text-info">Cargando...</div>
+  <div *ngIf="error" class="text-danger">{{ error }}</div>
+
+  <div *ngIf="!loading && !error && data" class="row g-3">
+    <div class="col-md-6">
+      <div class="card bg-dark border h-100" style="border-color:#1f2937 !important;">
+        <div class="card-body text-light">
+          <h5 class="mb-3">Top compradores</h5>
+          <div class="table-responsive">
+            <table class="table table-dark table-sm align-middle">
+              <thead>
+                <tr>
+                  <th>Usuario</th>
+                  <th>Compras</th>
+                  <th>Gasto total</th>
+                  <th>Juegos únicos</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let u of data?.topBuyers">
+                  <td>{{ u.userId }}</td>
+                  <td>{{ u.purchasesCount }}</td>
+                  <td>${{ u.totalSpent | number:'1.0-2' }}</td>
+                  <td>{{ u.uniqueGames }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card bg-dark border h-100" style="border-color:#1f2937 !important;">
+        <div class="card-body text-light">
+          <h5 class="mb-3">Top reseñadores</h5>
+          <div class="table-responsive">
+            <table class="table table-dark table-sm align-middle">
+              <thead>
+                <tr>
+                  <th>Usuario</th>
+                  <th>Reseñas</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let u of data?.topCommenters">
+                  <td>{{ u.userId }}</td>
+                  <td>{{ u.commentsCount }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -13,3 +13,4 @@ export * from './Rate';
 export * from './UserCompany';
 export * from './VideogameCategory';
 export * from './GlobalCommission';
+export * from './Invitation';

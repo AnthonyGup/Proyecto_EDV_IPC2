@@ -1,0 +1,69 @@
+<div class="container py-4">
+  <h2 class="mb-3 text-light">Top ventas y calidad</h2>
+  <p class="text-secondary">Juegos más vendidos y mejor valorados. Filtra por categoría o edad.</p>
+
+  <div class="row g-3 mb-3">
+    <div class="col-6 col-md-3">
+      <label class="form-label text-secondary">Ordenar por</label>
+      <select class="form-select form-select-sm bg-dark text-light" [(ngModel)]="sortBy" (change)="fetch()">
+        <option value="sales">Ventas</option>
+        <option value="rating">Calificación</option>
+      </select>
+    </div>
+    <div class="col-6 col-md-3">
+      <label class="form-label text-secondary">Categoría</label>
+      <select class="form-select form-select-sm bg-dark text-light" [(ngModel)]="categoryId" (change)="fetch()">
+        <option [ngValue]="null">Todas</option>
+        <option *ngFor="let cat of categories" [ngValue]="cat.categoryId">{{ cat.name }}</option>
+      </select>
+    </div>
+    <div class="col-6 col-md-3">
+      <label class="form-label text-secondary">Edad máxima</label>
+      <input class="form-control form-control-sm bg-dark text-light" type="number" [(ngModel)]="ageRestriction" (change)="fetch()" placeholder="Ej: 18" />
+    </div>
+    <div class="col-6 col-md-3">
+      <label class="form-label text-secondary">Límite</label>
+      <input class="form-control form-control-sm bg-dark text-light" type="number" [(ngModel)]="limit" (change)="fetch()" min="1" max="100" />
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="text-info">Cargando...</div>
+  <div *ngIf="error" class="text-danger">{{ error }}</div>
+
+  <div *ngIf="!loading && !error && data" class="card bg-dark border" style="border-color:#1f2937 !important;">
+    <div class="card-body text-light">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <small class="text-secondary d-block">Ordenado por</small>
+          <strong>{{ data?.sortedBy }}</strong>
+        </div>
+        <div class="text-secondary">Resultados: {{ data?.resultsCount }}</div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-dark table-sm align-middle">
+          <thead>
+            <tr>
+              <th>Juego</th>
+              <th>Empresa</th>
+              <th>Ventas</th>
+              <th>Calificación</th>
+              <th>Precio</th>
+              <th>Edad</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let g of data?.games">
+              <td>{{ g.name }}</td>
+              <td>{{ g.companyName }}</td>
+              <td>{{ g.totalSales }}</td>
+              <td>{{ g.avgRating | number:'1.1-1' }} ({{ g.ratingCount }})</td>
+              <td>${{ g.price | number:'1.0-2' }}</td>
+              <td>{{ g.ageRestriction }}+</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

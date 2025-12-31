@@ -1,0 +1,22 @@
+﻿/* Estilos manejados por Bootstrap */
+
+/* Hacer visibles los placeholders en inputs oscuros */
+.form-control::placeholder {
+  color: #cbd5e1 !important;
+  opacity: 1 !important;
+}
+
+.form-control::-webkit-input-placeholder {
+  color: #cbd5e1 !important;
+  opacity: 1 !important;
+}
+
+.form-control::-moz-placeholder {
+  color: #cbd5e1 !important;
+  opacity: 1 !important;
+}
+
+.form-control:-ms-input-placeholder {
+  color: #cbd5e1 !important;
+  opacity: 1 !important;
+}

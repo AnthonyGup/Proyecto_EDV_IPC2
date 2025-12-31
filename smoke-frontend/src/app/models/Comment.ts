@@ -5,3 +5,8 @@ export interface Comment {
   parentId: number;
   comentId: number;
 }
+
+export interface CommentThread {
+  comment: Comment;
+  replies: CommentThread[];
+}

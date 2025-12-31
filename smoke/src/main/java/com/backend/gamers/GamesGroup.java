@@ -21,17 +21,15 @@ import java.util.List;
  */
 public class GamesGroup {
     
-    private Gamer owner;
     private FamilyGroup group;
     
     public GamesGroup(Gamer owner, FamilyGroup group) {
-        this.owner = owner;
         this.group = group;
     }
     
     public void addGamesToGamer(Gamer targetGamer) throws SQLException, AlreadyExistException {
         GroupMemberDao groupDao = new GroupMemberDao("groupMember", "");
-        LibraryDao libDao = new LibraryDao("library", "");
+        LibraryDao libDao = new LibraryDao("`library`", "");
         
             // obtener todos los miembros del grupo
             List<GroupMember> members = groupDao.readAll();

@@ -1,6 +1,8 @@
 export interface FamilyGroup {
-  groupId: number;
-  name: string;
-  description: string;
+  groupId?: number;
+  /** Nombre de visualización; algunos endpoints usan groupName, otros name. */
+  name?: string;
+  groupName?: string;
+  description?: string;
   ownerId: string;
 }

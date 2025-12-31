@@ -38,6 +38,8 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['/admin']);
       } else if (user.type === 'COMPANY_ADMIN') {
         this.router.navigate(['/company/admin']);
+      } else if (user.type === 'GAMER') {
+        this.router.navigate(['/gamer']);
       }
     }
   }
@@ -57,8 +59,7 @@ export class LoginComponent implements OnInit {
           } else if (user.type === 'COMPANY_ADMIN') {
             this.router.navigate(['/company/admin']);
           } else if (user.type === 'GAMER') {
-            this.errorMessage = 'Los usuarios tipo GAMER no tienen acceso al panel de administración.';
-            this.session.clear();
+            this.router.navigate(['/gamer']);
           } else {
             this.errorMessage = 'Tipo de usuario no reconocido.';
             this.session.clear();

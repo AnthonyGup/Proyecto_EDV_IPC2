@@ -29,7 +29,7 @@ public class Install {
     }
 
     public boolean install() throws ValidationException, SQLException, AlreadyExistException {
-        LibraryDao dao = new LibraryDao("library", "library_id");
+        LibraryDao dao = new LibraryDao("`library`", "library_id");
         List<Library> libraries = dao.readByGamer(gamer.getMail());
 
         // Verificar si el juego específico está en la biblioteca
@@ -46,13 +46,24 @@ public class Install {
             // Para juegos comprados, solo instalar el existente
             dao.update(target.getLibraryId(), "installed", true);
         } else {
-            // Para juegos prestados, desinstalar todos los otros juegos prestados instalados
-            for (Library lib : libraries) {
-                if (lib.isInstalled() && !lib.isBuyed()) {
+            // Para juegos prestados, verificar si hay otro prestado instalado
+            List<Library> otherBorrowedInstalled = libraries.stream()
+                    .filter(lib -> lib.isInstalled() && !lib.isBuyed() && lib.getGameId() != game.getVideogameId())
+                    .collect(Collectors.toList());
+            
+            if (!otherBorrowedInstalled.isEmpty()) {
+                // Desinstalar todos los prestados instalados
+                for (Library lib : otherBorrowedInstalled) {
                     dao.update(lib.getLibraryId(), "installed", false);
                 }
+                // Mensaje informativo (el servlet puede capturar esto)
+                String uninstalledIds = otherBorrowedInstalled.stream()
+                        .map(lib -> String.valueOf(lib.getGameId()))
+                        .collect(Collectors.joining(", "));
+                throw new ValidationException("BORROWED_CONFLICT:" + uninstalledIds);
             }
-            // Instalar el juego específico
+            
+            // Instalar el juego prestado
             dao.update(target.getLibraryId(), "installed", true);
         }
         return true;

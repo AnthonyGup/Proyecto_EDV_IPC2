@@ -1,0 +1,32 @@
+<div class="container-fluid p-4">
+  <h3 class="text-light mb-4">Historial de Gastos</h3>
+
+  <div *ngIf="loading" class="alert alert-info">Cargando datos...</div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <div *ngIf="!loading && expenses && expenses.length > 0" class="table-responsive">
+    <table class="table table-dark table-striped">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Juego</th>
+          <th>Monto Pagado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let expense of expenses">
+          <td>{{ expense.date | date: 'dd/MM/yyyy' }}</td>
+          <td>{{ expense.gameTitle }}</td>
+          <td>${{ expense.price | number: '1.2-2' }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="alert alert-info mt-3">
+      <strong>Total gastado:</strong> ${{ getTotalSpent() | number: '1.2-2' }}
+    </div>
+  </div>
+
+  <div *ngIf="!loading && (!expenses || expenses.length === 0)" class="alert alert-warning">
+    No hay compras registradas
+  </div>
+</div>

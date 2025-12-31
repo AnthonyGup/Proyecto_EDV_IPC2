@@ -4,15 +4,17 @@
  */
 package com.backend.banner;
 
-import com.backend.daos.PurcharseDao;
-import com.backend.daos.RateDao;
 import com.backend.daos.VideogameDao;
-import com.backend.entities.Purcharse;
-import com.backend.entities.Rate;
+import com.backend.db.DBConnection;
 import com.backend.entities.Videogame;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -21,64 +23,88 @@ import java.util.List;
 public class BannerManagement {
     
     public List<Videogame> updateBannerGames() throws SQLException {
+        return getTopGames(5);
+    }
+    
+    public List<Videogame> getTopGames(int limit) throws SQLException {
         VideogameDao dao = new VideogameDao("videogame", "videogame_id");
         List<Videogame> todos = dao.readAll();
         
-        Videogame[] games = new Videogame[5];
-        double[] temp = new double[5];
-        int index = 0;
-        for (Videogame gam : todos) {
-            if (gam != null) {
-                double val = calcularValor(gam);
-                if (val > temp[index]) {
-                    games[index] = gam;
-                    temp[index] = val;
-                }
-                if (index > 3) {
-                    index = 0;
-                }
-                index++;
-            }
-        }
-        List<Videogame> banner = new ArrayList<>();
-        for (Videogame game : games) {
+        // Crear mapa temporal de juegos con sus puntuaciones
+        Map<Videogame, Double> gameScores = new HashMap<>();
+        
+        for (Videogame game : todos) {
             if (game != null) {
-                banner.add(game);
+                double val = calcularValor(game);
+                if (!Double.isNaN(val) && !Double.isInfinite(val)) {
+                    gameScores.put(game, val);
+                }
             }
         }
-        return banner;
+        
+        // Ordenar y obtener los mejores
+        List<Videogame> result = new ArrayList<>();
+        gameScores.entrySet()
+            .stream()
+            .sorted((a, b) -> Double.compare(b.getValue(), a.getValue()))
+            .limit(limit)
+            .forEach(entry -> result.add(entry.getKey()));
+        
+        return result;
     }
     
     private double calcularValor(Videogame game) throws SQLException {
-        RateDao daoRate = new RateDao("rate", "rate_id");
-        PurcharseDao daoVntas = new PurcharseDao("purcharse", "purcharse_id");
-        List<Rate> rates = daoRate.readAll();
-        List<Purcharse>  ventas = daoVntas.readAll();
-        
-        int cantidadRate = 0;
-        
-        int mediaRate = 0;
+        Connection conn = DBConnection.getInstance().getConnection();
+
+        double promedioRate = 0.0;
         int ventasTotales = 0;
-        
-        for (Rate rate: rates) {
-            if (rate.getGameId() == game.getVideogameId()) {
-                cantidadRate++;
-                mediaRate = mediaRate + rate.getStars();
+
+        // Obtener cantidad y promedio de estrellas desde la tabla correcta 'rate'
+        String sqlRate = "SELECT COUNT(*) AS cnt, COALESCE(AVG(stars), 0) AS avgStars FROM rate WHERE game_id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sqlRate)) {
+            ps.setInt(1, game.getVideogameId());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    promedioRate = rs.getDouble("avgStars");
+                }
             }
         }
-        for (Purcharse venta : ventas) {
-            if (venta.getGameId() == game.getVideogameId()) {
-                ventasTotales++;
+
+        // Obtener cantidad de compras desde la tabla correcta 'purcharse'
+        String sqlPurchase = "SELECT COUNT(*) AS cnt FROM purcharse WHERE game_id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sqlPurchase)) {
+            ps.setInt(1, game.getVideogameId());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    ventasTotales = rs.getInt("cnt");
+                }
             }
         }
-        return calcular(mediaRate, ventasTotales);
+
+        return calcular(promedioRate, ventasTotales);
     }
     
-    private double calcular(double rate, double ventas) {
-        double izq = ((0.6*(rate/5))+(0.4*(ventas/(ventas + 20* Math.log(ventas + 10)))));
-        double der =  (1 - Math.abs((rate/5)-(ventas/(ventas + 20* Math.log(ventas + 10)))));
+    private double calcular(double promedioRate, double ventasTotales) {
+        if (ventasTotales == 0) {
+            return (promedioRate / 5.0) * 0.6;
+        }
         
-        return  izq * der;
+        if (promedioRate == 0 && ventasTotales == 0) {
+            return 0.0;
+        }
+        
+        // Normalizar rating a 0-1
+        double rateNorm = promedioRate / 5.0;
+        
+        // Calcular factor de ventas normalizadas
+        double ventasNorm = ventasTotales / (ventasTotales + 20.0 * Math.log(ventasTotales + 10.0));
+        
+        // Fórmula ponderada: 60% rating, 40% ventas
+        double izq = (0.6 * rateNorm) + (0.4 * ventasNorm);
+        
+        // Factor de coherencia entre rating y ventas
+        double der = (1.0 - Math.abs(rateNorm - ventasNorm));
+        
+        return izq * der;
     }
-    
 }

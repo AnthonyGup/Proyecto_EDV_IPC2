@@ -1,0 +1,39 @@
+<div class="container-fluid py-4" style="background-color: #0f172a; min-height: 100vh;">
+  <h2 class="text-light mb-4">Resultados de Búsqueda</h2>
+
+  <div *ngIf="loading" class="text-center py-5">
+    <p class="text-light">Buscando...</p>
+  </div>
+  
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <div class="row g-3" *ngIf="!loading && results.length > 0">
+    <div class="col-md-6 col-lg-4" *ngFor="let g of results" [routerLink]="['/gamer/game', g.videogameId]" style="cursor: pointer;">
+      <div class="card bg-dark border-secondary h-100">
+        <img *ngIf="getGameImage(g.videogameId)" 
+             [src]="'data:image/png;base64,' + getGameImage(g.videogameId)" 
+             class="card-img-top" 
+             [alt]="g.name" 
+             style="height: 200px; object-fit: cover;" />
+        <div *ngIf="!getGameImage(g.videogameId)" 
+             class="bg-secondary d-flex justify-content-center align-items-center" 
+             style="height: 200px;">
+          <span class="text-secondary">Sin imagen</span>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title text-light">{{ g.name }}</h5>
+          <p class="card-text text-secondary">{{ g.description }}</p>
+          <div class="d-flex gap-2 flex-wrap">
+            <span class="badge bg-primary">${{ g.price }}</span>
+            <span class="badge bg-secondary">{{ g.ageRestriction }}+</span>
+            <span class="badge bg-info">{{ g.relasedate | date:'dd/MM/yyyy' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && results.length === 0 && !error" class="text-center py-5">
+    <p class="text-secondary">No se encontraron juegos con estos filtros</p>
+  </div>
+</div>

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { API_BASE_URL } from '../core/appi.config';
-import { Company, GlobalCommission, User } from '../models';
+import { Company, GlobalCommission, User, Gamer } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -46,5 +46,13 @@ export class AuthService {
 
   getUserCompanyInfo(userEmail: string): Observable<{ company_id: number; user_id: string }> {
     return this.http.get<{ company_id: number; user_id: string }>(`${API_BASE_URL}/user/company/info/${userEmail}`);
+  }
+
+  rechargeWallet(amount: number, userEmail: string): Observable<{ message: string; newWallet: number }> {
+    return this.http.post<{ message: string; newWallet: number }>(`${API_BASE_URL}/gamer/recharge`, { amount, userEmail });
+  }
+
+  getGamerInfo(userEmail: string): Observable<Gamer> {
+    return this.http.get<Gamer>(`${API_BASE_URL}/gamer/info/${userEmail}`);
   }
 }

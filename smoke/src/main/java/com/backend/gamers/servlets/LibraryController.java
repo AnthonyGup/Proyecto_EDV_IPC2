@@ -5,10 +5,14 @@
 package com.backend.gamers.servlets;
 
 import com.backend.entities.Videogame;
+import com.backend.entities.Library;
+import com.backend.daos.LibraryDao;
 import com.backend.gamers.LibraryView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -57,8 +61,25 @@ public class LibraryController extends HttpServlet {
 
         try {
             List<Videogame> games = libraryView.getGamesByUserAndFilter(userId, filterType, filterValue);
-
-            JsonElement jsonResponse = gson.toJsonTree(games);
+            
+            // Obtener info de library para agregar buyed status
+            LibraryDao libDao = new LibraryDao("`library`", "library_id");
+            List<Library> libs = libDao.readByGamer(userId);
+            
+            // Crear respuesta con metadata de buyed
+            JsonArray jsonResponse = new JsonArray();
+            for (Videogame game : games) {
+                JsonObject gameObj = gson.toJsonTree(game).getAsJsonObject();
+                Library lib = libs.stream()
+                    .filter(l -> l.getGameId() == game.getVideogameId())
+                    .findFirst()
+                    .orElse(null);
+                if (lib != null) {
+                    gameObj.addProperty("buyed", lib.isBuyed());
+                    gameObj.addProperty("installed", lib.isInstalled());
+                }
+                jsonResponse.add(gameObj);
+            }
 
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");

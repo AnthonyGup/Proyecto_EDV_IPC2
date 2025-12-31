@@ -10,6 +10,8 @@ import com.backend.exceptions.AlreadyExistException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -47,6 +49,18 @@ public class CompanyDao extends Crud<Company> {
         company.setCommission(rs.getDouble("commission"));
         
         return company;
+    }
+    
+    public List<Company> searchByName(String query) throws SQLException {
+        String sql = "SELECT * FROM " + tabla + " WHERE LOWER(name) LIKE ?";
+        PreparedStatement stmt = CONNECTION.prepareStatement(sql);
+        stmt.setString(1, "%" + query.toLowerCase() + "%");
+        ResultSet rs = stmt.executeQuery();
+        List<Company> results = new ArrayList<>();
+        while (rs.next()) {
+            results.add(obtenerEntidad(rs));
+        }
+        return results;
     }
     
 }

@@ -40,4 +40,13 @@ export class CommentService {
       `${API_BASE_URL}/comments/game/${videogameId}`
     );
   }
+
+  addComment(videogameId: number, userEmail: string, text: string, parentId?: number): Observable<{ message: string }> {
+    const payload: any = { userEmail, text };
+    if (parentId !== undefined) payload.parentId = parentId;
+    return this.http.post<{ message: string }>(
+      `${API_BASE_URL}/comments/game/${videogameId}`,
+      payload
+    );
+  }
 }

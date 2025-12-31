@@ -1,39 +1,49 @@
-<div class="page">
-  <div class="shell">
-    <div class="topbar">
+<div class="container-fluid py-4" style="background-color: #0f172a; min-height: 100vh; color: #e2e8f0;">
+  <div style="max-width: 960px; margin: 0 auto;">
+    <div class="d-flex justify-content-between align-items-start mb-4">
       <div>
-        <p class="eyebrow">Categorías</p>
-        <h1>Editar y eliminar categorías</h1>
-        <p class="muted">Gestiona las categorías existentes</p>
+        <small class="text-secondary d-block">Categorías</small>
+        <h1 class="h2 text-light">Editar y eliminar categorías</h1>
+        <p class="text-secondary">Gestiona las categorías existentes</p>
       </div>
-      <a class="link" routerLink="/admin/category/create">Crear nueva</a>
+      <a class="btn btn-primary btn-sm" routerLink="/admin/category/create">Crear nueva</a>
     </div>
 
-    <div class="card">
-      <div *ngIf="loading" class="muted">Cargando...</div>
-      <div *ngIf="error" class="error">{{ error }}</div>
-      <div *ngIf="success" class="success">{{ success }}</div>
+    <div class="card bg-dark border" style="border-color: #1f2937 !important;">
+      <div class="card-body">
+        <div *ngIf="loading" class="text-secondary">Cargando...</div>
+        <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+        <div *ngIf="success" class="alert alert-success">{{ success }}</div>
 
-      <div class="grid">
-        <div class="item" *ngFor="let cat of categories">
-          <div class="item-head">
-            <span class="item-id">#{{ cat.categoryId }}</span>
-            <div class="actions">
-              <button (click)="startEdit(cat)">Editar</button>
-              <button class="danger" (click)="delete(cat)">Eliminar</button>
+        <div class="row g-3">
+          <div class="col-md-6 col-lg-4" *ngFor="let cat of categories">
+            <div class="card bg-dark border h-100" style="border-color: #35445a !important;">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <small class="text-light">#{{ cat.categoryId }}</small>
+                  <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-info" (click)="startEdit(cat)">Editar</button>
+                    <button class="btn btn-sm btn-danger" (click)="delete(cat)">Eliminar</button>
+                  </div>
+                </div>
+
+                <div *ngIf="editingId === cat.categoryId; else readonly">
+                  <input 
+                    class="form-control form-control-sm bg-dark text-light border-secondary mb-2" 
+                    [(ngModel)]="editName" 
+                    placeholder="Nombre de la categoría" 
+                  />
+                  <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-success flex-grow-1" (click)="saveEdit()">Guardar</button>
+                    <button class="btn btn-sm btn-secondary flex-grow-1" (click)="cancelEdit()">Cancelar</button>
+                  </div>
+                </div>
+                <ng-template #readonly>
+                  <p class="text-light fw-600 mb-0">{{ cat.name }}</p>
+                </ng-template>
+              </div>
             </div>
           </div>
-
-          <div *ngIf="editingId === cat.categoryId; else readonly">
-            <input [(ngModel)]="editName" placeholder="Nombre de la categoría" />
-            <div class="row-actions">
-              <button (click)="saveEdit()">Guardar</button>
-              <button class="secondary" (click)="cancelEdit()">Cancelar</button>
-            </div>
-          </div>
-          <ng-template #readonly>
-            <p class="name">{{ cat.name }}</p>
-          </ng-template>
         </div>
       </div>
     </div>

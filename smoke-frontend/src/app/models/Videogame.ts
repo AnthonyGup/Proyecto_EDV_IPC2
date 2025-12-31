@@ -8,4 +8,7 @@ export interface Videogame {
   companyId: number;
   ageRestriction: number;
   available: boolean;
+  // Library metadata
+  buyed?: boolean;
+  installed?: boolean;
 }

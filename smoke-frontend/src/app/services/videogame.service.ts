@@ -12,8 +12,20 @@ export class VideogameService {
     return this.http.get<Videogame[]>(`${API_BASE_URL}/videogame/all`);
   }
 
+  getById(videogameId: number): Observable<Videogame> {
+    return this.http.get<Videogame>(`${API_BASE_URL}/videogame/detail/${videogameId}`);
+  }
+
   getCategoriesForGame(videogameId: number): Observable<Category[]> {
     return this.http.get<Category[]>(`${API_BASE_URL}/game-categories?gameId=${videogameId}`);
+  }
+
+  getGameCategories(videogameId: number): Observable<Category[]> {
+    return this.getCategoriesForGame(videogameId);
+  }
+
+  getAllCategories(): Observable<Category[]> {
+    return this.http.get<Category[]>(`${API_BASE_URL}/game-categories`);
   }
 
   createGame(
@@ -78,6 +90,12 @@ export class VideogameService {
     return this.http.get<Image[]>(`${API_BASE_URL}/images?videogame_id=${videogameId}`);
   }
 
+  // Actualiza el flag baner para una o varias imágenes
+  updateImagesBaner(imageIds: number[], baner: boolean = true): Observable<{ updated: number; baner: boolean }> {
+    const payload: any = { image_ids: imageIds, baner };
+    return this.http.post<{ updated: number; baner: boolean }>(`${API_BASE_URL}/images`, payload);
+  }
+
   // Actualiza datos básicos del juego
   updateGame(videogame: Partial<Videogame> & { videogameId: number }): Observable<{ message: string }> {
     return this.http.put<{ message: string }>(`${API_BASE_URL}/videogame/${videogame.videogameId}`, videogame);
@@ -88,8 +106,40 @@ export class VideogameService {
     return this.http.post<{ message: string }>(`${API_BASE_URL}/videogame/${videogameId}/availability`, { available });
   }
 
+  // Obtiene los 5 juegos con mejores puntajes
+  getTopGames(): Observable<Videogame[]> {
+    return this.http.get<Videogame[]>(`${API_BASE_URL}/games/top`);
+  }
+
+  // Busca juegos por filtros opcionales
+  searchGames(filters: {
+    name?: string;
+    available?: boolean;
+    minPrice?: number;
+    maxPrice?: number;
+    companyId?: number;
+    categoryId?: number;
+    maxAge?: number;
+  }): Observable<Videogame[]> {
+    const params: string[] = [];
+    if (filters.name) params.push(`name=${encodeURIComponent(filters.name)}`);
+    if (filters.available !== undefined) params.push(`available=${filters.available}`);
+    if (filters.minPrice !== undefined) params.push(`minPrice=${filters.minPrice}`);
+    if (filters.maxPrice !== undefined) params.push(`maxPrice=${filters.maxPrice}`);
+    if (filters.companyId !== undefined) params.push(`companyId=${filters.companyId}`);
+    if (filters.categoryId !== undefined) params.push(`categoryId=${filters.categoryId}`);
+    if (filters.maxAge !== undefined) params.push(`maxAge=${filters.maxAge}`);
+    const qs = params.length ? `?${params.join('&')}` : '';
+    return this.http.get<Videogame[]>(`${API_BASE_URL}/games/search${qs}`);
+  }
+
   // Elimina una imagen por id
   deleteImage(imageId: number): Observable<{ message: string }> {
     return this.http.delete<{ message: string }>(`${API_BASE_URL}/images/${imageId}`);
+  }
+
+  // Compra un juego
+  buyGame(videogameId: number, userEmail: string): Observable<{ message: string; wallet: number }> {
+    return this.http.post<{ message: string; wallet: number }>(`${API_BASE_URL}/game/buy`, { videogameId, userEmail });
   }
 }

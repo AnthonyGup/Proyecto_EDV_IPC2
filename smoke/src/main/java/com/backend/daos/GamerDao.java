@@ -11,6 +11,8 @@ import com.backend.exceptions.AlreadyExistException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -68,4 +70,15 @@ public class GamerDao extends Crud<Gamer> {
     
     
     
+    public List<Gamer> searchByNickname(String query) throws SQLException {
+        String sql = "SELECT g.* FROM gamer g JOIN user u ON u.mail = g.user_id WHERE LOWER(u.nickname) LIKE ?";
+        PreparedStatement stmt = CONNECTION.prepareStatement(sql);
+        stmt.setString(1, "%" + query.toLowerCase() + "%");
+        ResultSet rs = stmt.executeQuery();
+        List<Gamer> list = new ArrayList<>();
+        while (rs.next()) {
+            list.add(obtenerEntidad(rs));
+        }
+        return list;
+    }
 }

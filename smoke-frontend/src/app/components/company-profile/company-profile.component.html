@@ -1,0 +1,31 @@
+<div class="container-fluid py-4" *ngIf="!loading" style="background-color: #0f172a; min-height: 100vh; color: #e2e8f0;">
+  <div style="max-width: 1200px; margin: 0 auto;">
+    <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+    <div *ngIf="company" class="mb-5">
+      <h1 class="h2 text-light">{{ company.name }}</h1>
+      <p class="text-secondary">{{ company.description || 'Sin descripción disponible' }}</p>
+      <p class="text-info">Comisión: <span class="fw-bold">{{ company.commission }}%</span></p>
+    </div>
+
+    <div *ngIf="company">
+      <h2 class="h3 text-light mb-3">Catálogo de juegos</h2>
+      
+      <div *ngIf="games.length === 0" class="text-center text-secondary py-5">Esta empresa aún no tiene juegos publicados.</div>
+
+      <div class="row g-3" *ngIf="games.length > 0">
+        <div class="col-md-6 col-lg-4 col-xl-3" *ngFor="let game of games">
+          <div class="card bg-dark border h-100" style="border-color: #1f2937 !important; cursor: pointer;" (click)="openGame(game)">
+            <img [src]="covers[game.videogameId] || getPlaceholder(300, 180, game.name)" class="card-img-top" [alt]="game.name" style="height: 180px; object-fit: cover;" />
+            <div class="card-body">
+              <h5 class="card-title text-light">{{ game.name }}</h5>
+              <p class="text-success fw-bold">\${{ game.price }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="loading" class="text-center text-secondary py-5">Cargando perfil de la empresa...</div>

@@ -14,6 +14,7 @@ import { FooterComponent } from '../footer/footer.component';
 export class AdminLayoutComponent {
   showCompanyDropdown = false;
   showCategoryDropdown = false;
+  showReports = false;
 
   constructor(private session: SessionService, private router: Router) {}
 
@@ -29,6 +30,10 @@ export class AdminLayoutComponent {
     this.showCategoryDropdown = !this.showCategoryDropdown;
   }
 
+  toggleReportsDropdown(): void {
+    this.showReports = !this.showReports;
+  }
+
   logout(): void {
     this.session.clear();
     this.router.navigate(['/login']);
@@ -41,6 +46,7 @@ export class AdminLayoutComponent {
     if (!clickedInsideDropdown) {
       this.showCompanyDropdown = false;
       this.showCategoryDropdown = false;
+      this.showReports = false;
     }
   }
 }

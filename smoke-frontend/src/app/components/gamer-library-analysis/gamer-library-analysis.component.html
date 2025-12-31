@@ -1,0 +1,60 @@
+<div class="container-fluid p-4">
+  <h3 class="text-light mb-4">Análisis de Biblioteca</h3>
+
+  <div *ngIf="loading" class="alert alert-info">Cargando datos...</div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <div *ngIf="!loading && data">
+    <!-- Categorías Favoritas -->
+    <div class="mb-5">
+      <h5 class="text-light mb-3">Categorías Favoritas</h5>
+      <div *ngIf="data.favoriteCategories && data.favoriteCategories.length > 0" class="table-responsive">
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>Categoría</th>
+              <th>Cantidad de Juegos</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let cat of data.favoriteCategories">
+              <td>{{ cat.categoryName }}</td>
+              <td>{{ cat.gameCount }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div *ngIf="!data.favoriteCategories || data.favoriteCategories.length === 0" class="alert alert-warning">
+        Sin datos
+      </div>
+    </div>
+
+    <!-- Comparativa Personal vs Comunidad -->
+    <div>
+      <h5 class="text-light mb-3">Mi Valoración vs Comunidad</h5>
+      <div *ngIf="data.library && data.library.length > 0" class="table-responsive">
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>Juego</th>
+              <th>Mi Calificación</th>
+              <th>Comunidad</th>
+              <th>Diferencia</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let game of data.library">
+              <td>{{ game.gameTitle }}</td>
+              <td>⭐ {{ game.personalRating }}/5</td>
+              <td>⭐ {{ game.communityRating | number: '1.1-1' }}/5</td>
+              <td>{{ getDifferenceClass(game) | number: '1.1-1' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div *ngIf="!data.library || data.library.length === 0" class="alert alert-warning">
+        Sin datos
+      </div>
+    </div>
+  </div>
+</div>

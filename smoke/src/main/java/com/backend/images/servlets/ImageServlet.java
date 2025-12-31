@@ -5,11 +5,7 @@
 package com.backend.images.servlets;
 
 import com.backend.daos.ImageDao;
-import com.backend.daos.VideogameDao;
 import com.backend.entities.Image;
-import com.backend.entities.Videogame;
-import com.backend.images.ImageManagement;
-import com.backend.exceptions.AlreadyExistException;
 import com.backend.extras.LocalDateAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -91,6 +87,7 @@ public class ImageServlet extends HttpServlet {
                 JsonObject imageObj = new JsonObject();
                 imageObj.addProperty("imageId", image.getImageId());
                 imageObj.addProperty("gameId", image.getGameId());
+                imageObj.addProperty("baner", image.getBaner());
                 if (image.getImage() != null) {
                     String base64Image = Base64.getEncoder().encodeToString(image.getImage());
                     imageObj.addProperty("image", base64Image);
@@ -119,17 +116,69 @@ public class ImageServlet extends HttpServlet {
      * @throws ServletException
      * @throws IOException 
      */
-     @Override
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-            // Optional: accept JSON with { videogameId, images: [base64] }
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        JsonObject body;
+        try {
+            body = gson.fromJson(request.getReader(), JsonObject.class);
+        } catch (Exception ex) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             try (PrintWriter out = response.getWriter()) {
-                out.print(gson.toJson("Not Implemented"));
+                out.print("{\"error\":\"Cuerpo JSON inválido\"}");
                 out.flush();
             }
-            }        
+            return;
+        }
+
+        boolean baner = true; // por defecto agregar al banner
+        if (body != null && body.has("baner") && !body.get("baner").isJsonNull()) {
+            try { baner = body.get("baner").getAsBoolean(); } catch (Exception ignored) {}
+        }
+
+        ImageDao dao = new ImageDao("image", "image_id");
+        int updates = 0;
+
+        try {
+            if (body != null && body.has("image_id") && !body.get("image_id").isJsonNull()) {
+                int id = body.get("image_id").getAsInt();
+                updates += dao.updateBaner(id, baner) ? 1 : 0;
+            } else if (body != null && body.has("image_ids") && body.get("image_ids").isJsonArray()) {
+                for (var el : body.getAsJsonArray("image_ids")) {
+                    try {
+                        int id = el.getAsInt();
+                        updates += dao.updateBaner(id, baner) ? 1 : 0;
+                    } catch (Exception ignored) {}
+                }
+            } else {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                try (PrintWriter out = response.getWriter()) {
+                    out.print("{\"error\":\"Debe enviar 'image_id' o 'image_ids'\"}");
+                    out.flush();
+                }
+                return;
+            }
+
+            response.setStatus(HttpServletResponse.SC_OK);
+            JsonObject ok = new JsonObject();
+            ok.addProperty("updated", updates);
+            ok.addProperty("baner", baner);
+            try (PrintWriter out = response.getWriter()) {
+                out.print(gson.toJson(ok));
+                out.flush();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ImageServlet.class.getName()).log(Level.SEVERE, null, ex);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            try (PrintWriter out = response.getWriter()) {
+                out.print("{\"error\":\"Error al actualizar imágenes\"}");
+                out.flush();
+            }
+        }
+    }
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response)
@@ -174,6 +223,70 @@ public class ImageServlet extends HttpServlet {
         } catch (SQLException ex) {
             Logger.getLogger(ImageServlet.class.getName()).log(Level.SEVERE, null, ex);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        JsonObject body;
+        try {
+            body = gson.fromJson(request.getReader(), JsonObject.class);
+        } catch (Exception ex) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            try (PrintWriter out = response.getWriter()) {
+                out.print("{\"error\":\"Cuerpo JSON inválido\"}");
+                out.flush();
+            }
+            return;
+        }
+
+        boolean baner = true; // por defecto agregar al banner
+        if (body != null && body.has("baner") && !body.get("baner").isJsonNull()) {
+            try { baner = body.get("baner").getAsBoolean(); } catch (Exception ignored) {}
+        }
+
+        ImageDao dao = new ImageDao("image", "image_id");
+        int updates = 0;
+
+        try {
+            if (body != null && body.has("image_id") && !body.get("image_id").isJsonNull()) {
+                int id = body.get("image_id").getAsInt();
+                updates += dao.updateBaner(id, baner) ? 1 : 0;
+            } else if (body != null && body.has("image_ids") && body.get("image_ids").isJsonArray()) {
+                for (var el : body.getAsJsonArray("image_ids")) {
+                    try {
+                        int id = el.getAsInt();
+                        updates += dao.updateBaner(id, baner) ? 1 : 0;
+                    } catch (Exception ignored) {}
+                }
+            } else {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                try (PrintWriter out = response.getWriter()) {
+                    out.print("{\"error\":\"Debe enviar 'image_id' o 'image_ids'\"}");
+                    out.flush();
+                }
+                return;
+            }
+
+            response.setStatus(HttpServletResponse.SC_OK);
+            JsonObject ok = new JsonObject();
+            ok.addProperty("updated", updates);
+            ok.addProperty("baner", baner);
+            try (PrintWriter out = response.getWriter()) {
+                out.print(gson.toJson(ok));
+                out.flush();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ImageServlet.class.getName()).log(Level.SEVERE, null, ex);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            try (PrintWriter out = response.getWriter()) {
+                out.print("{\"error\":\"Error al actualizar imágenes\"}");
+                out.flush();
+            }
         }
     }
 }
