@@ -5,6 +5,7 @@ com\backend\entities\Rate.class
 com\backend\reports\GamerLibraryAnalysisController.class
 com\backend\servlets\system\CommissionController.class
 com\backend\entities\FamilyGroup.class
+com\backend\reports\CompanySalesReportExportController$CompanySalesData.class
 com\backend\gamers\servlets\UninstallController.class
 com\backend\users\servlets\CompanyAdminController.class
 com\backend\games\servlets\GamesSearchController.class
@@ -21,6 +22,7 @@ com\backend\daos\VideogameDao.class
 com\backend\entities\Videogame.class
 com\backend\exceptions\ServiceException.class
 com\backend\gamers\servlets\GamerInfoController.class
+com\backend\reports\CompanyTopGamesReportExportController$CompanyTopGameData.class
 com\backend\entities\Purcharse.class
 com\backend\gamers\dto\GamerInfoDTO.class
 com\backend\daos\CompanyDao.class
@@ -28,6 +30,7 @@ com\backend\reports\CompanyEarningsReportController.class
 com\backend\crud\Crud.class
 com\backend\reports\CompanyTopGamesReportController.class
 com\backend\entities\enums\UserType.class
+com\backend\reports\TopGamesReportExportController.class
 com\backend\comments\servlets\CommentVisibilityController.class
 com\backend\games\servlets\GameBuyController.class
 com\backend\reports\GamerExpenseHistoryController.class
@@ -36,6 +39,7 @@ com\backend\exceptions\AlreadyExistException.class
 com\backend\gamers\servlets\FamilyGroupMemberDeleteController.class
 com\backend\gamers\Install.class
 com\backend\games\servlets\GamesCreatorController.class
+com\backend\controllers\reports\CompanyRatingsReportExportController.class
 com\backend\rate\servlets\GameRateController.class
 com\backend\daos\ImageDao.class
 com\backend\validators\LogginValidator.class
@@ -45,12 +49,17 @@ com\backend\filters\CorsFilter.class
 com\backend\daos\UserCompanyDao.class
 com\backend\db\DBConnection.class
 com\backend\entities\GlobalCommission.class
+com\backend\controllers\reports\CompanyCommentsReportExportController$GameCommentData.class
 com\backend\gamers\servlets\LibraryStatusController.class
+com\backend\reports\UserRankingReportExportController.class
 com\backend\reports\TopGamesReportController.class
+com\backend\controllers\reports\CompanyCommentsReportExportController.class
 com\backend\reports\GamerFamilyLibraryController.class
 com\backend\categories\CategoryService.class
+com\backend\controllers\reports\CompanyRatingsReportExportController$GameRatingData.class
 com\backend\daos\GroupMemberDao.class
 com\backend\daos\CategoryDao.class
+com\backend\controllers\reports\CompanyWorstGamesReportExportController$WorstGameData.class
 com\backend\categories\GameCategoriesUpdateResult.class
 com\backend\gamers\MemberGroup.class
 com\backend\categories\CategorySetter.class
@@ -71,8 +80,10 @@ com\backend\gamers\servlets\FamilyGroupDeleteController.class
 com\backend\daos\UserDao.class
 com\backend\entities\User.class
 com\backend\gamers\servlets\InstallController.class
+com\backend\entities\TopCommenterData.class
 com\backend\reports\CompanySalesReportController.class
 com\backend\gamers\servlets\RechargeWalletController.class
+com\backend\entities\TopGameData.class
 com\backend\reports\GlobalEarningsReportController.class
 com\backend\reports\UserRankingReportController.class
 com\backend\images\ImageManagement.class
@@ -82,6 +93,8 @@ com\backend\users\servlets\UserCompanyController.class
 com\backend\gamers\FamilyGroupCreator.class
 com\backend\daos\LibraryDao.class
 com\backend\entities\Comment.class
+com\backend\reports\GlobalEarningsReportExportController.class
+com\backend\entities\CompanyEarningsData.class
 com\backend\gamers\SearchGames.class
 com\backend\games\servlets\VideogameCategoriesController.class
 com\backend\reports\CompanyFeedbackReportController.class
@@ -94,13 +107,17 @@ com\backend\games\servlets\CompanyGamesController.class
 com\backend\entities\VideogameCategory.class
 com\backend\games\servlets\VideogameCategoriesSimpleController.class
 com\backend\users\servlets\GamerCreatorController.class
+com\backend\entities\TopBuyerData.class
 com\backend\servlets\system\CompanyController.class
 com\backend\daos\GamerDao.class
 com\backend\entities\Category.class
+com\backend\controllers\reports\CompanyWorstGamesReportExportController.class
 com\backend\daos\GlobalCommissionDao.class
+com\backend\reports\CompanySalesReportExportController.class
 com\backend\games\servlets\VideogameDetailController.class
 com\backend\daos\FamilyGroupDao.class
 com\backend\gamers\dto\RechargeResponse.class
+com\backend\reports\CompanyTopGamesReportExportController.class
 com\backend\servlets\TopGamesController.class
 com\backend\gamers\servlets\FamilyGroupInviteController.class
 com\backend\comments\servlets\GameCommentsController.class

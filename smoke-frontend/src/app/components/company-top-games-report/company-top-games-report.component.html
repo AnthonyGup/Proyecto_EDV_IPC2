@@ -2,7 +2,7 @@
   <h3 class="text-light mb-4">Top 5 Juegos por Período</h3>
   
   <div class="row g-3 mb-3">
-    <div class="col-md-4">
+    <div class="col-md-3">
       <label class="form-label text-secondary">Fecha Inicio</label>
       <input 
         class="form-control form-control-sm bg-dark text-light" 
@@ -10,7 +10,7 @@
         [(ngModel)]="startDate"
       />
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
       <label class="form-label text-secondary">Fecha Fin</label>
       <input 
         class="form-control form-control-sm bg-dark text-light" 
@@ -18,7 +18,7 @@
         [(ngModel)]="endDate"
       />
     </div>
-    <div class="col-md-4 d-flex align-items-end">
+    <div class="col-md-2 d-flex align-items-end">
       <button 
         class="btn btn-primary w-100" 
         (click)="fetch()"
@@ -26,6 +26,16 @@
       >
         <span *ngIf="!loading">🔄 Buscar</span>
         <span *ngIf="loading">Cargando...</span>
+      </button>
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+      <button 
+        class="btn btn-success w-100" 
+        (click)="exportToPDF()"
+        [disabled]="loading || !companyId || topGames.length === 0"
+      >
+        <span *ngIf="!loading">📥 Exportar PDF</span>
+        <span *ngIf="loading">Generando...</span>
       </button>
     </div>
   </div>

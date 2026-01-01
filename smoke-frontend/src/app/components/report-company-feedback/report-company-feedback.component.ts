@@ -75,4 +75,70 @@ export class ReportCompanyFeedbackComponent implements OnInit {
       }
     });
   }
+
+  exportRatingsToPDF(): void {
+    if (!this.companyId) {
+      alert('Por favor, carga los datos primero');
+      return;
+    }
+    
+    this.loading = true;
+    this.http.get(`${API_BASE_URL}/reports/company-ratings/export?companyId=${this.companyId}`, {
+      responseType: 'blob'
+    }).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        this.loading = false;
+      },
+      error: (err) => {
+        alert('Error al generar el PDF de calificaciones');
+        this.loading = false;
+      }
+    });
+  }
+
+  exportCommentsToPDF(): void {
+    if (!this.companyId) {
+      alert('Por favor, carga los datos primero');
+      return;
+    }
+    
+    this.loading = true;
+    this.http.get(`${API_BASE_URL}/reports/company-comments/export?companyId=${this.companyId}&limit=${this.limit}`, {
+      responseType: 'blob'
+    }).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        this.loading = false;
+      },
+      error: (err) => {
+        alert('Error al generar el PDF de comentarios');
+        this.loading = false;
+      }
+    });
+  }
+
+  exportWorstGamesToPDF(): void {
+    if (!this.companyId) {
+      alert('Por favor, carga los datos primero');
+      return;
+    }
+    
+    this.loading = true;
+    this.http.get(`${API_BASE_URL}/reports/company-worst-games/export?companyId=${this.companyId}&limit=${this.limit}`, {
+      responseType: 'blob'
+    }).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        this.loading = false;
+      },
+      error: (err) => {
+        alert('Error al generar el PDF de juegos peor calificados');
+        this.loading = false;
+      }
+    });
+  }
 }

@@ -71,4 +71,27 @@ export class CompanyTopGamesReportComponent implements OnInit {
       }
     });
   }
+
+  exportToPDF(): void {
+    if (!this.companyId || !this.startDate || !this.endDate) {
+      alert('Por favor, completa todas las fechas primero');
+      return;
+    }
+
+    this.loading = true;
+    const params = `companyId=${this.companyId}&startDate=${this.startDate}&endDate=${this.endDate}&limit=${this.limit}`;
+    this.http.get(`${API_BASE_URL}/reports/company-top-games/export?${params}`, {
+      responseType: 'blob'
+    }).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        this.loading = false;
+      },
+      error: (err) => {
+        alert('Error al exportar el reporte: ' + (err.error?.error || err.statusText));
+        this.loading = false;
+      }
+    });
+  }
 }

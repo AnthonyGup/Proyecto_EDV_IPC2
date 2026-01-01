@@ -28,8 +28,8 @@ export class ReportUserRankingComponent implements OnInit {
     this.error = null;
     let params = new HttpParams().set('limit', this.limit);
     this.http.get(`${API_BASE_URL}/reports/user-ranking`, { params }).subscribe({
-      next: (resp) => {
-        this.data = resp;
+      next: (resp: any) => {
+        this.data = resp?.data || resp;
         this.loading = false;
       },
       error: (err) => {
@@ -37,5 +37,10 @@ export class ReportUserRankingComponent implements OnInit {
         this.error = err?.error?.error || 'Error cargando reporte';
       }
     });
+  }
+
+  exportToPDF(): void {
+    const url = `${API_BASE_URL}/reports/user-ranking/export?limit=${this.limit}`;
+    window.open(url, '_blank');
   }
 }

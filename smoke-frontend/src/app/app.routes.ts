@@ -20,7 +20,6 @@ import { VideogameCreateComponent } from './components/videogame-create/videogam
 import { BannerAdminComponent } from './components/banner-admin/banner-admin.component';
 import { ReportGlobalEarningsComponent } from './components/report-global-earnings/report-global-earnings.component';
 import { ReportTopGamesComponent } from './components/report-top-games/report-top-games.component';
-import { ReportCompanyEarningsComponent } from './components/report-company-earnings/report-company-earnings.component';
 import { ReportUserRankingComponent } from './components/report-user-ranking/report-user-ranking.component';
 import { CompanySalesReportComponent } from './components/company-sales-report/company-sales-report.component';
 import { ReportCompanyFeedbackComponent } from './components/report-company-feedback/report-company-feedback.component';
@@ -57,7 +56,6 @@ export const routes: Routes = [
       { path: 'category-edit-game/:id', component: CategoryEditGameComponent },
       { path: 'reports/global-earnings', component: ReportGlobalEarningsComponent },
       { path: 'reports/top-games', component: ReportTopGamesComponent },
-      { path: 'reports/company-earnings', component: ReportCompanyEarningsComponent },
       { path: 'reports/user-ranking', component: ReportUserRankingComponent }
     ]
   },

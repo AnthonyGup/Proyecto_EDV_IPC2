@@ -29,7 +29,15 @@
   <div *ngIf="!loading && (averageRatings.length > 0 || topComments.length > 0 || worstRated.length > 0)" class="mt-4">
     <!-- Calificaciones Promedio -->
     <div class="mb-5">
-      <h5 class="text-light mb-3">Calificaciones Promedio por Juego</h5>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="text-light mb-0">Calificaciones Promedio por Juego</h5>
+        <button 
+          class="btn btn-success btn-sm" 
+          (click)="exportRatingsToPDF()"
+          [disabled]="loading || !companyId || !averageRatings || averageRatings.length === 0">
+          📄 Exportar a PDF
+        </button>
+      </div>
       <div *ngIf="averageRatings && averageRatings.length > 0" class="table-responsive">
         <table class="table table-dark table-striped">
           <thead>
@@ -55,7 +63,15 @@
 
     <!-- Mejores Comentarios -->
     <div class="mb-5">
-      <h5 class="text-light mb-3">Mejores Comentarios</h5>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="text-light mb-0">Mejores Comentarios</h5>
+        <button 
+          class="btn btn-success btn-sm" 
+          (click)="exportCommentsToPDF()"
+          [disabled]="loading || !companyId || !topComments || topComments.length === 0">
+          📄 Exportar a PDF
+        </button>
+      </div>
       <div *ngIf="topComments && topComments.length > 0" class="table-responsive">
         <table class="table table-dark table-striped">
           <thead>
@@ -83,7 +99,15 @@
 
     <!-- Peores Calificaciones -->
     <div>
-      <h5 class="text-light mb-3">Peores Calificaciones</h5>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="text-light mb-0">Peores Calificaciones</h5>
+        <button 
+          class="btn btn-success btn-sm" 
+          (click)="exportWorstGamesToPDF()"
+          [disabled]="loading || !companyId || !worstRated || worstRated.length === 0">
+          📄 Exportar a PDF
+        </button>
+      </div>
       <div *ngIf="worstRated && worstRated.length > 0" class="table-responsive">
         <table class="table table-dark table-striped">
           <thead>

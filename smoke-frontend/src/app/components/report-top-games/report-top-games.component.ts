@@ -53,8 +53,8 @@ export class ReportTopGamesComponent implements OnInit {
     if (this.ageRestriction) params = params.set('ageRestriction', this.ageRestriction);
 
     this.http.get(`${API_BASE_URL}/reports/top-games`, { params }).subscribe({
-      next: (resp) => {
-        this.data = resp;
+      next: (resp: any) => {
+        this.data = resp?.data || resp;
         this.loading = false;
       },
       error: (err) => {
@@ -62,5 +62,16 @@ export class ReportTopGamesComponent implements OnInit {
         this.error = err?.error?.error || 'Error cargando reporte';
       }
     });
+  }
+
+  exportToPDF(): void {
+    let url = `${API_BASE_URL}/reports/top-games/export?sortBy=${this.sortBy}&limit=${this.limit}`;
+    if (this.categoryId) {
+      url += `&categoryId=${this.categoryId}`;
+    }
+    if (this.ageRestriction) {
+      url += `&ageRestriction=${this.ageRestriction}`;
+    }
+    window.open(url, '_blank');
   }
 }

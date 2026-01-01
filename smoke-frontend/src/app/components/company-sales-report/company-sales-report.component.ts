@@ -72,4 +72,26 @@ export class CompanySalesReportComponent implements OnInit {
       }
     });
   }
+
+  exportToPDF(): void {
+    if (!this.companyId) {
+      alert('Por favor, carga los datos primero');
+      return;
+    }
+
+    this.loading = true;
+    this.http.get(`${API_BASE_URL}/reports/company-sales/export?companyId=${this.companyId}`, {
+      responseType: 'blob'
+    }).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        this.loading = false;
+      },
+      error: (err) => {
+        alert('Error al exportar el reporte: ' + (err.error?.error || err.statusText));
+        this.loading = false;
+      }
+    });
+  }
 }

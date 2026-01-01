@@ -25,8 +25,8 @@ export class ReportGlobalEarningsComponent implements OnInit {
     this.loading = true;
     this.error = null;
     this.http.get(`${API_BASE_URL}/reports/global-earnings`).subscribe({
-      next: (resp) => {
-        this.data = resp;
+      next: (resp: any) => {
+        this.data = resp?.data || resp;
         this.loading = false;
       },
       error: (err) => {
@@ -34,5 +34,10 @@ export class ReportGlobalEarningsComponent implements OnInit {
         this.error = err?.error?.error || 'Error cargando reporte';
       }
     });
+  }
+
+  exportToPDF(): void {
+    const url = `${API_BASE_URL}/reports/global-earnings/export`;
+    window.open(url, '_blank');
   }
 }
